@@ -5,9 +5,17 @@ import { Switch } from '../../components/controls/Switch';
 import { useState } from 'react';
 import ProgressButton from '../../components/buttons/ProgressButton';
 import { Outlet } from 'react-router-dom';
+import { atom, useRecoilState } from 'recoil';
+
+const liveModeState = atom({
+  key: 'liveMode',
+  default: true,
+});
 
 function LiveMode() {
-  const [live, setLive] = useState(true);
+
+  const [live, setLive] = useRecoilState(liveModeState);
+
 
   return (
     <div className={live ? '' : 'text-danger'}>
@@ -52,15 +60,11 @@ export function PaywallLayout() {
 }
 
 export function PaywallPage() {
-  const { passport } = useAuthContext();
 
-  if (!passport) {
-    return <Unauthorized />;
-  }
-
+  const [ live, setLive ] = useRecoilState(liveModeState);
 
   return (
-    <div>Paywall</div>
+    <div>Use paywall data for {live ? 'live mode' : 'sandbox mode'}</div>
   );
 }
 
