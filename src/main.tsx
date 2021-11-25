@@ -10,6 +10,7 @@ import { PaywallLayout, PaywallPage } from './pages/paywall/PaywallPage'
 import { LoginPage } from './pages/LoginPage'
 import { PasswordResetPage } from './pages/PasswordResetPage'
 import { CenterLayout } from './components/layout/CenterLayout'
+import { ContentLayout } from './components/layout/ContentLayout'
 
 render(
   <React.StrictMode>
@@ -43,14 +44,20 @@ render(
             </Route>
 
             <Route
-              path={siteRoot.paywall}
-              element={<PaywallLayout />}
+              path=""
+              element={<ContentLayout />}
             >
               <Route
-                path=""
-                element={<PaywallPage />}
-              />
+                path={siteRoot.paywall}
+                element={<PaywallLayout />}
+              >
+                <Route
+                  path=""
+                  element={<PaywallPage />}
+                />
+              </Route>
             </Route>
+
           </Route>
         </Routes>
       </BrowserRouter>
