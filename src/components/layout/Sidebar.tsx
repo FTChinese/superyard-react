@@ -1,7 +1,15 @@
 import { NavLink } from 'react-router-dom';
 import { prefixNext, prefixNg, siteRoot } from '../../data/sitemap';
-import { NavItem } from '../../widgets/link';
 import styles from './Sidebar.module.css';
+
+export interface ILink {
+  href: string;
+  name: string;
+}
+
+export type NavItem = ILink & {
+  children?: ILink[];
+};
 
 const extNavItems: NavItem[] = [
   {
