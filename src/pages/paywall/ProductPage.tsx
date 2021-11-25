@@ -5,7 +5,6 @@ import { paywallRepo } from '../../repository/paywall';
 import { useAuthContext } from '../../store/AuthContext';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { ResponseError } from '../../repository/response-error';
-import { ContentLayout } from '../../components/Layout';
 
 interface PriceProps {
   price: Price;
@@ -116,12 +115,10 @@ export function ProductPage() {
   }, []);
 
   return (
-    <ContentLayout>
-      <div className="row">
-        <div className="col-md-12 col-lg-8">
-          <ProductList products={paywall?.products} />
-        </div>
+    <div className="row">
+      <div className="col-md-12 col-lg-8">
+        <ProductList products={paywall?.products} />
       </div>
-    </ContentLayout>
+    </div>
   );
 }

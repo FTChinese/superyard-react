@@ -1,6 +1,5 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useAuthContext } from '../store/AuthContext';
-import { CenterLayout } from '../components/Layout'
 import { sitemap } from '../data/sitemap';
 import { login } from '../repository/auth';
 import { ResponseError } from '../repository/response-error';

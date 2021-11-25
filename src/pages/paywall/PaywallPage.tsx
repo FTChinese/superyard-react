@@ -1,6 +1,3 @@
-import { useAuthContext } from '../../store/AuthContext';
-import { ContentLayout } from '../../components/Layout';
-import { Unauthorized } from '../../components/routes/Unauthorized';
 import { Switch } from '../../components/controls/Switch';
 import { useState } from 'react';
 import ProgressButton from '../../components/buttons/ProgressButton';

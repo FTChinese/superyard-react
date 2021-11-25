@@ -2,7 +2,6 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailForm } from '../components/forms/EmailForm';
-import { CenterLayout } from '../components/Layout';
 import { EmailVal } from '../data/form-value';
 import { passwordResetUrl, siteRoot } from '../data/sitemap';
 import { requestPasswordReset } from '../repository/auth';
