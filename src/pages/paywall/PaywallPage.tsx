@@ -1,30 +1,10 @@
-import { Switch } from '../../components/controls/Switch';
 import { useState } from 'react';
 import ProgressButton from '../../components/buttons/ProgressButton';
 import { Outlet } from 'react-router-dom';
-import { atom, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
+import { LiveMode } from '../../features/paywall/LiveMode';
+import { liveModeState } from '../../store/state';
 
-const liveModeState = atom({
-  key: 'liveMode',
-  default: true,
-});
-
-function LiveMode() {
-
-  const [live, setLive] = useRecoilState(liveModeState);
-
-
-  return (
-    <div className={live ? '' : 'text-danger'}>
-      <Switch
-        key="live"
-        label={live ? 'Live Mode' : 'Sandbox Mode'}
-        checked={live}
-        onToggle={setLive}
-      />
-    </div>
-  );
-}
 
 function RebuildButton() {
   const [submitting, setSubmitting] = useState(false);
