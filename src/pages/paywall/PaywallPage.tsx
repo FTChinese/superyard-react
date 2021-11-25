@@ -41,16 +41,13 @@ function RebuildButton() {
 
 export function PaywallLayout() {
   return (
-    <ContentLayout>
-      <>
-        <div className="d-flex justify-content-between align-items-center">
-          <RebuildButton/>
-          <LiveMode />
-        </div>
-        <Outlet/>
-      </>
-
-    </ContentLayout>
+    <>
+      <div className="d-flex justify-content-between align-items-center">
+        <LiveMode />
+        <RebuildButton/>
+      </div>
+      <Outlet/>
+    </>
   );
 }
 
