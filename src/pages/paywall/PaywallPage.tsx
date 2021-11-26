@@ -82,11 +82,11 @@ function DisplayPaywall(
     <div>
       <BannerCard banner={props.paywall.banner}/>
       <PromoCard promo={props.paywall.promo} />
-      <div className="row justify-content-betwen">
+      <div className="row row-cols-1 row-cols-md-2">
         {
           props.paywall.products.map(product => (
             <div
-              className="col-lg-5"
+              className="col"
               key={product.id}
             >
               <ProductCard

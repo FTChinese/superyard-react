@@ -25,7 +25,7 @@ function PriceButton(
   }
 ) {
   return (
-    <div className="d-grid">
+    <div className="d-grid mb-3">
       <button className="btn btn-primary">
         {formatPrice(props.price)}
       </button>
