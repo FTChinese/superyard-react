@@ -79,8 +79,15 @@ export function Sidebar() {
   return (
     <nav className={`nav flex-column ${styles.sidebar}`}>
       {
-        extNavItems.map((item) => (
-          <a href={item.href} className="nav-link">{item.name}</a>
+        extNavItems.map((item, index) => (
+          <a
+            key={index}
+            href={item.href}
+            className="nav-link"
+          >
+            {item.name}
+          </a>
+
         ))
       }
       {
