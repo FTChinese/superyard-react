@@ -4,7 +4,7 @@ import { sitemap } from '../../data/sitemap';
 export function Unauthorized() {
   return <Navigate
     to={{
-      pathname: `/${sitemap.login}`
+      pathname: sitemap.login,
     }}
   />;
 }
