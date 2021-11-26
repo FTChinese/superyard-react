@@ -60,6 +60,10 @@ a:hover {
   color: var(--color-black70);
 }
 
+.ratio {
+  background-color: var(--color-wheat);
+}
+
 .btn {
   border-radius: 0;
 }
