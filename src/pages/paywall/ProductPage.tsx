@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { localizedCycle } from '../../data/localization';
 import { Paywall, PaywallProduct } from '../../data/paywall';
-import { paywallRepo } from '../../repository/paywall';
 import { useAuthContext } from '../../store/AuthContext';
 import { Unauthorized } from '../../components/routes/Unauthorized';
-import { ResponseError } from '../../repository/response-error';
 import { Price } from '../../data/price';
 
 interface PriceProps {
@@ -105,15 +103,6 @@ export function ProductPage() {
     return <Unauthorized />;
   }
 
-  useEffect(() => {
-    paywallRepo.loadPaywall()
-      .then(pw => {
-        setPaywall(pw);
-      })
-      .catch((err: ResponseError) => {
-        alert(err.message);
-      });
-  }, []);
 
   return (
     <div className="row">
