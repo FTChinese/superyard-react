@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react';
 
 export function Switch(
   props: {
-    key: string;
+    name: string;
     label: string;
     checked: boolean;
     onToggle: (checkd: boolean) => void;
@@ -19,12 +19,12 @@ export function Switch(
         className="form-check-input"
         type="checkbox"
         checked={props.checked}
-        id={props.key}
+        id={props.name}
         onChange={handleChange}
       />
       <label
         className="form-check-label"
-        htmlFor={props.key}
+        htmlFor={props.name}
       >
         {props.label}
       </label>
