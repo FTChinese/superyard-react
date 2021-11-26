@@ -4,11 +4,11 @@ export function ImageRatio(
   }
 ) {
   return (
-    <div className="box-16-9">
+    <div className="ratio ratio-16x9">
       {
         props.src ?
         <img src={props.src} /> :
-        <span>No image provided</span>
+        <div className="text-center">No image provided</div>
       }
     </div>
   )
