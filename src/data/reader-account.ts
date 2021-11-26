@@ -62,11 +62,7 @@ export function authHeader(p: ReaderPassport): { [key: string]: string } {
   };
 }
 
-export function bearerAuthHeader(token: string): { [key: string]: string } {
-  return {
-    'Authorization': `Bearer ${token}`,
-  };
-}
+
 
 export type SearchResult = {
   id: string | null;
