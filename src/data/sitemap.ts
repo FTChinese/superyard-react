@@ -17,12 +17,14 @@ export const siteRoot = {
   settings: 'settings',
 
   paywall: 'paywall',
+  products: 'paywall/products',
 };
 
 export const sitemap = {
   login: `/${siteRoot.login}`,
   forgotPassword: `/${siteRoot.forgotPassword}`,
   paywall: `/${siteRoot.paywall}`,
+  products: `/${siteRoot.paywall}/products`,
 };
 
 export function passwordResetUrl(baseUrl: string): string {
