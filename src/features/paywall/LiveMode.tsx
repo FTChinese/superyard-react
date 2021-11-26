@@ -1,10 +1,9 @@
-import { useRecoilState } from 'recoil';
 import { Switch } from '../../components/controls/Switch';
-import { liveModeState } from '../../store/state';
+import { useLiveState } from '../../store/useLiveState';
 
 export function LiveMode() {
 
-  const [live, setLive] = useRecoilState(liveModeState);
+  const { live, setLive } = useLiveState();
 
   return (
     <div className={live ? '' : 'text-danger'}>
