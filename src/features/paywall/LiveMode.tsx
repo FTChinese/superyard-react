@@ -8,7 +8,7 @@ export function LiveMode() {
   return (
     <div className={live ? '' : 'text-danger'}>
       <Switch
-        key="live"
+        name="live"
         label={live ? 'Live Mode' : 'Sandbox Mode'}
         checked={live}
         onToggle={setLive}
