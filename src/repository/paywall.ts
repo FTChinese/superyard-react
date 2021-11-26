@@ -1,28 +1,160 @@
 import axios, { AxiosResponse } from 'axios';
-import { Paywall } from '../data/paywall';
+import { error } from 'shelljs';
+import { authHeader } from '../data/cms-account';
+import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, ProductParams, PromoParams } from '../data/paywall';
+import { Discount, DiscountParams, Price, PriceCreationParams, PriceUpdateParams } from '../data/price';
 import { endpoint } from './endpoint';
+import { buildReqConfig, ReqConfig } from './ReqConfig';
 import { ResponseError } from './response-error';
 
-export function loadPaywall(): Promise<Paywall> {
-  return axios.get<unknown, AxiosResponse<Paywall>>(endpoint.paywall,)
-    .then(resp => {
-      return resp.data;
-    })
-    .catch(error => {
-      return Promise.reject(ResponseError.newInstance(error));
-    });
+export function loadPaywall(config: ReqConfig): Promise<Paywall> {
+  return axios.get<Paywall>(endpoint.paywall, buildReqConfig(config))
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-class PaywallRepo {
-  private cached?: Paywall;
-
-  loadPaywall(): Promise<Paywall> {
-    if (this.cached) {
-      return Promise.resolve(this.cached);
-    }
-
-    return loadPaywall();
-  }
+export function saveBanner(body: BannerParams, config: ReqConfig): Promise<PaywallDoc> {
+  return axios.post<PaywallDoc, AxiosResponse<PaywallDoc>, BannerParams>(
+      endpoint.pwBanner,
+      body,
+      buildReqConfig(config)
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export const paywallRepo = new PaywallRepo();
+export function savePromo(body: PromoParams, config: ReqConfig): Promise<PaywallDoc> {
+  return axios.post<PaywallDoc, AxiosResponse<PaywallDoc>, BannerParams>(
+    endpoint.pwPromo,
+    body,
+    buildReqConfig(config)
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function dropPromo(config: ReqConfig): Promise<PaywallDoc> {
+  return axios.delete<PaywallDoc, AxiosResponse<PaywallDoc>, BannerParams>(
+    endpoint.pwPromo,
+    buildReqConfig(config)
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function createProduct(body: ProductParams, config: ReqConfig): Promise<Product> {
+  return axios.post<Product, AxiosResponse<Product>, ProductParams>(
+      endpoint.product,
+      body,
+      buildReqConfig(config)
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function listProduct(config: ReqConfig): Promise<Product[]> {
+  return axios.get<Product[]>(
+      endpoint.product,
+      buildReqConfig(config),
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function loadProduct(id: string, config: ReqConfig): Promise<Product> {
+  return axios.get<Product>(
+    endpoint.productOf(id),
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function activateProduct(id: string, config: ReqConfig): Promise<Product> {
+  return axios.post<Product>(
+    endpoint.productOf(id),
+    undefined,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function updateProduct(id: string, body: ProductParams, config: ReqConfig): Promise<Product> {
+  return axios.patch<Product>(
+    endpoint.productOf(id),
+    body,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function createPrice(body: PriceCreationParams, config: ReqConfig): Promise<Price> {
+  return axios.post<Product, AxiosResponse<Price>, PriceCreationParams>(
+      endpoint.price,
+      body,
+      buildReqConfig(config)
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function listPriceOfProduct(prodId: string, config: ReqConfig): Promise<Price[]> {
+  return axios.get<Price[]>(
+      endpoint.price,
+      buildReqConfig(config, new URLSearchParams({'product_id': prodId})),
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function activatePrice(id: string, config: ReqConfig): Promise<Price> {
+  return axios.post<Price>(
+    endpoint.priceOf(id),
+    undefined,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+
+export function updatePrice(id: string, body: PriceUpdateParams, config: ReqConfig): Promise<Price> {
+  return axios.patch<Price>(
+    endpoint.priceOf(id),
+    body,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function refreshPriceOffers(id: string, config: ReqConfig): Promise<PaywallPrice> {
+  return axios.patch<PaywallPrice>(
+    endpoint.offerOfPrice(id),
+    undefined,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function createOffer(body: DiscountParams, config: ReqConfig): Promise<Discount> {
+  return axios.post<Discount>(
+    endpoint.discount,
+    body,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function deleteOffer(id: string, config: ReqConfig): Promise<PaywallPrice> {
+  return axios.delete<PaywallPrice>(
+    endpoint.discountOf(id),
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
