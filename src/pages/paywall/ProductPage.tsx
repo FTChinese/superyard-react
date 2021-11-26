@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { localizedCycle } from '../../data/localization';
-import { Paywall, Price, ProductGroup } from '../../data/paywall';
+import { Paywall, PaywallProduct } from '../../data/paywall';
 import { paywallRepo } from '../../repository/paywall';
 import { useAuthContext } from '../../store/AuthContext';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { ResponseError } from '../../repository/response-error';
+import { Price } from '../../data/price';
 
 interface PriceProps {
   price: Price;
@@ -41,7 +42,7 @@ function ProductDesc(props: ProductDescProps) {
 }
 
 interface ProductCardProps {
-  product: ProductGroup;
+  product: PaywallProduct;
 }
 
 /**
@@ -73,7 +74,7 @@ function ProductCard(props: ProductCardProps) {
 
 function ProductList(
   props: {
-    products?: ProductGroup[];
+    products?: PaywallProduct[];
   }
 ) {
 

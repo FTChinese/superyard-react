@@ -1,5 +1,5 @@
 import { Cycle, PaymentMethod, Tier } from './enum';
-import { Edition } from './paywall';
+import { Edition } from './edition';
 
 const tiers: Record<Tier, string> = {
   standard: '标准会员',

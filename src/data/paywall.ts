@@ -1,41 +1,59 @@
-import { Tier, Cycle, PriceSource } from './enum';
+import { Tier } from './enum';
+import { Discount, Price } from './price';
 
-export interface Edition {
+export type BannerParams = {
+  heading: string;
+  subHeading?: string;
+  coverUrl?: string;
+  content?: string;
+  terms?: string;
+};
+
+export type PromoParams =  BannerParams & {
+  startUtc: string;
+  endUtc: string;
+};
+
+export type Banner = {
+  id: string;
+} & BannerParams;
+
+export type Promo = {
+  id: string;
+} & PromoParams;
+
+export type PaywallDoc = {
+  id: number;
+  banner: Banner;
+  promo: Promo;
+  liveMode: boolean;
+  createdUtc?: string;
+};
+
+export type ProductParams = {
+  createdBy: string;
+  description: string;
+  heading: string;
+  smallPrint?: string;
   tier: Tier;
-  cycle: Cycle;
 }
 
-export function isEditionEqual(a: Edition, b: Edition): boolean {
-  return a.tier === b.tier && a.cycle === b.cycle;
-}
-
-/**
- * @description Price determines how much a product cost.
- */
-export type Price = Edition & {
+export type Product = {
   id: string;
   active: boolean;
-  currency: string;
-  nickname: string | null;
-  productId: string;
-  source: PriceSource;
-  unitAmount: number;
-}
+  liveMode: boolean;
+  createdUtc: string;
+  updatedUt?: string;
+} & ProductParams;
 
-/**
- * @ProductGroup aggregates products of the same tier.
- * A product group may contains multiple prices based
- * on subscription renewal cycle.
- */
-export interface ProductGroup {
-  id: string;
-  tier: Tier;
-  heading: string;
-  description: string | null;
-  smallPrint: string | null;
-  prices: Price[];
-}
+export type PaywallPrice = Price & {
+  offers: Discount[];
+};
 
-export interface Paywall {
-  products: ProductGroup[];
-}
+export type PaywallProduct = Product & {
+  prices: PaywallPrice[];
+};
+
+export type Paywall = PaywallDoc & {
+  products: PaywallProduct[];
+};

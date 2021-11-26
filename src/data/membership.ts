@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
 import { Cycle, OrderKind, PaymentMethod, SubStatus, Tier } from './enum';
-import { Edition } from './paywall';
+import { Edition } from './edition';
 
 export type Membership =  {
   ftcId: string | null;

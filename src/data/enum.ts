@@ -8,17 +8,13 @@ export type SubStatus = 'active' | 'canceled' | 'incomplete' | 'incomplete_expir
 export type OrderKind = 'create' | 'renew' | 'upgrade' | 'downgrade' | 'add_on';
 export type AccountKind = 'ftc' | 'mobile' | 'wechat' | 'linked';
 export type PriceSource = 'ftc' | 'stripe';
-export type OfferKind = 'promotion' | 'retention' | 'win_back';
+export type OfferKind = 'promotion' | 'retention' | 'win_back' | 'introductory';
+export type DiscountStatus = 'active' | 'paused' | 'cancelled';
 export type WxOAuthKind = 'login' | 'link';
 export type WxUnlinkAnchor = 'ftc' | 'wechat';
 
 export const tiers: Tier[] = ['standard', 'premium'];
 export const cycles: Cycle[] = ['month', 'year'];
-
-export interface Edition {
-  tier: Tier;
-  cycle: Cycle;
-}
 
 export function isInvalidSubStatus(s: SubStatus): boolean {
   if (s === 'incomplete_expired' || s === 'past_due' || s === 'unpaid') {
