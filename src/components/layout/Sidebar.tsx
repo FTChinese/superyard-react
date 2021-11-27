@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { prefixNext, prefixNg, sitemap, siteRoot } from '../../data/sitemap';
-import styles from './Sidebar.module.css';
+import { prefixNg, sitemap, siteRoot } from '../../data/sitemap';
 
 export interface ILink {
   href: string;
@@ -144,7 +143,7 @@ function Nav(
   ));
 
   return (
-    <ul className={`nav flex-column${props.indent ? ' ms-3' : ''}`}>
+    <ul className={`nav flex-column${props.indent ? ' ms-3 ' : ''}`}>
       {items}
     </ul>
   );
@@ -152,6 +151,8 @@ function Nav(
 
 export function Sidebar() {
   return (
-    <Nav list={navItems} indent={false} />
+    <div className="sidebar">
+      <Nav list={navItems} indent={false} />
+    </div>
   );
 }
