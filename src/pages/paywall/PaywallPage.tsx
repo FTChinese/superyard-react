@@ -50,6 +50,7 @@ export function PaywallPage() {
       console.log(pw);
     })
     .catch((err: ResponseError) => {
+      setLoading(false);
       setErr(err.message);
     });
 
