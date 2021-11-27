@@ -15,7 +15,7 @@ export function loadPaywall(config: ReqConfig): Promise<Paywall> {
 
 export function saveBanner(body: BannerParams, config: ReqConfig): Promise<PaywallDoc> {
   return axios.post<PaywallDoc, AxiosResponse<PaywallDoc>, BannerParams>(
-      endpoint.pwBanner,
+      endpoint.banner,
       body,
       buildReqConfig(config)
     )
@@ -25,7 +25,7 @@ export function saveBanner(body: BannerParams, config: ReqConfig): Promise<Paywa
 
 export function savePromo(body: PromoParams, config: ReqConfig): Promise<PaywallDoc> {
   return axios.post<PaywallDoc, AxiosResponse<PaywallDoc>, BannerParams>(
-    endpoint.pwPromo,
+    endpoint.promo,
     body,
     buildReqConfig(config)
   )
@@ -35,7 +35,7 @@ export function savePromo(body: PromoParams, config: ReqConfig): Promise<Paywall
 
 export function dropPromo(config: ReqConfig): Promise<PaywallDoc> {
   return axios.delete<PaywallDoc, AxiosResponse<PaywallDoc>, BannerParams>(
-    endpoint.pwPromo,
+    endpoint.promo,
     buildReqConfig(config)
   )
   .then(resp => resp.data)
