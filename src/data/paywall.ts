@@ -43,7 +43,7 @@ export type Product = {
   active: boolean;
   liveMode: boolean;
   createdUtc: string;
-  updatedUt?: string;
+  updatedUtc?: string;
 } & ProductParams;
 
 export type PaywallPrice = Price & {
