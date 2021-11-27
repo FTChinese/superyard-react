@@ -17,7 +17,7 @@ export const siteRoot = {
   settings: 'settings',
 
   paywall: 'paywall',
-  products: 'paywall/products',
+  products: 'products',
 };
 
 export const sitemap = {
