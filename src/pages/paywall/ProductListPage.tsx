@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
+import { Badge } from '../../components/graphics/Badge';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { Product } from '../../data/paywall';
@@ -18,7 +20,7 @@ function PageHead() {
 }
 
 function HeadRow() {
-  const items = ['ID', 'Name', 'Tier', 'Updated', 'Created by', 'Active'];
+  const items = ['ID', 'Name', 'Tier', 'Mode', 'Created', 'Active'];
 
   return (
     <tr>
@@ -29,6 +31,10 @@ function HeadRow() {
   )
 }
 
+function ActiveBadge() {
+  return <Badge theme="info" text="Active" />
+}
+
 function ProductRow(
   props: {
     product: Product;
@@ -36,12 +42,18 @@ function ProductRow(
 ) {
   return (
     <tr>
-      <td>{props.product.id}</td>
+      <td><Link to={props.product.id}>{props.product.id}</Link></td>
       <td>{props.product.heading}</td>
       <td>{props.product.tier}</td>
-      <td>{props.product.updatedUtc}</td>
-      <td>{props.product.createdBy}</td>
-      <td>{props.product.active}</td>
+      <td>{props.product.liveMode ? 'Live' : 'Sandbox'}</td>
+      <td>By {props.product.createdBy} <br/>at {props.product.createdUtc}</td>
+      <td>
+        {
+          props.product.active ?
+          <ActiveBadge /> :
+          <button className="btn btn-link btn-sm">Acivate</button>
+        }
+      </td>
     </tr>
   )
 }
