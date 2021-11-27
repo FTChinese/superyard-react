@@ -1,43 +1,34 @@
-
-const readerBase = '/api/reader';
-
-
-const accountBase = `${readerBase}/account`;
-
 const authBase = '/api/auth'
 const pwResetBase = `${authBase}/password-reset`;
 
-const paywallBasePath = '/api/paywall';
 
 export const endpoint = {
   login: `${authBase}/login`,
+  resetPassword: `${pwResetBase}`,
   requestPasswordReset: `${pwResetBase}/letter`,
   verifyResetToken: function (token: string): string {
     return `${pwResetBase}/tokens/${token}`;
   },
-  resetPassword: `${pwResetBase}`,
 
-  changePassword: `${accountBase}/password`,
+  paywall: '/api/paywall',
+  banner: '/api/paywall/banner',
+  promo: '/api/paywall/banner/promo',
 
-  paywall: paywallBasePath,
-  pwBanner: `${paywallBasePath}/banner`,
-  pwPromo: `${paywallBasePath}/banner/promo`,
-
-  product: `${paywallBasePath}/products`,
+  product: '/api/products',
   productOf: function(id: string): string {
-    return `${paywallBasePath}/products/${id}`;
+    return `/api/products/${id}`;
   },
 
-  price: `${paywallBasePath}/prices`,
+  price: '/api/prices',
   priceOf: function(id: string): string {
-    return `${paywallBasePath}/prices/${id}`;
+    return `/api/prices/${id}`;
   },
   offerOfPrice: function(id: string): string {
-    return `${paywallBasePath}/prices/${id}/discounts`;
+    return `/api/prices/${id}/discounts`;
   },
 
-  discount: `${paywallBasePath}/discounts`,
+  discount: '/api/discounts',
   discountOf: function(id: string): string {
-    return `${paywallBasePath}/discounts/${id}`;
+    return `/api/discounts/${id}`;
   },
 };
