@@ -22,7 +22,7 @@ export type Price = PriceCreationParams & {
   archived: boolean;
   currency: string;
   createdUtc: string;
-  createdBy: string;
+  liveMode: boolean;
 };
 
 export type DiscountParams = {
@@ -41,4 +41,4 @@ export type Discount = {
   liveMode: boolean;
   status: DiscountStatus;
   createdUtc: string;
-};
+} & DiscountParams;
