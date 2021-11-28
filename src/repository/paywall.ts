@@ -100,8 +100,8 @@ export function createPrice(body: PriceCreationParams, config: ReqConfig): Promi
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function listPriceOfProduct(prodId: string, config: ReqConfig): Promise<Price[]> {
-  return axios.get<Price[]>(
+export function listPriceOfProduct(prodId: string, config: ReqConfig): Promise<PaywallPrice[]> {
+  return axios.get<PaywallPrice[]>(
       endpoint.price,
       buildReqConfig(config, new URLSearchParams({'product_id': prodId})),
     )
