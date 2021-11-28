@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { LiveMode } from '../../features/paywall/LiveMode';
+import { LiveModeToggler } from '../../features/paywall/LiveModeToggler';
 import { useLiveState } from '../../store/useLiveState';
 import { RebuildButton } from '../../features/paywall/RebuildButton';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
@@ -17,7 +17,7 @@ export function PaywallLayout() {
   return (
     <>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <LiveMode />
+        <LiveModeToggler />
         <RebuildButton/>
       </div>
       <Outlet/>
