@@ -1,37 +1,9 @@
+import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
-import { PaywallProduct } from '../../data/paywall';
-import { Price } from '../../data/price';
-import { formatPrice } from '../../utils/format-price';
-
-function TextList(
-  props: {
-    text: string;
-  }
-) {
-  return (
-    <ul>
-      {
-        props.text.split('\n').map((line, index) => (
-          <li key={index}>{line}</li>
-        ))
-      }
-    </ul>
-  );
-}
-
-function PriceButton(
-  props: {
-    price: Price;
-  }
-) {
-  return (
-    <div className="d-grid mb-3">
-      <button className="btn btn-primary">
-        {formatPrice(props.price)}
-      </button>
-    </div>
-  );
-}
+import { TextList } from '../../components/list/TextList';
+import { PaywallProduct, Product } from '../../data/paywall';
+import { ActiveBadge, ModeBadge } from './Badge';
+import { PriceButton } from './Price';
 
 export function ProductCard(
   props: {
@@ -57,5 +29,55 @@ export function ProductCard(
         <TextList text={props.product.description}/>
       </div>
     </div>
+  );
+}
+
+export function ProductDetails(
+  props: {
+    product: Product;
+  }
+) {
+  return (
+    <Card>
+      <Card.Header className="text-end">
+        <button className="btn btn-link">Edit</button>
+      </Card.Header>
+      <Card.Body>
+        <Card.Title className="text-center">{props.product.heading}</Card.Title>
+        <Card.Subtitle className="mb-2 text-muted">Description</Card.Subtitle>
+        <TextList text={props.product.description} />
+        <Card.Subtitle className="mb-2 text-muted">Small Print</Card.Subtitle>
+        {
+        props.product.smallPrint ?
+          <TextList text={props.product.smallPrint} /> :
+          <p>NULL</p>
+        }
+        <table className="table table-borderless">
+          <tbody>
+            <tr>
+              <th>Tier</th>
+              <td>{props.product.tier}</td>
+            </tr>
+            <tr>
+              <th>Mode</th>
+              <td><ModeBadge live={props.product.liveMode}/></td>
+            </tr>
+            <tr>
+              <th>Active</th>
+              <td><ActiveBadge active={props.product.active} /></td>
+            </tr>
+            <tr>
+              <th>Created</th>
+              <td>at {props.product.createdUtc} by {props.product.createdBy}</td>
+            </tr>
+            <tr>
+              <th>Update at</th>
+              <td>{props.product.updatedUtc}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Card.Body>
+
+    </Card>
   );
 }
