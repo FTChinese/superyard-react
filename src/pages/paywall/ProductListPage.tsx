@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
-import { Badge } from '../../components/graphics/Badge';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { Product } from '../../data/paywall';
+import { ActiveBadge } from '../../features/paywall/Badge';
 import { listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
@@ -31,10 +31,6 @@ function HeadRow() {
   )
 }
 
-function ActiveBadge() {
-  return <Badge theme="info" text="Active" />
-}
-
 function ProductRow(
   props: {
     product: Product;
@@ -50,7 +46,7 @@ function ProductRow(
       <td>
         {
           props.product.active ?
-          <ActiveBadge /> :
+          <ActiveBadge active={true} /> :
           <button className="btn btn-link btn-sm">Acivate</button>
         }
       </td>
