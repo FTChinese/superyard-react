@@ -13,6 +13,7 @@ import { PasswordResetPage } from './pages/PasswordResetPage'
 import { CenterLayout } from './components/layout/CenterLayout'
 import { ContentLayout } from './components/layout/ContentLayout'
 import { ProductListPage } from './pages/paywall/ProductListPage';
+import { ProductDetailPage } from './pages/paywall/ProductDetailPage';
 
 render(
   <React.StrictMode>
@@ -61,6 +62,10 @@ render(
                   <Route
                     path={siteRoot.products}
                     element={<ProductListPage />}
+                  />
+                  <Route
+                    path={`${siteRoot.products}/:productId`}
+                    element={<ProductDetailPage />}
                   />
                 </Route>
               </Route>
