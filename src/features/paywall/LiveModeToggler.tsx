@@ -1,7 +1,7 @@
 import { Switch } from '../../components/controls/Switch';
 import { useLiveState } from '../../store/useLiveState';
 
-export function LiveMode() {
+export function LiveModeToggler() {
 
   const { live, setLive } = useLiveState();
 
@@ -16,3 +16,5 @@ export function LiveMode() {
     </div>
   );
 }
+
+
