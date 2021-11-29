@@ -7,7 +7,7 @@ function OfferHead() {
     <thead>
       <tr>
         {
-          names.map(n => <th>{n}</th>)
+          names.map((n, i) => <th key={i}>{n}</th>)
         }
       </tr>
     </thead>
@@ -48,7 +48,7 @@ export function DiscountList(
       <OfferHead />
       <tbody>
         {
-          props.offers.map(offer => <OfferRow offer={offer} />)
+          props.offers.map(offer => <OfferRow key={offer.id} offer={offer} />)
         }
       </tbody>
     </table>
