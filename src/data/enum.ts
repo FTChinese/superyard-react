@@ -23,3 +23,22 @@ export function isInvalidSubStatus(s: SubStatus): boolean {
 
   return false;
 }
+
+export interface SelectOption<T> {
+  disabled: boolean;
+  name: string;
+  value: T;
+}
+
+export const tierOpts: SelectOption<Tier>[] = [
+  {
+    disabled: false,
+    name: 'Standard',
+    value: 'standard',
+  },
+  {
+    disabled: false,
+    name: 'Premium',
+    value: 'premium',
+  },
+];
