@@ -88,9 +88,9 @@ export function PriceList(
 ) {
   return (
     <>
-    {
-      props.prices.map(price => <PriceDetails key={price.id} price={price}/>)
-    }
+      {
+        props.prices.map(price => <PriceDetails key={price.id} price={price}/>)
+      }
     </>
   )
 }
