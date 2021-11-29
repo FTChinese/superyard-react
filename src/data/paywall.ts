@@ -1,10 +1,6 @@
 import { Tier } from './enum';
+import { Period } from './period';
 import { Discount, Price } from './price';
-
-type Period = {
-  startUtc: string;
-  endUtc: string;
-};
 
 export type BannerParams = {
   heading: string;
