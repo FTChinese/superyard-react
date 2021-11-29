@@ -1,16 +1,8 @@
 import { useField } from 'formik';
-
-interface FormGroupProps {
-  name: string;
-  type: 'email' | 'password' | 'text' | 'url' | 'number';
-  label?: string;
-  placeholder?: string;
-  desc?: string;
-  disabled?: boolean;
-}
+import { TextInputProps } from './TextInputProps';
 
 export function TextInput(
-  props: FormGroupProps,
+  props: TextInputProps,
 ) {
   const [ field, meta ] = useField(props);
 
@@ -49,4 +41,36 @@ export function TextInput(
       }
     </div>
   );
+}
+
+export function DateTimeInput(
+  props: {
+    title: string;
+    namePrefix: string;
+    disabled?: boolean;
+  }
+) {
+  return (
+    <fieldset>
+      <legend>{props.title}</legend>
+      <div className="row">
+        <div className="col-12 col-sm-6">
+          <TextInput
+            label="Date"
+            name={`${props.namePrefix}.date`}
+            type="date"
+            disabled={props.disabled}
+          />
+        </div>
+        <div className="col-12 col-sm-6">
+          <TextInput
+            label="Time"
+            name={`${props.namePrefix}.time`}
+            type="time"
+            disabled={props.disabled}
+          />
+        </div>
+      </div>
+    </fieldset>
+  )
 }
