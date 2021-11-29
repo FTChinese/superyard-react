@@ -1,6 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import { error } from 'shelljs';
-import { authHeader } from '../data/cms-account';
 import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, ProductParams, PromoParams } from '../data/paywall';
 import { Discount, DiscountParams, Price, PriceCreationParams, PriceUpdateParams } from '../data/price';
 import { endpoint } from './endpoint';

@@ -7,12 +7,15 @@ export function extractDate(isoStr: string): string {
   return isoStr;
 }
 
-// Add seconds part if a time only have hour and minute.
-export function normalizeTime(time: string): string {
+/**
+ * @description Add seconds part if a time only have hour and minute.
+ * For example, 10:10 will be 10:10:00
+ */
+export function padSeconds(time: string): string {
   const parts = time.split(':');
 
   if (parts.length >= 3) {
-    return parts.slice(0, 3).join(':');
+    return time;
   }
 
   for (let i = 0; i < 3; i++) {
@@ -27,14 +30,6 @@ export function normalizeTime(time: string): string {
 export interface DateTime {
   date: string;
   time: string;
-}
-
-export function concatISODateTime(dtz: DateTime & { zone: string }): string {
-  if (!dtz.date  || !dtz.time || !dtz.zone) {
-    return '';
-  }
-
-  return `${dtz.date}T${normalizeTime(dtz.time)}${dtz.zone}`;
 }
 
 export function isoOffset(date: Date): string {
@@ -57,6 +52,9 @@ function padZero(num: number): string {
   return num.toFixed().padStart(2, '0');
 }
 
+/**
+ * @description Turn a Date instance into ISO8601 time string in browser's time zone.
+ */
 export function formatISOLocalTime(date: Date): string {
   return [
     padZero(date.getHours()),
@@ -66,6 +64,9 @@ export function formatISOLocalTime(date: Date): string {
     .join(':') + isoOffset(date);
 }
 
+/**
+ * @description Turn a Date instance into ISO8601 data time string in browser's timezone
+ */
 export function formatISOLocalDateTime(date: Date): string {
   return [
     date.getFullYear(),
@@ -75,6 +76,9 @@ export function formatISOLocalDateTime(date: Date): string {
     .join('-') + `T${formatISOLocalTime(date)}`;
 }
 
+/**
+ * @description Turn a Date instance into ISO8601 data time string in brower's timezone.
+ */
 export function formtISOTimeUTC(date: Date): string {
   return [
     padZero(date.getUTCHours()),
