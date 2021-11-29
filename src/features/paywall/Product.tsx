@@ -14,7 +14,7 @@ export function ProductCard(
     <div className="card">
       <div className="card-header text-end">
         <Link to={`products/${props.product.id}`}>
-          Edit
+          Details
         </Link>
       </div>
       <div className="card-body">
