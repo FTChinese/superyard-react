@@ -27,7 +27,7 @@ export function EmailForm(
   }
 ) {
 
-  const [errMsg, setErrMsg] = useState('')
+  const [errMsg, setErrMsg] = useState('');
 
   // Sync props error message to state.
   // Must use props.errMsg to detect changes.
