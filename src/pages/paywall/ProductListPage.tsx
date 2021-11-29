@@ -90,6 +90,9 @@ function HeadRow() {
 function ProductRow(
   props: {
     product: Product;
+    index: number;
+    disabled: boolean;
+    onActivate: (i: number) => void;
   }
 ) {
   return (
@@ -107,7 +110,12 @@ function ProductRow(
         {
           props.product.active ?
           <ActiveBadge active={true} /> :
-          <button className="btn btn-link btn-sm">Acivate</button>
+          <button className="btn btn-link btn-sm"
+            onClick={() => props.onActivate(props.index)}
+            disabled={props.disabled}
+          >
+            Acivate
+          </button>
         }
       </td>
     </tr>
@@ -116,9 +124,37 @@ function ProductRow(
 
 function ProductList(
   props: {
-    products: Product[]
+    passport: CMSPassport;
+    products: Product[];
   }
 ) {
+
+  const [ products, setProducts ] = useState<Product[]>([]);
+
+  useEffect(() => {
+    setProducts(props.products);
+  }, [props.products.length]);
+
+  const [ submitting, setSubmitting ] = useState(false);
+
+  const handleActivate = (i: number) => {
+    setSubmitting(true);
+
+    const product = products[i];
+    product.active = true;
+
+    const replaceIndex = products.findIndex(p => p.tier === product.tier && p.active);
+    const replaced = products[replaceIndex];
+    replaced.active = false;
+
+    products[i] = product;
+    products[replaceIndex] = replaced;
+
+    setProducts(products);
+
+    setSubmitting(false);
+  }
+
   return (
     <table className="table">
       <thead>
@@ -126,8 +162,14 @@ function ProductList(
       </thead>
       <tbody>
         {
-          props.products.map(prod =>(
-            <ProductRow product={prod} key={prod.id} />
+         products.map((prod, i) =>(
+            <ProductRow
+              product={prod}
+              key={prod.id}
+              index={i}
+              onActivate={handleActivate}
+              disabled={submitting}
+            />
           ))
         }
       </tbody>
@@ -165,7 +207,7 @@ export function ProductListPage() {
       <LoadingSpinner loading={loading}>
         <div>
           <PageHead passport={passport} />
-          <ProductList products={products} />
+          <ProductList products={products} passport={passport} />
         </div>
       </LoadingSpinner>
     </ErrorBoudary>
