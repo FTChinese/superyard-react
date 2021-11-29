@@ -137,20 +137,28 @@ function ProductList(
 
   const [ submitting, setSubmitting ] = useState(false);
 
-  const handleActivate = (i: number) => {
+  const handleActivate = (index: number) => {
+    console.log(`Activate item ${index}`);
     setSubmitting(true);
 
-    const product = products[i];
-    product.active = true;
+    const product = products[index];
 
-    const replaceIndex = products.findIndex(p => p.tier === product.tier && p.active);
-    const replaced = products[replaceIndex];
-    replaced.active = false;
+    setProducts(products.map((p, i) => {
+      if (i === index) {
+        return {
+          ...p,
+          active: true,
+        }
+      }
+      if (p.tier === product.tier && p.active) {
+        return {
+          ...p,
+          active: false,
+        }
+      }
 
-    products[i] = product;
-    products[replaceIndex] = replaced;
-
-    setProducts(products);
+      return p;
+    }));
 
     setSubmitting(false);
   }
