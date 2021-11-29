@@ -1,20 +1,10 @@
 import { ImageRatio } from '../../components/graphics/ImageRatio';
+import { TextList } from '../../components/list/TextList';
 import { Banner, Promo } from '../../data/paywall';
 
-function LegalTerms(
-  props: {
-    terms: string;
-  }
-) {
-  return (
-    <div className="text-muted mt-3">
-      {props.terms.split('\n').map((line, index) =>
-        <p key="index">{line}</p>
-      )}
-    </div>
-  );
-}
-
+/**
+ * @description - BannerBox shows a banner's content shared by default banner and promo banner.
+ */
 function BannerBox(
   props: {
     banner: Banner;
@@ -77,7 +67,7 @@ export function PromoCard(
       <div className="card-body">
         { isEmpty && <p>Not promotion set.</p>}
         { !isEmpty && <BannerBox banner={props.promo} />}
-        { props.promo.terms && <LegalTerms terms={props.promo.terms} />}
+        { props.promo.terms && <TextList text={props.promo.terms} />}
       </div>
 
       <div className="card-footer">
