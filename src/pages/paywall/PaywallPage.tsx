@@ -12,6 +12,7 @@ import { Paywall } from '../../data/paywall';
 import { BannerCard, PromoCard } from '../../features/paywall/Banner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { ProductCard } from '../../features/paywall/Product';
+import { CMSPassport } from '../../data/cms-account';
 
 export function PaywallLayout() {
   return (
@@ -63,7 +64,7 @@ export function PaywallPage() {
       <LoadingSpinner
         loading={loading}
       >
-        <DisplayPaywall paywall={paywall} />
+        <DisplayPaywall paywall={paywall} passport={passport} />
       </LoadingSpinner>
     </ErrorBoudary>
 
@@ -72,6 +73,7 @@ export function PaywallPage() {
 
 function DisplayPaywall(
   props: {
+    passport: CMSPassport;
     paywall?: Paywall;
   }
 ) {
@@ -81,8 +83,8 @@ function DisplayPaywall(
 
   return (
     <div>
-      <BannerCard banner={props.paywall.banner}/>
-      <PromoCard promo={props.paywall.promo} />
+      <BannerCard banner={props.paywall.banner} passport={props.passport} />
+      <PromoCard promo={props.paywall.promo} passport={props.passport} />
       <div className="row row-cols-1 row-cols-md-2">
         {
           props.paywall.products.map(product => (
