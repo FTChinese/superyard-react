@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ImageRatio } from '../../components/graphics/ImageRatio';
+import { JSONBlock } from '../../components/JSONBlock';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
 import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
@@ -133,7 +134,11 @@ function BannerCard(
           <BannerBox banner={props.banner} />
         </div>
       </div>
-      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
+      <Modal
+        show={show}
+        fullscreen={true}
+        onHide={() => setShow(false)}
+      >
         <Modal.Header closeButton>
           <Modal.Title className="me-3">{modalTitle}</Modal.Title>
           <ModeBadge live={live} />
@@ -150,7 +155,8 @@ function BannerCard(
               </div>
               <div className="col">
                 {
-                  paywallDoc && <pre><code>{JSON.stringify(paywallDoc, undefined, 4)}</code></pre>
+                  paywallDoc &&
+                  <JSONBlock value={paywallDoc} />
                 }
               </div>
             </div>
