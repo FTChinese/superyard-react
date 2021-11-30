@@ -104,7 +104,8 @@ export function ProductForm(
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
               text="Save"
-              isSubmitting={formik.isSubmitting}/>
+              isSubmitting={formik.isSubmitting}
+            />
           </Form>
         )}
       </Formik>
