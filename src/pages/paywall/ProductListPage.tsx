@@ -7,7 +7,7 @@ import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { ModeBadge } from '../../features/paywall/Badge';
-import { convertProductForm, CreateProductFormVal, ProductForm } from '../../features/paywall/ProductForm';
+import { ProductFormVal, ProductForm, buildNewProductParams } from '../../features/paywall/ProductForm';
 import { ProductList } from '../../features/paywall/ProductList';
 import { createProduct, listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
@@ -91,13 +91,13 @@ function PageHead(
   const [ err, setErr ] = useState('');
 
   const handleSubmit = (
-    values: CreateProductFormVal,
-    helpers: FormikHelpers<CreateProductFormVal>
+    values: ProductFormVal,
+    helpers: FormikHelpers<ProductFormVal>
   ) => {
     helpers.setSubmitting(true);
     setErr('');
 
-    const params = convertProductForm(values, props.passport.userName);
+    const params = buildNewProductParams(values, props.passport.userName);
 
     createProduct(
         params,
