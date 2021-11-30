@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, ProductParams, PromoParams } from '../data/paywall';
+import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProductParams, PromoParams, NewProductParams } from '../data/paywall';
 import { Discount, DiscountParams, Price, PriceCreationParams, PriceUpdateParams } from '../data/price';
 import { endpoint } from './endpoint';
 import { buildReqConfig, ReqConfig } from './ReqConfig';
@@ -40,8 +40,8 @@ export function dropPromo(config: ReqConfig): Promise<PaywallDoc> {
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createProduct(body: ProductParams, config: ReqConfig): Promise<Product> {
-  return axios.post<Product, AxiosResponse<Product>, ProductParams>(
+export function createProduct(body: NewProductParams, config: ReqConfig): Promise<Product> {
+  return axios.post<Product, AxiosResponse<Product>, UpdateProductParams>(
       endpoint.product,
       body,
       buildReqConfig(config)
@@ -78,7 +78,7 @@ export function activateProduct(id: string, config: ReqConfig): Promise<Product>
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updateProduct(id: string, body: ProductParams, config: ReqConfig): Promise<Product> {
+export function updateProduct(id: string, body: UpdateProductParams, config: ReqConfig): Promise<Product> {
   return axios.patch<Product>(
     endpoint.productOf(id),
     body,
