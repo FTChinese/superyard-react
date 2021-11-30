@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
+import { activateProduct } from '../../repository/paywall';
+import { ResponseError } from '../../repository/response-error';
 import { ActiveBadge } from './Badge';
 
 export function ProductList(
@@ -22,6 +25,7 @@ export function ProductList(
         {
          props.products.map((prod) =>(
             <ProductRow
+              passport={props.passport}
               product={prod}
               key={prod.id}
               onActivated={props.onActivated}
@@ -35,6 +39,7 @@ export function ProductList(
 
 function ProductRow(
   props: {
+    passport: CMSPassport;
     product: Product;
     onActivated: (p: Product) => void;
   }
@@ -46,12 +51,22 @@ function ProductRow(
     console.log(`Activate product ${props.product}`);
     setSubmitting(true);
 
-    setSubmitting(false);
+    activateProduct(
+        props.product.id,
+        {
+          live: props.product.liveMode,
+          token: props.passport.token
+        }
+      )
+      .then(prod => {
+        setSubmitting(false);
 
-    props.onActivated({
-      ...props.product,
-      active: true,
-    });
+        props.onActivated(prod);
+      })
+      .catch((err: ResponseError) => {
+        setSubmitting(false);
+        toast.error(err.message);
+      });
   }
 
   return (
@@ -69,7 +84,8 @@ function ProductRow(
         {
           props.product.active ?
           <ActiveBadge active={true} /> :
-          <Button variant="link"
+          <Button variant="outline-primary"
+            size="sm"
             disabled={submitting}
             onClick={handleActivate}
           >
