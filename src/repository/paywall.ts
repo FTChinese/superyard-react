@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProductParams, PromoParams, NewProductParams } from '../data/paywall';
-import { Discount, DiscountParams, Price, PriceCreationParams, PriceUpdateParams } from '../data/price';
+import { Discount, DiscountParams, Price, NewPriceParams, UpdatePriceParams } from '../data/price';
 import { endpoint } from './endpoint';
 import { buildReqConfig, ReqConfig } from './ReqConfig';
 import { ResponseError } from './response-error';
@@ -88,8 +88,8 @@ export function updateProduct(id: string, body: UpdateProductParams, config: Req
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createPrice(body: PriceCreationParams, config: ReqConfig): Promise<Price> {
-  return axios.post<Product, AxiosResponse<Price>, PriceCreationParams>(
+export function createPrice(body: NewPriceParams, config: ReqConfig): Promise<Price> {
+  return axios.post<Product, AxiosResponse<Price>, NewPriceParams>(
       endpoint.price,
       body,
       buildReqConfig(config)
@@ -107,8 +107,8 @@ export function listPriceOfProduct(prodId: string, config: ReqConfig): Promise<P
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function activatePrice(id: string, config: ReqConfig): Promise<Price> {
-  return axios.post<Price>(
+export function activatePrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
+  return axios.post<PaywallPrice>(
     endpoint.priceOf(id),
     undefined,
     buildReqConfig(config),
@@ -118,8 +118,8 @@ export function activatePrice(id: string, config: ReqConfig): Promise<Price> {
 }
 
 
-export function updatePrice(id: string, body: PriceUpdateParams, config: ReqConfig): Promise<Price> {
-  return axios.patch<Price>(
+export function updatePrice(id: string, body: UpdatePriceParams, config: ReqConfig): Promise<PaywallPrice> {
+  return axios.patch<PaywallPrice>(
     endpoint.priceOf(id),
     body,
     buildReqConfig(config),
