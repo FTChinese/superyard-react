@@ -1,22 +1,22 @@
 import { Edition } from './edition';
 import { DiscountStatus, OfferKind } from './enum';
 
-export type PriceUpdateParams = {
-  description?: string;
-  nickname: string | null;
+export type UpdatePriceParams = {
   stripePriceId: string;
+  nickname?: string;
+  description?: string;
 };
 
-export type PriceCreationParams = PriceUpdateParams & Edition & {
-  createdBy: string; // Not part of form data.
+export type NewPriceParams = Edition & {
   productId: string;
+  createdBy: string; // Not part of form data.
   unitAmount: number;
-};
+} & UpdatePriceParams;
 
 /**
  * @description Price determines how much a product cost.
  */
-export type Price = PriceCreationParams & {
+export type Price = NewPriceParams & {
   id: string;
   active: boolean;
   archived: boolean;
