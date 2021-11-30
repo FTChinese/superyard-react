@@ -2,7 +2,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { Tier, tierOpts } from '../../data/enum';
-import { ProductParams } from '../../data/paywall';
+import { NewProductParams, Product, UpdateProductParams } from '../../data/paywall';
 import * as Yup from 'yup';
 import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
@@ -10,30 +10,39 @@ import { TextInput } from '../../components/controls/TextInput';
 import { Textarea } from '../../components/controls/Textarea';
 import ProgressButton from '../../components/buttons/ProgressButton';
 
-export type CreateProductFormVal = {
-  tier: Tier | string;
+export type ProductFormVal = {
+  tier: Tier;
   heading: string;
   description: string;
   smallPrint: string;
 };
 
-export function convertProductForm(v: CreateProductFormVal, by: string): ProductParams {
+export function buildNewProductParams(v: ProductFormVal, by: string): NewProductParams {
   return {
+    tier: v.tier,
     createdBy: by,
     description: v.description,
     heading: v.heading,
-    smallPrint: v.smallPrint || undefined,
-    tier: v.tier as Tier,
+    smallPrint: v.smallPrint,
+  };
+}
+
+export function buildUpdateProductParams(v: ProductFormVal): UpdateProductParams {
+  return {
+    description: v.description,
+    heading: v.heading,
+    smallPrint: v.smallPrint,
   };
 }
 
 export function ProductForm(
   props: {
     onSubmit: (
-      values: CreateProductFormVal,
-      formikHelpers: FormikHelpers<CreateProductFormVal>
+      values: ProductFormVal,
+      formikHelpers: FormikHelpers<ProductFormVal>
     ) => void | Promise<any>;
     errMsg: string;
+    product?: Product; // Exists when updating.
   }
 ) {
   const [errMsg, setErrMsg] = useState('');
@@ -53,12 +62,12 @@ export function ProductForm(
           {errMsg}
         </Alert>
       }
-      <Formik<CreateProductFormVal>
+      <Formik<ProductFormVal>
         initialValues={{
-          tier: '',
-          heading: '',
-          description: '',
-          smallPrint: '',
+          tier: props.product?.tier || ('' as Tier), // This is hack.
+          heading: props.product?.heading || '',
+          description: props.product?.description || '',
+          smallPrint: props.product?.smallPrint || '',
         }}
         validationSchema={Yup.object({
           tier: Yup.string().required(invalidMessages.required),
@@ -73,6 +82,7 @@ export function ProductForm(
               name="tier"
               label="Tier *"
               opts={tierOpts}
+              disabled={!!props.product?.tier}
             />
             <TextInput
               label="Heading *"
