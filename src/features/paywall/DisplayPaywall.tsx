@@ -1,21 +1,52 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
-import Modal from 'react-bootstrap/Modal';
+import { Modal } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
-import { Banner, PaywallDoc, Promo } from '../../data/paywall';
+import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
 import { saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useLiveState } from '../../store/useLiveState';
 import { ModeBadge } from './Badge';
-import { BannerForm, BannerFormVal, buildBannerParams, buildPromoParams } from './BannerForm';
+import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
+import { PriceButton } from './Price';
+
+export function DisplayPaywall(
+  props: {
+    passport: CMSPassport;
+    paywall: Paywall;
+  }
+) {
+
+  return (
+    <div>
+      <BannerCard banner={props.paywall.banner} passport={props.passport} />
+      <PromoCard promo={props.paywall.promo} passport={props.passport} />
+      <div className="row row-cols-1 row-cols-md-2">
+        {
+          props.paywall.products.map(product => (
+            <div
+              className="col"
+              key={product.id}
+            >
+              <ProductCard
+                product={product}
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
+}
 
 /**
  * @description - BannerBox shows a banner's content shared by default banner and promo banner.
  */
-function BannerBox(
+ function BannerBox(
   props: {
     banner: Banner;
   }
@@ -36,7 +67,7 @@ function BannerBox(
   );
 }
 
-export function BannerCard(
+function BannerCard(
   props: {
     passport: CMSPassport;
     banner: Banner;
@@ -115,7 +146,7 @@ export function BannerCard(
   );
 }
 
-export function PromoCard(
+function PromoCard(
   props: {
     passport: CMSPassport;
     promo: Promo;
@@ -203,5 +234,32 @@ export function PromoCard(
         </Modal.Body>
       </Modal>
     </>
+  );
+}
+
+export function ProductCard(
+  props: {
+    product: PaywallProduct;
+  }
+) {
+  return (
+    <div className="card">
+      <div className="card-header text-end">
+        <Link to={`products/${props.product.id}`}>
+          Details
+        </Link>
+      </div>
+      <div className="card-body">
+        <h3 className="card-title text-center mb-3 pb-3">
+          {props.product.heading}
+        </h3>
+        {
+          props.product.prices.map((p, i) => (
+            <PriceButton key={i} price={p} />
+          ))
+        }
+        <TextList text={props.product.description}/>
+      </div>
+    </div>
   );
 }

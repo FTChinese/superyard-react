@@ -1,36 +1,7 @@
 import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom';
 import { TextList } from '../../components/list/TextList';
-import { PaywallProduct, Product } from '../../data/paywall';
+import { Product } from '../../data/paywall';
 import { ActiveBadge, ModeBadge } from './Badge';
-import { PriceButton } from './Price';
-
-export function ProductCard(
-  props: {
-    product: PaywallProduct;
-  }
-) {
-  return (
-    <div className="card">
-      <div className="card-header text-end">
-        <Link to={`products/${props.product.id}`}>
-          Details
-        </Link>
-      </div>
-      <div className="card-body">
-        <h3 className="card-title text-center mb-3 pb-3">
-          {props.product.heading}
-        </h3>
-        {
-          props.product.prices.map((p, i) => (
-            <PriceButton key={i} price={p} />
-          ))
-        }
-        <TextList text={props.product.description}/>
-      </div>
-    </div>
-  );
-}
 
 export function ProductDetails(
   props: {
