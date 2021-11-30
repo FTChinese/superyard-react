@@ -1,3 +1,6 @@
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Discount } from '../../data/price'
 
 export function DiscountList(
@@ -6,14 +9,40 @@ export function DiscountList(
   }
 ) {
   return (
-    <table className="table">
-      <OfferHead />
-      <tbody>
-        {
-          props.offers.map(offer => <OfferRow key={offer.id} offer={offer} />)
-        }
-      </tbody>
-    </table>
+    <Card>
+      <Card.Header className="d-flex justify-content-between">
+        <span>Discount list</span>
+        <ButtonGroup
+          size="sm"
+        >
+          <Button
+            variant="outline-primary"
+            size="sm"
+          >
+            Refresh
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+          >
+            New
+          </Button>
+        </ButtonGroup>
+      </Card.Header>
+      <table className="table">
+        <OfferHead />
+        <tbody>
+          {
+            props.offers.map(offer =>
+              <OfferRow
+                key={offer.id}
+                offer={offer}
+              />
+            )
+          }
+        </tbody>
+      </table>
+    </Card>
   );
 }
 
@@ -49,7 +78,12 @@ function OfferRow(
         End: {props.offer.endUtc}
       </td>
       <td className="text-end">
-        <button className="btn btn-danger">Delete</button>
+        <Button
+          variant="danger"
+          size="sm"
+        >
+          Delete
+        </Button>
       </td>
     </tr>
   );
