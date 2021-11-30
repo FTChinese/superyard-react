@@ -6,7 +6,7 @@ import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { PriceList } from '../../features/paywall/PriceList';
-import { ProductDetails } from '../../features/paywall/Product';
+import { ProductDetails } from '../../features/paywall/ProductDetails';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
