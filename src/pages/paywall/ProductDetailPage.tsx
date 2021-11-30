@@ -27,10 +27,16 @@ export function ProductDetailPage() {
   return (
     <>
       <section className="mb-3">
-        <LoadProduct passport={passport} productId={productId} />
+        <LoadProduct
+          passport={passport}
+          productId={productId}
+        />
       </section>
       <section>
-        <LoadPrices passport={passport} productId={productId} />
+        <LoadPrices
+          passport={passport}
+          productId={productId}
+        />
       </section>
     </>
   );
@@ -62,14 +68,19 @@ function LoadProduct(
         setLoading(false);
         setErr(err.message)
       });
-    }, [live]);
+  }, [live]);
 
   return (
     <ErrorBoudary errMsg={err}>
       <LoadingSpinner loading={loading}>
         <>
           <h4>Product Details</h4>
-          {product && <ProductDetails product={product} />}
+          {product &&
+            <ProductDetails
+              passport={props.passport}
+              product={product}
+              onUpdated={setProduct}
+          />}
         </>
       </LoadingSpinner>
     </ErrorBoudary>
