@@ -1,189 +1,18 @@
 import { FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { Link } from 'react-router-dom';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { ActiveBadge, ModeBadge } from '../../features/paywall/Badge';
+import { ModeBadge } from '../../features/paywall/Badge';
 import { convertProductForm, CreateProductFormVal, ProductForm } from '../../features/paywall/ProductForm';
+import { ProductList } from '../../features/paywall/ProductList';
 import { createProduct, listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
 import { useLiveState } from '../../store/useLiveState';
-
-function PageHead(
-  props: {
-    passport: CMSPassport;
-  }
-) {
-
-  const { live } = useLiveState();
-  const [ show, setShow ] = useState(false);
-  const [ err, setErr ] = useState('');
-
-
-  const handleSubmit = (
-    values: CreateProductFormVal,
-    helpers: FormikHelpers<CreateProductFormVal>
-  ) => {
-    helpers.setSubmitting(true);
-    setErr('');
-
-    const params = convertProductForm(values, props.passport.userName);
-
-    createProduct(
-        params,
-        { live, token: props.passport.token }
-      )
-      .then(prod => {
-        helpers.setSubmitting(false);
-        console.log(prod);
-      })
-      .catch((err: ResponseError) => {
-        helpers.setSubmitting(false);
-        setErr(err.message);
-      });
-  }
-  return (
-    <>
-      <div className="d-flex justify-content-between align-items-center">
-        <h2 className="mb-3">Products</h2>
-        <button className="btn btn-primary" onClick={() => setShow(true) }>New</button>
-      </div>
-      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title className="me-3">Create Product</Modal.Title>
-          <ModeBadge live={live} />
-        </Modal.Header>
-        <Modal.Body>
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-md-8 col-lg-6">
-                <ProductForm
-                  onSubmit={handleSubmit}
-                  errMsg={err}
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
-}
-
-function HeadRow() {
-  const items = ['ID', 'Name', 'Tier', 'Mode', 'Created', 'Active'];
-
-  return (
-    <tr>
-      {
-        items.map((item, i) => <th key={i}>{item}</th>)
-      }
-    </tr>
-  )
-}
-
-function ProductRow(
-  props: {
-    product: Product;
-    index: number;
-    disabled: boolean;
-    onActivate: (i: number) => void;
-  }
-) {
-  return (
-    <tr>
-      <td>
-        <Link to={props.product.id}>
-          {props.product.id}
-        </Link>
-      </td>
-      <td>{props.product.heading}</td>
-      <td>{props.product.tier}</td>
-      <td>{props.product.liveMode ? 'Live' : 'Sandbox'}</td>
-      <td>By {props.product.createdBy} <br/>at {props.product.createdUtc}</td>
-      <td>
-        {
-          props.product.active ?
-          <ActiveBadge active={true} /> :
-          <button className="btn btn-link btn-sm"
-            onClick={() => props.onActivate(props.index)}
-            disabled={props.disabled}
-          >
-            Acivate
-          </button>
-        }
-      </td>
-    </tr>
-  )
-}
-
-function ProductList(
-  props: {
-    passport: CMSPassport;
-    products: Product[];
-  }
-) {
-
-  const [ products, setProducts ] = useState<Product[]>([]);
-
-  useEffect(() => {
-    setProducts(props.products);
-  }, [props.products.length]);
-
-  const [ submitting, setSubmitting ] = useState(false);
-
-  const handleActivate = (index: number) => {
-    console.log(`Activate item ${index}`);
-    setSubmitting(true);
-
-    const product = products[index];
-
-    setProducts(products.map((p, i) => {
-      if (i === index) {
-        return {
-          ...p,
-          active: true,
-        }
-      }
-      if (p.tier === product.tier && p.active) {
-        return {
-          ...p,
-          active: false,
-        }
-      }
-
-      return p;
-    }));
-
-    setSubmitting(false);
-  }
-
-  return (
-    <table className="table">
-      <thead>
-        <HeadRow />
-      </thead>
-      <tbody>
-        {
-         products.map((prod, i) =>(
-            <ProductRow
-              product={prod}
-              key={prod.id}
-              index={i}
-              onActivate={handleActivate}
-              disabled={submitting}
-            />
-          ))
-        }
-      </tbody>
-    </table>
-  );
-}
 
 export function ProductListPage() {
   const [ err, setErr ] = useState('');
@@ -210,14 +39,106 @@ export function ProductListPage() {
       });
   }, [live]);
 
+  const handleActivate = (product: Product) => {
+
+    setProducts(products.map(p => {
+      if (p.id === product.id) {
+        return product;
+      }
+      if (p.tier === product.tier && p.active) {
+        return {
+          ...p,
+          active: false,
+        }
+      }
+
+      return p;
+    }));
+  };
+
+  const handleCreate = (product: Product) => {
+    setProducts([product, ...products]);
+  };
+
   return (
     <ErrorBoudary errMsg={err}>
       <LoadingSpinner loading={loading}>
         <div>
-          <PageHead passport={passport} />
-          <ProductList products={products} passport={passport} />
+          <PageHead
+            passport={passport}
+            onCreated={handleCreate}
+          />
+          <ProductList
+            products={products}
+            passport={passport}
+            onActivated={handleActivate}
+          />
         </div>
       </LoadingSpinner>
     </ErrorBoudary>
+  );
+}
+
+function PageHead(
+  props: {
+    passport: CMSPassport;
+    onCreated: (product: Product) => void;
+  }
+) {
+
+  const { live } = useLiveState();
+  const [ show, setShow ] = useState(false);
+  const [ err, setErr ] = useState('');
+
+  const handleSubmit = (
+    values: CreateProductFormVal,
+    helpers: FormikHelpers<CreateProductFormVal>
+  ) => {
+    helpers.setSubmitting(true);
+    setErr('');
+
+    const params = convertProductForm(values, props.passport.userName);
+
+    createProduct(
+        params,
+        { live, token: props.passport.token }
+      )
+      .then(prod => {
+        helpers.setSubmitting(false);
+        console.log(prod);
+        props.onCreated(prod);
+        setShow(false);
+      })
+      .catch((err: ResponseError) => {
+        helpers.setSubmitting(false);
+        setErr(err.message);
+      });
+  }
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center">
+        <h2 className="mb-3">Products</h2>
+        <button className="btn btn-primary" onClick={() => setShow(true) }>New</button>
+      </div>
+      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title className="me-3">Create Product</Modal.Title>
+          <ModeBadge live={live} />
+        </Modal.Header>
+        <Modal.Body>
+          <div className="container">
+            <div className="row justify-content-center">
+              <div className="col-md-8 col-lg-6">
+                <ProductForm
+                  onSubmit={handleSubmit}
+                  errMsg={err}
+                />
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 }
