@@ -42,3 +42,16 @@ export const tierOpts: SelectOption<Tier>[] = [
     value: 'premium',
   },
 ];
+
+export const cycleOpts: SelectOption<Cycle>[] = [
+  {
+    disabled: false,
+    name: 'Year',
+    value: 'year',
+  },
+  {
+    disabled: false,
+    name: 'Month',
+    value: 'month',
+  },
+];
