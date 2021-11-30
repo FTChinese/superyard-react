@@ -1,15 +1,12 @@
-import { FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
-import Modal from 'react-bootstrap/Modal';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { ModeBadge } from '../../features/paywall/Badge';
-import { ProductFormVal, ProductForm, buildNewProductParams } from '../../features/paywall/ProductForm';
+import { ProductFormDialog } from '../../features/paywall/ProductFormDialog';
 import { ProductList } from '../../features/paywall/ProductList';
-import { createProduct, listProduct } from '../../repository/paywall';
+import { listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
 import { useLiveState } from '../../store/useLiveState';
@@ -86,34 +83,7 @@ function PageHead(
   }
 ) {
 
-  const { live } = useLiveState();
   const [ show, setShow ] = useState(false);
-  const [ err, setErr ] = useState('');
-
-  const handleSubmit = (
-    values: ProductFormVal,
-    helpers: FormikHelpers<ProductFormVal>
-  ) => {
-    helpers.setSubmitting(true);
-    setErr('');
-
-    const params = buildNewProductParams(values, props.passport.userName);
-
-    createProduct(
-        params,
-        { live, token: props.passport.token }
-      )
-      .then(prod => {
-        helpers.setSubmitting(false);
-        console.log(prod);
-        props.onCreated(prod);
-        setShow(false);
-      })
-      .catch((err: ResponseError) => {
-        helpers.setSubmitting(false);
-        setErr(err.message);
-      });
-  }
 
   return (
     <>
@@ -121,24 +91,12 @@ function PageHead(
         <h2 className="mb-3">Products</h2>
         <button className="btn btn-primary" onClick={() => setShow(true) }>New</button>
       </div>
-      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title className="me-3">Create Product</Modal.Title>
-          <ModeBadge live={live} />
-        </Modal.Header>
-        <Modal.Body>
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-md-8 col-lg-6">
-                <ProductForm
-                  onSubmit={handleSubmit}
-                  errMsg={err}
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
+      <ProductFormDialog
+        passport={props.passport}
+        show={show}
+        onHide={() => setShow(false)}
+        onUpserted={props.onCreated}
+      />
     </>
   );
 }
