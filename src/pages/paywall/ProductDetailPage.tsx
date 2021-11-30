@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
-import { PriceList } from '../../features/paywall/Price';
+import { PriceList } from '../../features/paywall/PriceList';
 import { ProductDetails } from '../../features/paywall/Product';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';

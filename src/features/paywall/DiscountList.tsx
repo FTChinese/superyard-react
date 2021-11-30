@@ -1,5 +1,22 @@
 import { Discount } from '../../data/price'
 
+export function DiscountList(
+  props: {
+    offers: Discount[];
+  }
+) {
+  return (
+    <table className="table">
+      <OfferHead />
+      <tbody>
+        {
+          props.offers.map(offer => <OfferRow key={offer.id} offer={offer} />)
+        }
+      </tbody>
+    </table>
+  );
+}
+
 function OfferHead() {
   const names = ['Description', 'Kind', 'Price Off', 'Status', 'Recurring', 'Period', ''];
 
@@ -38,19 +55,3 @@ function OfferRow(
   );
 }
 
-export function DiscountList(
-  props: {
-    offers: Discount[];
-  }
-) {
-  return (
-    <table className="table">
-      <OfferHead />
-      <tbody>
-        {
-          props.offers.map(offer => <OfferRow key={offer.id} offer={offer} />)
-        }
-      </tbody>
-    </table>
-  );
-}

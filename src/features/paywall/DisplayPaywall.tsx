@@ -7,12 +7,27 @@ import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
 import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
+import { Price } from '../../data/price';
 import { saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useLiveState } from '../../store/useLiveState';
+import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from './Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
-import { PriceButton } from './Price';
+
+export function PriceButton(
+  props: {
+    price: Price;
+  }
+) {
+  return (
+    <div className="d-grid mb-3">
+      <button className="btn btn-primary">
+        {formatPrice(props.price)}
+      </button>
+    </div>
+  );
+}
 
 export function DisplayPaywall(
   props: {

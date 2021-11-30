@@ -1,22 +1,21 @@
 import Card from 'react-bootstrap/Card';
 import { PaywallPrice } from '../../data/paywall';
-import { Price } from '../../data/price';
 import { formatPrice } from '../../utils/format-price';
 import { ActiveBadge, ModeBadge } from './Badge';
-import { DiscountList } from './Discount';
+import { DiscountList } from './DiscountList';
 
-export function PriceButton(
+export function PriceList(
   props: {
-    price: Price;
+    prices: PaywallPrice[];
   }
 ) {
   return (
-    <div className="d-grid mb-3">
-      <button className="btn btn-primary">
-        {formatPrice(props.price)}
-      </button>
-    </div>
-  );
+    <>
+      {
+        props.prices.map(price => <PriceDetails key={price.id} price={price}/>)
+      }
+    </>
+  )
 }
 
 export function PriceDetails(
@@ -81,16 +80,4 @@ export function PriceDetails(
   );
 }
 
-export function PriceList(
-  props: {
-    prices: PaywallPrice[];
-  }
-) {
-  return (
-    <>
-      {
-        props.prices.map(price => <PriceDetails key={price.id} price={price}/>)
-      }
-    </>
-  )
-}
+
