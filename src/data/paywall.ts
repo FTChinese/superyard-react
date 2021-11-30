@@ -26,13 +26,16 @@ export type PaywallDoc = {
   createdUtc?: string;
 };
 
-export type ProductParams = {
-  createdBy: string;
+export type UpdateProductParams = {
   description: string;
   heading: string;
   smallPrint?: string;
-  tier: Tier;
 }
+
+export type NewProductParams = {
+  tier: Tier;
+  createdBy: string;
+} & UpdateProductParams;
 
 export type Product = {
   id: string;
@@ -40,7 +43,7 @@ export type Product = {
   liveMode: boolean;
   createdUtc: string;
   updatedUtc?: string;
-} & ProductParams;
+} & NewProductParams;
 
 export type PaywallPrice = Price & {
   offers: Discount[];
