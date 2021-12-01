@@ -4,6 +4,7 @@ import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
+import { OnProductUpserted } from '../../features/paywall/callbacks';
 import { ProductFormDialog } from '../../features/paywall/ProductFormDialog';
 import { ProductList } from '../../features/paywall/ProductList';
 import { listProduct } from '../../repository/paywall';
@@ -79,11 +80,16 @@ export function ProductListPage() {
 function PageHead(
   props: {
     passport: CMSPassport;
-    onCreated: (product: Product) => void;
+    onCreated: OnProductUpserted;
   }
 ) {
 
   const [ show, setShow ] = useState(false);
+
+  const handleCreated = (product: Product) => {
+    setShow(false);
+    props.onCreated(product)
+  }
 
   return (
     <>
@@ -95,7 +101,7 @@ function PageHead(
         passport={props.passport}
         show={show}
         onHide={() => setShow(false)}
-        onUpserted={props.onCreated}
+        onUpserted={handleCreated}
       />
     </>
   );
