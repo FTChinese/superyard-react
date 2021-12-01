@@ -148,7 +148,7 @@ export function createOffer(body: DiscountParams, config: ReqConfig): Promise<Di
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function deleteOffer(id: string, config: ReqConfig): Promise<PaywallPrice> {
+export function dropOffer(id: string, config: ReqConfig): Promise<PaywallPrice> {
   return axios.delete<PaywallPrice>(
     endpoint.discountOf(id),
     buildReqConfig(config),
