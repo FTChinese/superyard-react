@@ -1,5 +1,6 @@
 import { Edition } from './edition';
 import { DiscountStatus, OfferKind } from './enum';
+import { ISOPeriod, YearMonthDay } from './period';
 
 export type UpdatePriceParams = {
   stripePriceId: string;
@@ -25,15 +26,14 @@ export type Price = NewPriceParams & {
   liveMode: boolean;
 };
 
-export type DiscountParams = {
-  createdBy: string; // Not part of form data.
+export type DiscountParams = Partial<ISOPeriod> & {
   description?: string;
   kind: OfferKind;
-  startUtc?: string;
-  endUtc?: string;
   priceOff: number;
-  priceId: string;
   recurring: boolean;
+  overridePeriod: YearMonthDay;
+  createdBy: string; // Not part of form data.
+  priceId: string;
 };
 
 export type Discount = {
