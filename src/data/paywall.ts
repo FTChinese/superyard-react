@@ -1,5 +1,5 @@
 import { Tier } from './enum';
-import { Period } from './period';
+import { ISOPeriod } from './period';
 import { Discount, Price } from './price';
 
 export type BannerParams = {
@@ -14,9 +14,9 @@ export type Banner = {
   id: string;
 } & BannerParams;
 
-export type Promo = Banner & Period;
+export type Promo = Banner & ISOPeriod;
 
-export type PromoParams =  BannerParams & Period;
+export type PromoParams =  BannerParams & ISOPeriod;
 
 export type PaywallDoc = {
   id: number;

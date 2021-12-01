@@ -1,6 +1,6 @@
 import { padSeconds } from '../utils/time-formatter';
 
-export type Period = {
+export type ISOPeriod = {
   startUtc: string; // ISO
   endUtc: string;
 };
@@ -16,4 +16,14 @@ export function concatDateTime(dt: DateTime, zone: string): string {
   }
 
   return `${dt.date}T${padSeconds(dt.time)}${zone}`;
+}
+
+export type YearMonthDay = {
+  years: number;
+  months: number;
+  days: number;
+}
+
+export function isZeroYMD(ymd: YearMonthDay): boolean {
+  return ymd.years === 0 && ymd.months === 0 && ymd.days === 0;
 }
