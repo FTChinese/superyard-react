@@ -3,19 +3,22 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { PaywallPrice } from '../../data/paywall';
 import { formatPrice } from '../../utils/format-price';
-import { ActiveBadge, ModeBadge } from './Badge';
+import { ActiveBadge } from './Badge';
 import { DiscountList } from './DiscountList';
 import { useState } from 'react';
 import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
+import { PriceContent } from './PriceContent';
+import { OnPriceUpserted } from './callbacks';
 
-export type OnPriceUpdated = (price: PaywallPrice) => void;
-
+/**
+ * @description Used by the ProductDetailPage to show a list of prices.
+ */
 export function PriceList(
   props: {
     passport: CMSPassport;
     prices: PaywallPrice[];
-    onUpdated: OnPriceUpdated;
+    onUpdated: OnPriceUpserted;
   }
 ) {
   return (
@@ -38,7 +41,7 @@ function PriceListItem(
   props: {
     passport: CMSPassport;
     price: PaywallPrice;
-    onUpdated: OnPriceUpdated;
+    onUpdated: OnPriceUpserted;
   }
 ) {
 
@@ -87,7 +90,9 @@ function PriceListItem(
       </Card>
 
       <DiscountList
-        offers={props.price.offers}
+        passport={props.passport}
+        price={props.price}
+        onUpdatePrice={props.onUpdated}
       />
       <PriceFormDialog
         passport={props.passport}
@@ -97,46 +102,5 @@ function PriceListItem(
         price={props.price}
       />
     </div>
-  );
-}
-
-function PriceContent(
-  props: {
-    price: PaywallPrice;
-  }
-) {
-  return (
-    <table className="table table-borderless">
-      <tbody>
-        <tr>
-          <th>ID</th>
-          <td>{props.price.id}</td>
-        </tr>
-        <tr>
-          <th>Tier</th>
-          <td>{props.price.tier}</td>
-        </tr>
-        <tr>
-          <th>Nickname</th>
-          <td>{props.price.nickname}</td>
-        </tr>
-        <tr>
-          <th>Description</th>
-          <td>{props.price.description}</td>
-        </tr>
-        <tr>
-          <th>Stripe Price ID</th>
-          <td>{props.price.stripePriceId}</td>
-        </tr>
-        <tr>
-          <th>Mode</th>
-          <td><ModeBadge live={props.price.liveMode}/></td>
-        </tr>
-        <tr>
-          <th>Created</th>
-          <td>at {props.price.createdUtc} by {props.price.createdBy}</td>
-        </tr>
-      </tbody>
-    </table>
   );
 }
