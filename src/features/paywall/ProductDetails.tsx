@@ -6,12 +6,13 @@ import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { ActiveBadge, ModeBadge } from './Badge';
 import { ProductFormDialog } from './ProductFormDialog';
+import { OnProductUpserted } from './callbacks';
 
 export function ProductDetails(
   props: {
     passport: CMSPassport;
     product: Product;
-    onUpdated: (product: Product) => void;
+    onUpdated: OnProductUpserted;
   }
 ) {
 
@@ -38,12 +39,14 @@ export function ProductDetails(
           <Card.Title className="text-center">
             {props.product.heading}
           </Card.Title>
+
           <Card.Subtitle className="mb-2 text-muted">
             Description
           </Card.Subtitle>
           <TextList
             text={props.product.description}
           />
+
           <Card.Subtitle className="mb-2 text-muted">
             Small Print
           </Card.Subtitle>
@@ -52,6 +55,7 @@ export function ProductDetails(
             <TextList text={props.product.smallPrint} /> :
             <p>NULL</p>
           }
+
           <table className="table table-borderless">
             <tbody>
               <tr>
