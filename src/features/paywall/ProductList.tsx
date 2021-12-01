@@ -22,7 +22,7 @@ export function ProductList(
         <HeadRow />
       </thead>
       <tbody>
-        {
+      {
          props.products.map((prod) =>(
             <ProductRow
               passport={props.passport}
@@ -31,7 +31,7 @@ export function ProductList(
               onActivated={props.onActivated}
             />
           ))
-        }
+      }
       </tbody>
     </table>
   );
@@ -60,7 +60,7 @@ function ProductRow(
       )
       .then(prod => {
         setSubmitting(false);
-
+        toast.success('Activation succeeded. The product is put on paywall.')
         props.onActivated(prod);
       })
       .catch((err: ResponseError) => {
