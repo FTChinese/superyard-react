@@ -55,3 +55,26 @@ export const cycleOpts: SelectOption<Cycle>[] = [
     value: 'month',
   },
 ];
+
+export const offerKindOpts: SelectOption<OfferKind>[] = [
+  {
+    disabled: false,
+    name: 'Introductory - new subscripiton only',
+    value: 'introductory',
+  },
+  {
+    disabled: false,
+    name: 'Promotion - applicable to anyone',
+    value: 'promotion',
+  },
+  {
+    disabled: false,
+    name: 'Retention - valid subscription only',
+    value: 'retention',
+  },
+  {
+    disabled: false,
+    name: 'Win back - expired subscripiton only',
+    value: 'win_back',
+  }
+];
