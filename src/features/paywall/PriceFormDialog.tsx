@@ -2,6 +2,7 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
+import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { Price } from '../../data/price';
@@ -48,6 +49,7 @@ export function PriceFormDialog(
         )
         .then(price => {
           helpers.setSubmitting(false);
+          toast.success('Update saved!');
           props.onUpserted(price);
         })
         .catch((err: ResponseError) => {
@@ -69,6 +71,7 @@ export function PriceFormDialog(
         )
         .then(price => {
           helpers.setSubmitting(false);
+          toast.success('Price created!');
           props.onUpserted({
             ...price,
             offers: [],
@@ -96,21 +99,14 @@ export function PriceFormDialog(
         <ModeBadge live={live} />
       </Modal.Header>
       <Modal.Body>
-        <div className="container-fluid">
-          <div className="row row-cols-1 row-cols-md-2">
-            <div className="col">
-              <PriceForm
-                onSubmit={handleSubmit}
-                errMsg={err}
-                tier={tier}
-                price={props.price}
-              />
-            </div>
-            <div className="col">
-
-            </div>
-          </div>
-        </div>
+        <FullscreenTwoCols>
+          <PriceForm
+            onSubmit={handleSubmit}
+            errMsg={err}
+            tier={tier}
+            price={props.price}
+          />
+        </FullscreenTwoCols>
       </Modal.Body>
     </Modal>
   );
