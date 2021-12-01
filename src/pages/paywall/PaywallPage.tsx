@@ -10,7 +10,7 @@ import { useAuthContext } from '../../store/AuthContext';
 import { ResponseError } from '../../repository/response-error';
 import { Paywall } from '../../data/paywall';
 import { Unauthorized } from '../../components/routes/Unauthorized';
-import { DisplayPaywall } from '../../features/paywall/DisplayPaywall';
+import { PaywallContent } from '../../features/paywall/PaywallContent';
 
 export function PaywallLayout() {
   return (
@@ -63,7 +63,12 @@ export function PaywallPage() {
         loading={loading}
       >
         <>
-          {paywall && <DisplayPaywall paywall={paywall} passport={passport} />}
+          { paywall &&
+            <PaywallContent
+              paywall={paywall}
+              passport={passport}
+            />
+          }
         </>
       </LoadingSpinner>
     </ErrorBoudary>
