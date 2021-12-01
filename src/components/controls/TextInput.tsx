@@ -1,4 +1,6 @@
 import { useField } from 'formik';
+import { FormText } from './FormText';
+import { InvalidFeedback } from './InvalidFeedback';
 import { TextInputProps } from './TextInputProps';
 
 export function TextInput(
@@ -8,8 +10,12 @@ export function TextInput(
 
   const isInvalid = meta.touched && meta.error;
 
+  const wrapperClass = props.wrapperClass
+    ? props.wrapperClass
+    : 'mb-3';
+
   return (
-    <div className="mb-3">
+    <div className={wrapperClass}>
       { props.label &&
         <label
           className="form-label"
@@ -30,47 +36,19 @@ export function TextInput(
         disabled={props.disabled === true}
       />
       {
-        props.desc ? (
-          <small className="form-text text-muted">{props.desc}</small>
-        ) : null
+        props.desc &&
+        <FormText>
+          {props.desc}
+        </FormText>
       }
       {
-        isInvalid ? (
-          <div className="invalid-feedback">{meta.error}</div>
-        ) : null
+        isInvalid &&
+        <InvalidFeedback>
+          {meta.error}
+        </InvalidFeedback>
       }
     </div>
   );
 }
 
-export function DateTimeInput(
-  props: {
-    title: string;
-    namePrefix: string;
-    disabled?: boolean;
-  }
-) {
-  return (
-    <fieldset>
-      <legend>{props.title}</legend>
-      <div className="row">
-        <div className="col-12 col-sm-6">
-          <TextInput
-            label="Date"
-            name={`${props.namePrefix}.date`}
-            type="date"
-            disabled={props.disabled}
-          />
-        </div>
-        <div className="col-12 col-sm-6">
-          <TextInput
-            label="Time"
-            name={`${props.namePrefix}.time`}
-            type="time"
-            disabled={props.disabled}
-          />
-        </div>
-      </div>
-    </fieldset>
-  )
-}
+
