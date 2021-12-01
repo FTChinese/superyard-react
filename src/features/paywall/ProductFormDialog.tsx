@@ -1,20 +1,26 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { createProduct, updateProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useLiveState } from '../../store/useLiveState';
 import { ModeBadge } from './Badge';
+import { OnProductUpserted } from './callbacks';
 import { ProductFormVal, ProductForm, buildNewProductParams, buildUpdateProductParams } from './ProductForm';
 
+/**
+ * @description ProductFormDialog is used to prsent ProductForm when
+ * creating a new product, or updating an existing one.
+ */
 export function ProductFormDialog(
   props: {
     passport: CMSPassport;
     show: boolean;
     onHide: () => void;
-    onUpserted: (product: Product) => void;
+    onUpserted: OnProductUpserted;
     product?: Product;
   }
 ) {
@@ -40,6 +46,7 @@ export function ProductFormDialog(
         )
         .then(prod => {
           helpers.setSubmitting(false);
+          toast.success('Update succeeded');
           props.onUpserted(prod);
         })
         .catch((err: ResponseError) => {
@@ -57,6 +64,7 @@ export function ProductFormDialog(
         .then(prod => {
           helpers.setSubmitting(false);
           console.log(prod);
+          toast.success('Product created');
           props.onUpserted(prod);
         })
         .catch((err: ResponseError) => {
