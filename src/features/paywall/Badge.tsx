@@ -1,4 +1,5 @@
 import Badge from 'react-bootstrap/Badge';
+import { isoOffset } from '../../utils/time-formatter';
 
 export function ModeBadge(
   props: {
@@ -21,4 +22,14 @@ export function ActiveBadge(
     return <Badge bg="info">Active</Badge>
   }
   return <Badge bg="secondary">Inactive</Badge>;
+}
+
+export function TimezoneBadage(
+  props: {
+    offset?: string
+  }
+) {
+  const offset = props.offset || isoOffset(new Date());
+
+  return <Badge bg="info">{offset}</Badge>
 }
