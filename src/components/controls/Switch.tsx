@@ -1,33 +1,52 @@
-import { ChangeEvent } from 'react';
+import { useField } from 'formik';
+import { FormText } from './FormText';
+import { InvalidFeedback } from './InvalidFeedback';
 
 export function Switch(
   props: {
-    name: string;
     label: string;
+    name: string;
     checked: boolean;
-    onToggle: (checkd: boolean) => void;
+    desc?: string;
+    disabled?: boolean;
   }
 ) {
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    props.onToggle(e.target.checked);
-  }
+  const [ field, meta ] = useField(props);
+
+  const isInvalid = meta.touched && meta.error;
 
   return (
-    <div className="form-check form-switch">
-      <input
-        className="form-check-input"
-        type="checkbox"
-        checked={props.checked}
-        id={props.name}
-        onChange={handleChange}
-      />
-      <label
-        className="form-check-label"
-        htmlFor={props.name}
-      >
-        {props.label}
-      </label>
+    <div className="mb-3">
+      <div className="form-check form-switch">
+        <input
+          className={`form-check-input${isInvalid ? ' is-invalid' : ''}`}
+          id={props.name}
+          type="checkbox"
+          checked={props.checked}
+          onChange={field.onChange}
+          onBlur={field.onBlur}
+          disabled={props.disabled}
+        />
+        <label
+          className="form-check-label"
+          htmlFor={props.name}
+        >
+          {props.label}
+        </label>
+      </div>
+      {
+        props.desc &&
+        <FormText>
+          {props.desc}
+        </FormText>
+      }
+      {
+        isInvalid &&
+        <InvalidFeedback>
+          {meta.error}
+        </InvalidFeedback>
+      }
     </div>
   );
 }
