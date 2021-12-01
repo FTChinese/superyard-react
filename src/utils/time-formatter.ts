@@ -27,11 +27,6 @@ export function padSeconds(time: string): string {
   return parts.join(':');
 }
 
-export interface DateTime {
-  date: string;
-  time: string;
-}
-
 export function isoOffset(date: Date): string {
   const offset = date.getTimezoneOffset();
   if (offset === 0) {
