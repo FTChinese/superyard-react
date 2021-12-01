@@ -1,36 +1,28 @@
 import { FormikHelpers } from 'formik';
 import { useState } from 'react';
-import { Modal } from 'react-bootstrap';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Modal from 'react-bootstrap/Modal'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { JSONBlock } from '../../components/JSONBlock';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
-import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
-import { Price } from '../../data/price';
-import { saveBanner, savePromo } from '../../repository/paywall';
+import { Banner, Paywall, PaywallDoc, PaywallPrice, PaywallProduct, Promo } from '../../data/paywall';
+import { Discount } from '../../data/price';
+import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useLiveState } from '../../store/useLiveState';
+import { formatYearMonthDay } from '../../utils/format-datetime';
 import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from './Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
+import { EffectivePeriod } from './EffectivePeriod';
 
-export function PriceButton(
-  props: {
-    price: Price;
-  }
-) {
-  return (
-    <div className="d-grid mb-3">
-      <button className="btn btn-primary">
-        {formatPrice(props.price)}
-      </button>
-    </div>
-  );
-}
 
-export function DisplayPaywall(
+export function PaywallContent(
   props: {
     passport: CMSPassport;
     paywall: Paywall;
@@ -124,16 +116,22 @@ function BannerCard(
 
   return (
     <>
-      <div className="card mb-3">
-        <div className="card-header d-flex justify-content-between align-items-center">
+      <Card className="card mb-3">
+        <Card.Header className="d-flex justify-content-between align-items-center">
           <span>Default Banner</span>
-          <button className="btn btn-primary btn-sm" onClick={() => setShow(true)}>Edit</button>
-        </div>
+          <Button
+            size="sm"
+            onClick={() => setShow(true)}
+          >
+            Edit
+          </Button>
+        </Card.Header>
 
-        <div className="card-body">
+        <Card.Body className="card-body">
           <BannerBox banner={props.banner} />
-        </div>
-      </div>
+        </Card.Body>
+      </Card>
+
       <Modal
         show={show}
         fullscreen={true}
@@ -180,6 +178,7 @@ function PromoCard(
   const [ show, setShow ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
+  const [ dropping, setDropping ] = useState(false);
 
   const handleSubmit = (
     values: BannerFormVal,
@@ -204,32 +203,66 @@ function PromoCard(
         helpers.setSubmitting(false);
         setErr(err.message);
       });
-  }
+  };
+
+  const handleDrop = () => {
+    setDropping(true);
+
+    dropPromo({ live, token: props.passport.token})
+      .then(pwd => {
+        console.log(pwd);
+        setDropping(false);
+        toast.success('Dropped. Please rebuild paywall.')
+      })
+      .catch((err: ResponseError) => {
+        setDropping(false);
+        toast.error(err.message);
+      })
+  };
 
   return (
     <>
-      <div className="card mb-3">
-        <div className="card-header d-flex justify-content-between align-items-center">
+      <Card className="card mb-3">
+        <Card.Header className="d-flex justify-content-between align-items-center">
           <span>Promotion Banner</span>
 
-          <div className="btn-group">
-            { !isEmpty && <button className="btn btn-danger btn-sm">Drop</button>}
-            <button className="btn btn-primary btn-sm" onClick={() => setShow(true)}>New</button>
-          </div>
-        </div>
+          <ButtonGroup>
+            { !isEmpty &&
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={handleDrop}
+              >
+                { dropping ? 'Processing' : 'Drop'}
+              </Button>
+            }
+            <Button
+              size="sm"
+              onClick={() => setShow(true)}
+            >
+               New
+            </Button>
+          </ButtonGroup>
+        </Card.Header>
 
-        <div className="card-body">
+        <Card.Body className="card-body">
           { isEmpty && <p>Not promotion set.</p>}
           { !isEmpty && <BannerBox banner={props.promo} />}
           { props.promo.terms && <TextList text={props.promo.terms} />}
-        </div>
 
-        <div className="card-footer">
-          Duration: {props.promo.startUtc} to {props.promo.endUtc}
-        </div>
-      </div>
+          <Card.Subtitle>Effective</Card.Subtitle>
+          <EffectivePeriod
+            period={props.promo}
+            direction="column"
+          />
+        </Card.Body>
+      </Card>
 
-      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
+      <Modal
+        show={show}
+        fullscreen={true}
+        onHide={() => setShow(false)}
+      >
         <Modal.Header closeButton>
           <Modal.Title className="me-3">Create Promotion Banner</Modal.Title>
           <ModeBadge live={live} />
@@ -258,29 +291,94 @@ function PromoCard(
   );
 }
 
-export function ProductCard(
+function ProductCard(
   props: {
     product: PaywallProduct;
   }
 ) {
   return (
-    <div className="card">
-      <div className="card-header text-end">
+    <Card className="h-100">
+      <Card.Header className="text-end">
         <Link to={`products/${props.product.id}`}>
           Details
         </Link>
-      </div>
-      <div className="card-body">
-        <h3 className="card-title text-center mb-3 pb-3">
+      </Card.Header>
+      <Card.Body>
+        <Card.Title className="text-center">
           {props.product.heading}
-        </h3>
+        </Card.Title>
+        <TextList text={props.product.description}/>
+
         {
           props.product.prices.map((p, i) => (
-            <PriceButton key={i} price={p} />
+            <PriceOverview key={i} price={p} />
           ))
         }
-        <TextList text={props.product.description}/>
-      </div>
-    </div>
+      </Card.Body>
+    </Card>
   );
 }
+
+function PriceOverview(
+  props: {
+    price: PaywallPrice;
+  }
+) {
+  return (
+    <section>
+      <h6 className="text-center">{formatPrice(props.price)}</h6>
+      <PriceOfferList offers={props.price.offers} />
+    </section>
+  );
+}
+
+function PriceOfferList(
+  props: {
+    offers: Discount[];
+  }
+) {
+
+  if (props.offers.length == 0) {
+    return <></>;
+  }
+
+  return (
+    <table className="table table-sm table-borderless align-middle table-striped">
+      <caption>Offers</caption>
+      <thead>
+        <tr>
+          <th>Kind</th>
+          <th>Period</th>
+          <th>Price Off</th>
+          <th>Effective</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          props.offers.map((o, i) => (
+            <PriceOfferRow offer={o} key={i} />
+          ))
+        }
+      </tbody>
+    </table>
+  );
+}
+
+function PriceOfferRow(
+  props: {
+    offer: Discount;
+  }
+) {
+  return (
+    <tr>
+      <td>{props.offer.kind}</td>
+      <td>{formatYearMonthDay(props.offer.overridePeriod)}</td>
+      <td>{props.offer.priceOff}</td>
+      <td>
+        <EffectivePeriod period={props.offer} direction="column" />
+      </td>
+    </tr>
+  );
+}
+
+
