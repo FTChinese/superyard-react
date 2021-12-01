@@ -8,7 +8,8 @@ import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { Price } from '../../data/price';
 import { PriceFormDialog } from '../../features/paywall/PriceFormDialog';
-import { OnPriceUpdated, PriceList } from '../../features/paywall/PriceList';
+import { PriceList } from '../../features/paywall/PriceList';
+import { OnPriceUpserted } from "../../features/paywall/callbacks";
 import { ProductDetails } from '../../features/paywall/ProductDetails';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
@@ -134,7 +135,7 @@ function LoadPrices(
     ])
   }
 
-  const handleUpdate: OnPriceUpdated = (price: PaywallPrice) => {
+  const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
     setPrices(prices.map(p => {
       if (p.id === price.id) {
         return price;
