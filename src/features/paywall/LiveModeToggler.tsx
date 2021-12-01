@@ -1,4 +1,4 @@
-import { Switch } from '../../components/controls/Switch';
+import { Toggler } from '../../components/controls/Toggler';
 import { useLiveState } from '../../store/useLiveState';
 
 export function LiveModeToggler() {
@@ -7,7 +7,7 @@ export function LiveModeToggler() {
 
   return (
     <div className={live ? '' : 'text-danger'}>
-      <Switch
+      <Toggler
         name="live"
         label={live ? 'Live Mode' : 'Sandbox Mode'}
         checked={live}
