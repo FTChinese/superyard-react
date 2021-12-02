@@ -71,8 +71,12 @@ export function ProductDetails(
                 <td><ActiveBadge active={props.product.active} /></td>
               </tr>
               <tr>
+                <th>Stripe Introductory Price ID</th>
+                <td>{props.product.introductory.stripePriceId || 'NULL'}</td>
+              </tr>
+              <tr>
                 <th>Created</th>
-                <td>at {props.product.createdUtc} by {props.product.createdBy}</td>
+                <td>At {props.product.createdUtc} by {props.product.createdBy}</td>
               </tr>
               <tr>
                 <th>Update at</th>
