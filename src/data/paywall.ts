@@ -59,3 +59,23 @@ export type PaywallProduct = Product & {
 export type Paywall = PaywallDoc & {
   products: PaywallProduct[];
 };
+
+export type RebuiltResult = {
+  paywall: Paywall;
+  stripePrices: StripePrice[];
+}
+
+export type StripePrice = {
+  id: string;
+  active: boolean;
+  created: number;
+  currency: string;
+  liveMode: boolean;
+  metadata: {
+    tier?: Tier;
+    periodDays: number;
+    introductory: boolean;
+    startUtc?: string;
+    endUtc?: string;
+  }
+};

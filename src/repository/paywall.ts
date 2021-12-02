@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProductParams, PromoParams, NewProductParams } from '../data/paywall';
+import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProductParams, PromoParams, NewProductParams, RebuiltResult } from '../data/paywall';
 import { Discount, DiscountParams, Price, NewPriceParams, UpdatePriceParams } from '../data/price';
 import { endpoint } from './endpoint';
 import { buildReqConfig, ReqConfig } from './ReqConfig';
@@ -7,6 +7,12 @@ import { ResponseError } from './response-error';
 
 export function loadPaywall(config: ReqConfig): Promise<Paywall> {
   return axios.get<Paywall>(endpoint.paywall, buildReqConfig(config))
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function rebuildPaywall(config: ReqConfig): Promise<RebuiltResult> {
+  return axios.get<RebuiltResult>(endpoint.refreshPaywall, buildReqConfig(config))
     .then(resp => resp.data)
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }

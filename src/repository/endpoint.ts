@@ -1,7 +1,6 @@
 const authBase = '/api/auth'
 const pwResetBase = `${authBase}/password-reset`;
 
-
 export const endpoint = {
   login: `${authBase}/login`,
   resetPassword: `${pwResetBase}`,
@@ -11,6 +10,7 @@ export const endpoint = {
   },
 
   paywall: '/api/paywall',
+  refreshPaywall: '/api/paywall/build',
   banner: '/api/paywall/banner',
   promo: '/api/paywall/banner/promo',
 
