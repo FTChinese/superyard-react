@@ -10,7 +10,7 @@ import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-re
 import { siteRoot } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { cancelSource } from '../repository/cancel';
-import { verifyPwToken } from '../repository/auth';
+import { resetPassword, verifyPwToken } from '../repository/auth';
 
 function ResetPassword(
   props: PasswordResetVerified
