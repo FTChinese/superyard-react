@@ -1,7 +1,6 @@
 import { resolve } from 'path';
 
 export interface Config {
-  projectNameServer: string;
   projectNameClient: string;
   staticPrefix: string; // Used when rendering html template.
   goTemplateFile: string; // Intermediate file for html template.
@@ -10,15 +9,13 @@ export interface Config {
 
 function buildConfig(): Config {
 
-  const clientName = 'superyard-next';
-  const backendName = 'superyard';
+  const clientName = 'next';
 
   return {
     projectNameClient: clientName,
-    projectNameServer: backendName,
-    staticPrefix: `/static/frontend/${clientName}`,
-    goTemplateFile: resolve(process.cwd(), 'dist/home.html'),
-    versionFile: resolve(process.cwd(), 'dist/client_version_reader'),
+    staticPrefix: `/static/frontend/superyard/${clientName}`,
+    goTemplateFile: resolve(process.cwd(), `dist/${clientName}.html`),
+    versionFile: resolve(process.cwd(), 'dist/client_version_next'),
   }
 }
 

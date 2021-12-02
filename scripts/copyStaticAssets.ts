@@ -11,26 +11,25 @@ const cli = (new CLIParser()).parse();
 const serverProjectDir = resolve(
   homedir(),
   golandDir,
-  config.projectNameServer,
+  'superyard',
 );
 
 const htmlOutDir = resolve(
   serverProjectDir,
   'web/template',
-  config.projectNameClient,
 );
 
 const jsCssOutDir = cli.isProd
   // To server.
   ? resolve(
       homedir(),
-      'svn-online/ft-interact',
+      'svn-online/ft-interact/superyard',
       config.projectNameClient
     )
   // To dev folder
   : resolve(
       serverProjectDir,
-      'build/public/static',
+      'build/public/static/superyard',
       config.projectNameClient
     );
 
