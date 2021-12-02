@@ -1,8 +1,3 @@
-interface Link {
-  href: string;
-  name: string;
-}
-
 export interface Footer {
   year: string;
   clientVersion: string;
@@ -17,5 +12,5 @@ export function buildFooter(): Footer {
     year: '{{footer.Year}}',
     clientVersion: '{{footer.ClientVersion}}',
     serverVersion: '{{footer.ServerVersion}}',
-  }
+  };
 }
