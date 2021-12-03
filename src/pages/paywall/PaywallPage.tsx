@@ -40,6 +40,7 @@ export function PaywallPage() {
     console.log(`Retrieving paywall data for ${live ? 'live' : 'sandbox'} mode`);
 
     setPaywall(undefined);
+    setLoading(true);
     console.log('UI reset');
 
     loadPaywall({
