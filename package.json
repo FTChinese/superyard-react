@@ -10,7 +10,7 @@
     "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
     "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
     "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
-    "deploy-dev": "yarn run build && pnpm run html && yarn run copy-static",
+    "deploy-dev": "yarn run build && yarn run html && yarn run copy-static",
     "deploy": "yarn run build && yarn run html && yarn run copy-static --prod"
   },
   "dependencies": {
