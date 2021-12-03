@@ -20,6 +20,7 @@ import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from './Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
+import { TwoColList } from '../../components/list/TwoColList';
 
 
 export function PaywallContent(
@@ -304,10 +305,22 @@ function ProductCard(
         </Link>
       </Card.Header>
       <Card.Body>
-        <Card.Title className="text-center">
+        <Card.Title as="h5" className="text-center border-bottom">
           {props.product.heading}
         </Card.Title>
         <TextList text={props.product.description}/>
+
+        <section className="mb-5">
+          <Card.Subtitle as="h6" className="text-center border-bottom">
+            Introductory
+          </Card.Subtitle>
+          <TwoColList
+            rows={[
+              ['Stripe Introductory Price ID', props.product.introductory.stripePriceId || 'NULL']
+            ]}
+          />
+        </section>
+
 
         {
           props.product.prices.map((p, i) => (
@@ -325,8 +338,12 @@ function PriceOverview(
   }
 ) {
   return (
-    <section>
-      <h6 className="text-center">{formatPrice(props.price)}</h6>
+    <section className="mb-5">
+      <h6 className="text-center border-bottom">{formatPrice(props.price)}</h6>
+      <dl>
+        <dt>Stripe Price ID</dt>
+        <dd>{props.price.stripePriceId || 'NULL'}</dd>
+      </dl>
       <PriceOfferList offers={props.price.offers} />
     </section>
   );
@@ -343,7 +360,7 @@ function PriceOfferList(
   }
 
   return (
-    <table className="table table-sm table-borderless align-middle table-striped">
+    <table className="table table-sm table-borderless align-middle table-striped caption-top">
       <caption>Offers</caption>
       <thead>
         <tr>
