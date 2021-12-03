@@ -1,6 +1,6 @@
 {
   "name": "superyard-react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "scripts": {
     "dev": "vite",
