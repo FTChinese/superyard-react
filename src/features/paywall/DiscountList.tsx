@@ -19,6 +19,7 @@ import { PriceContent } from './PriceContent';
 import { ListLines } from '../../components/list/TextList';
 import { OnPriceUpserted } from './callbacks';
 import { EffectivePeriod } from './EffectivePeriod';
+import { formatPrice } from '../../utils/format-price';
 
 export function DiscountList(
   props: {
@@ -162,7 +163,7 @@ export function DiscountList(
             />}
           >
             <>
-              <h5>Create a discount for the following price</h5>
+              <h5>Create a discount for price {formatPrice(props.price)}</h5>
               <PriceContent
                 price={props.price}
               />
