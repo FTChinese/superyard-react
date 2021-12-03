@@ -57,6 +57,8 @@ export function PriceForm(
 ) {
   const [errMsg, setErrMsg] = useState('');
 
+  const isUpdate = !!props.price;
+
   useEffect(() => {
     setErrMsg(props.errMsg);
   }, [props.errMsg]);
@@ -106,12 +108,13 @@ export function PriceForm(
               name="cycle"
               label="Cycle *"
               opts={cycleOpts}
-              disabled={!!props.price}
+              disabled={isUpdate}
             />
             <TextInput
               label="Price Unit Amount *"
               name="unitAmount"
               type="number"
+              disabled={isUpdate}
             />
             <TextInput
               label="Stripe Price ID *"
