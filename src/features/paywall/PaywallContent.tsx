@@ -250,11 +250,11 @@ function PromoCard(
           { !isEmpty && <BannerBox banner={props.promo} />}
           { props.promo.terms && <TextList text={props.promo.terms} />}
 
-          <Card.Subtitle>Effective</Card.Subtitle>
-          <EffectivePeriod
+          <Card.Subtitle className="mt-3">Effective</Card.Subtitle>
+          { !isEmpty && <EffectivePeriod
             period={props.promo}
             direction="column"
-          />
+          />}
         </Card.Body>
       </Card>
 
