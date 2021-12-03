@@ -26,6 +26,9 @@ export function ProductListPage() {
   }
 
   useEffect(() => {
+    setLoading(true);
+    setProducts([]);
+
     listProduct({ live, token: passport.token})
       .then(products => {
         setLoading(false);
