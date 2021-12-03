@@ -13,7 +13,7 @@ function buildConfig(): Config {
 
   return {
     projectNameClient: clientName,
-    staticPrefix: `/static/frontend/superyard/${clientName}`,
+    staticPrefix: `/static/superyard/${clientName}`,
     goTemplateFile: resolve(process.cwd(), `dist/${clientName}.html`),
     versionFile: resolve(process.cwd(), 'dist/client_version_next'),
   }
