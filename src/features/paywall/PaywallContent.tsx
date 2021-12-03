@@ -14,13 +14,14 @@ import { Banner, Paywall, PaywallDoc, PaywallPrice, PaywallProduct, Promo } from
 import { Discount } from '../../data/price';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { useLiveState } from '../../store/useLiveState';
 import { formatYearMonthDay } from '../../utils/format-datetime';
 import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from './Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
 import { TwoColList } from '../../components/list/TwoColList';
+import { useRecoilValue } from 'recoil';
+import { liveModeState } from '../../store/recoil-state';
 
 
 export function PaywallContent(
@@ -83,7 +84,7 @@ function BannerCard(
   }
 ) {
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
@@ -175,7 +176,7 @@ function PromoCard(
 
   const isEmpty = props.promo.id === '';
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();

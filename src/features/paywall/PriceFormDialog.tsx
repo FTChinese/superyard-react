@@ -2,13 +2,14 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
+import { useRecoilValue } from 'recoil';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { Price } from '../../data/price';
 import { createPrice, updatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { useLiveState } from '../../store/useLiveState';
+import { liveModeState } from '../../store/recoil-state';
 import { ModeBadge } from './Badge';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
 
@@ -29,7 +30,7 @@ export function PriceFormDialog(
     return <div>Error: either product or price should be set</div>;
   }
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const [ err, setErr ] = useState('');
 
   const handleSubmit = (

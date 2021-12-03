@@ -13,7 +13,8 @@ import { ProductDetails } from '../../features/paywall/ProductDetails';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
-import { useLiveState } from '../../store/useLiveState';
+import { useRecoilValue } from 'recoil';
+import { liveModeState } from '../../store/recoil-state';
 
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
@@ -55,14 +56,17 @@ function LoadProduct(
     onLoaded: (product: Product) => void;
   }
 ) {
+  const live = useRecoilValue(liveModeState);
+
   const [ err, setErr ] = useState('');
   const [ loading, setLoading ] = useState(true);
-
-  const { live } = useLiveState();
-
   const [ product, setProduct ] = useState<Product>();
 
   useEffect(() => {
+    setErr('');
+    setLoading(true);
+    setProduct(undefined);
+
     loadProduct(
         props.productId,
         { live, token: props.passport.token}
@@ -104,14 +108,18 @@ function LoadPrices(
     product?: Product; // Passed from sibling component after product loaded.
   }
 ) {
+  const live = useRecoilValue(liveModeState);
   const [ err, setErr ] = useState('');
   const [ loading, setLoading ] = useState(true);
-  const { live } = useLiveState();
-  const [ show, setShow ] = useState(false);
-
   const [ prices, setPrices ] = useState<PaywallPrice[]>([]);
 
+  const [ show, setShow ] = useState(false);
+
   useEffect(() => {
+    setErr('');
+    setLoading(false);
+    setPrices([]);
+
     listPriceOfProduct(
         props.productId,
         { live, token: props.passport.token}

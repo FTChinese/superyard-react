@@ -13,7 +13,8 @@ import { OnPriceUpserted } from './callbacks';
 import { activatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
-import { useLiveState } from '../../store/useLiveState';
+import { useRecoilValue } from 'recoil';
+import { liveModeState } from '../../store/recoil-state';
 
 export function PriceListItem(
   props: {
@@ -24,7 +25,7 @@ export function PriceListItem(
   }
 ) {
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
   const [ loading, setLoading ] = useState(false);
 

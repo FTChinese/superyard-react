@@ -1,25 +1,26 @@
+import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
+import { FormikHelpers } from 'formik';
+import { useRecoilValue } from 'recoil';
+import { toast } from 'react-toastify';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Discount } from '../../data/price'
-import { useState } from 'react';
-import { useLiveState } from '../../store/useLiveState';
-import Modal from 'react-bootstrap/Modal';
 import { ModeBadge, TimezoneBadage } from './Badge';
 import { buildDiscountParams, DiscountForm, DiscountFormVal } from './DiscountForm';
-import { FormikHelpers } from 'formik';
 import { createOffer, dropOffer, refreshPriceOffers } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
 import { isoOffset } from '../../utils/time-formatter';
 import { ResponseError } from '../../repository/response-error';
 import { PaywallPrice } from '../../data/paywall';
-import { toast } from 'react-toastify';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { PriceContent } from './PriceContent';
 import { ListLines } from '../../components/list/TextList';
 import { OnPriceUpserted } from './callbacks';
 import { EffectivePeriod } from './EffectivePeriod';
 import { formatPrice } from '../../utils/format-price';
+import { liveModeState } from '../../store/recoil-state';
 
 export function DiscountList(
   props: {
@@ -33,7 +34,7 @@ export function DiscountList(
   }
 ) {
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const [ refreshing, setRefreshing ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ show, setShow ] = useState(false);
@@ -216,7 +217,7 @@ function OfferRow(
   }
 ) {
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
   const [ loading, setLoading ] = useState(false);
 

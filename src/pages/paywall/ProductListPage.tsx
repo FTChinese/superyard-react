@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
@@ -10,15 +11,15 @@ import { ProductList } from '../../features/paywall/ProductList';
 import { listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
-import { useLiveState } from '../../store/useLiveState';
+import { liveModeState } from '../../store/recoil-state';
 
 export function ProductListPage() {
-  const [ err, setErr ] = useState('');
-  const [ loading, setLoading ] = useState(true);
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const { passport } = useAuthContext();
 
+  const [ err, setErr ] = useState('');
+  const [ loading, setLoading ] = useState(true);
   const [ products, setProducts ] = useState<Product[]>([]);
 
   if (!passport) {
@@ -26,6 +27,7 @@ export function ProductListPage() {
   }
 
   useEffect(() => {
+    setErr('');
     setLoading(true);
     setProducts([]);
 
