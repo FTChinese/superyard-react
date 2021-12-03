@@ -1,9 +1,5 @@
-import { atom, useRecoilState } from 'recoil';
-
-export const liveModeState = atom({
-  key: 'liveMode',
-  default: true,
-});
+import { useRecoilState } from 'recoil';
+import { liveModeState } from './recoil-state';
 
 export function useLiveState() {
   const [live, setLive] = useRecoilState(liveModeState);
