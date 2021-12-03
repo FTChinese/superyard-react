@@ -39,6 +39,9 @@ export function PaywallPage() {
   useEffect(() => {
     console.log(`Retrieving paywall data for ${live ? 'live' : 'sandbox'} mode`);
 
+    setPaywall(undefined);
+    console.log('UI reset');
+
     loadPaywall({
       live,
       token: passport.token,
