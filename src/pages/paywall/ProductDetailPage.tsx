@@ -6,9 +6,8 @@ import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
-import { Price } from '../../data/price';
 import { PriceFormDialog } from '../../features/paywall/PriceFormDialog';
-import { PriceList } from '../../features/paywall/PriceList';
+import { PriceListItem } from '../../features/paywall/PriceListItem';
 import { OnPriceUpserted } from "../../features/paywall/callbacks";
 import { ProductDetails } from '../../features/paywall/ProductDetails';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
@@ -84,12 +83,14 @@ function LoadProduct(
       <LoadingSpinner loading={loading}>
         <>
           <h4>Product Details</h4>
-          {product &&
+          {
+            product &&
             <ProductDetails
               passport={props.passport}
               product={product}
               onUpdated={setProduct}
-          />}
+            />
+          }
         </>
       </LoadingSpinner>
     </ErrorBoudary>
@@ -125,14 +126,12 @@ function LoadPrices(
       });
     }, [live]);
 
-  const handleCreate = (price: Price) => {
+  const handleCreate: OnPriceUpserted = (price: PaywallPrice) => {
+    setShow(false);
     setPrices([
-      {
-        ...price,
-        offers: [],
-      },
+      price,
       ...prices
-    ])
+    ]);
   }
 
   const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
@@ -144,6 +143,22 @@ function LoadPrices(
       return p;
     }));
   }
+
+  const handleActivate: OnPriceUpserted = (price: PaywallPrice) => {
+    setPrices(prices.map(p => {
+      if (p.id === price.id) {
+        return price;
+      }
+      if (p.cycle === price.cycle && p.active) {
+        return {
+          ...p,
+          active: false,
+        }
+      }
+
+      return p;
+    }));
+  };
 
   return (
     <ErrorBoudary errMsg={err}>
@@ -159,11 +174,17 @@ function LoadPrices(
               </Button>
             }
           </h4>
-          <PriceList
-            passport={props.passport}
-            prices={prices}
-            onUpdated={handleUpdate}
-          />
+          {
+            prices.map(price => (
+              <PriceListItem
+                passport={props.passport}
+                price={price}
+                onUpdated={handleUpdate}
+                onActivated={handleActivate}
+                key={price.id}
+              />
+            ))
+          }
           <PriceFormDialog
             passport={props.passport}
             show={show}
