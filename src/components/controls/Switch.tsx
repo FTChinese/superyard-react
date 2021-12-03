@@ -6,7 +6,6 @@ export function Switch(
   props: {
     label: string;
     name: string;
-    checked: boolean;
     desc?: string;
     disabled?: boolean;
   }
@@ -23,7 +22,6 @@ export function Switch(
           className={`form-check-input${isInvalid ? ' is-invalid' : ''}`}
           id={props.name}
           type="checkbox"
-          checked={props.checked}
           onChange={field.onChange}
           onBlur={field.onBlur}
           disabled={props.disabled}

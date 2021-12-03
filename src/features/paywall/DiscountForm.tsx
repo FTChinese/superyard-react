@@ -120,7 +120,6 @@ export function DiscountForm(
             <Switch
               label="Recurring during the lifetime of this offer"
               name="recurring"
-              checked={true}
             />
             <YearMonthDayInput
               title="Purchased period"
