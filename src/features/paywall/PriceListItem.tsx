@@ -10,42 +10,44 @@ import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
 import { PriceContent } from './PriceContent';
 import { OnPriceUpserted } from './callbacks';
+import { activatePrice } from '../../repository/paywall';
+import { ResponseError } from '../../repository/response-error';
+import { toast } from 'react-toastify';
+import { useLiveState } from '../../store/useLiveState';
 
-/**
- * @description Used by the ProductDetailPage to show a list of prices.
- */
-export function PriceList(
-  props: {
-    passport: CMSPassport;
-    prices: PaywallPrice[];
-    onUpdated: OnPriceUpserted;
-  }
-) {
-  return (
-    <>
-      {
-        props.prices.map(price =>
-          <PriceListItem
-            key={price.id}
-            passport={props.passport}
-            price={price}
-            onUpdated={props.onUpdated}
-          />
-        )
-      }
-    </>
-  )
-}
-
-function PriceListItem(
+export function PriceListItem(
   props: {
     passport: CMSPassport;
     price: PaywallPrice;
     onUpdated: OnPriceUpserted;
+    onActivated: OnPriceUpserted;
   }
 ) {
 
+  const { live } = useLiveState();
   const [ show, setShow ] = useState(false);
+  const [ loading, setLoading ] = useState(false);
+
+  const handleActivation = () => {
+    setLoading(true);
+
+    activatePrice(
+        props.price.id,
+        { live, token: props.passport.token }
+      )
+      .then(pwp => {
+        toast.success('Price activated');
+        props.onActivated(pwp);
+      })
+      .catch((err: ResponseError) => {
+        toast.error(err.message);
+      })
+  };
+
+  const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
+    setShow(false);
+    props.onUpdated(price);
+  }
 
   return (
     <div className="mb-3">
@@ -69,8 +71,9 @@ function PriceListItem(
               <Button
                 variant="outline-primary"
                 size="sm"
+                onClick={handleActivation}
               >
-                Activate
+                { loading ? 'Activating...' : 'Activate' }
               </Button>
             }
             <Button
@@ -98,7 +101,7 @@ function PriceListItem(
         passport={props.passport}
         show={show}
         onHide={() => setShow(false)}
-        onUpserted={props.onUpdated}
+        onUpserted={handleUpdate}
         price={props.price}
       />
     </div>
