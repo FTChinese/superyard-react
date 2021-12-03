@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom';
 import { LiveModeToggler } from '../../features/paywall/LiveModeToggler';
-import { useLiveState } from '../../store/useLiveState';
 import { RebuildButton } from '../../features/paywall/RebuildButton';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
@@ -11,6 +10,8 @@ import { ResponseError } from '../../repository/response-error';
 import { Paywall } from '../../data/paywall';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { PaywallContent } from '../../features/paywall/PaywallContent';
+import { useRecoilValue } from 'recoil';
+import { liveModeState, paywallRebuiltState } from '../../store/recoil-state';
 
 export function PaywallLayout() {
   return (
@@ -26,15 +27,20 @@ export function PaywallLayout() {
 
 export function PaywallPage() {
 
-  const { live } = useLiveState();
+  const live = useRecoilValue(liveModeState);
   const { passport } = useAuthContext();
   const [ err, setErr ] = useState('');
   const [ loading, setLoading ] = useState(true);
   const [ paywall, setPaywall ] = useState<Paywall>();
+  const paywallRebuilt = useRecoilValue(paywallRebuiltState);
 
   if (!passport) {
     return <Unauthorized/>;
   }
+
+  useEffect(() => {
+    setPaywall(paywallRebuilt);
+  }, [paywallRebuilt.id]);
 
   useEffect(() => {
     console.log(`Retrieving paywall data for ${live ? 'live' : 'sandbox'} mode`);
