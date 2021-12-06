@@ -232,6 +232,27 @@ function PromoCard(
       })
   };
 
+  const body = (props.promo.id === '')
+    ? (<p>Not promotion set.</p>)
+    : (
+      <>
+        <BannerBox banner={props.promo} />
+
+        <Card.Title className="mt-3">
+          Terms and Conditions
+        </Card.Title>
+        { props.promo.terms && <TextList text={props.promo.terms} />}
+
+        <Card.Subtitle className="mt-3">
+          Effective
+        </Card.Subtitle>
+        <EffectivePeriod
+          period={props.promo}
+          direction="column"
+        />
+      </>
+    )
+
   return (
     <>
       <Card className="card mb-3">
@@ -258,15 +279,7 @@ function PromoCard(
         </Card.Header>
 
         <Card.Body className="card-body">
-          { isEmpty && <p>Not promotion set.</p>}
-          { !isEmpty && <BannerBox banner={props.promo} />}
-          { props.promo.terms && <TextList text={props.promo.terms} />}
-
-          <Card.Subtitle className="mt-3">Effective</Card.Subtitle>
-          { !isEmpty && <EffectivePeriod
-            period={props.promo}
-            direction="column"
-          />}
+          {body}
         </Card.Body>
       </Card>
 
