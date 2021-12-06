@@ -168,6 +168,10 @@ function LoadPrices(
     }));
   };
 
+  const handleArchiv: OnPriceUpserted = (target: PaywallPrice) => {
+    setPrices(prices.filter(p => p.id !== target.id));
+  };
+
   return (
     <ErrorBoudary errMsg={err}>
       <LoadingSpinner loading={loading}>
@@ -189,6 +193,7 @@ function LoadPrices(
                 price={price}
                 onUpdated={handleUpdate}
                 onActivated={handleActivate}
+                onArchived={handleArchiv}
                 key={price.id}
               />
             ))

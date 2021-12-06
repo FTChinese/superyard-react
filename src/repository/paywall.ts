@@ -134,6 +134,15 @@ export function updatePrice(id: string, body: UpdatePriceParams, config: ReqConf
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
+export function archivePrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
+  return axios.delete<PaywallPrice>(
+      endpoint.priceOf(id),
+      buildReqConfig(config)
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
 export function refreshPriceOffers(id: string, config: ReqConfig): Promise<PaywallPrice> {
   return axios.patch<PaywallPrice>(
     endpoint.offerOfPrice(id),

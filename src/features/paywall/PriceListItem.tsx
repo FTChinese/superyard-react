@@ -10,7 +10,7 @@ import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
 import { PriceContent } from './PriceContent';
 import { OnPriceUpserted } from './callbacks';
-import { activatePrice } from '../../repository/paywall';
+import { activatePrice, archivePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { useRecoilValue } from 'recoil';
@@ -22,15 +22,17 @@ export function PriceListItem(
     price: PaywallPrice;
     onUpdated: OnPriceUpserted;
     onActivated: OnPriceUpserted;
+    onArchived: OnPriceUpserted;
   }
 ) {
 
   const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
-  const [ loading, setLoading ] = useState(false);
+  const [ activating, setActivating ] = useState(false);
+  const [ archiving, setArchiving ] = useState(false);
 
   const handleActivation = () => {
-    setLoading(true);
+    setActivating(true);
 
     activatePrice(
         props.price.id,
@@ -48,6 +50,23 @@ export function PriceListItem(
   const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
     setShow(false);
     props.onUpdated(price);
+  }
+
+  const handleArchive = () => {
+    setArchiving(true);
+
+    archivePrice(
+        props.price.id,
+        { live, token: props.passport.token }
+      )
+      .then(pwp => {
+        setArchiving(false);
+        props.onArchived(pwp);
+      })
+      .catch((err: ResponseError) => {
+        setArchiving(false);
+        toast.error(err.message);
+      });
   }
 
   return (
@@ -69,13 +88,24 @@ export function PriceListItem(
           >
             {
               !props.price.active &&
-              <Button
-                variant="outline-primary"
-                size="sm"
-                onClick={handleActivation}
-              >
-                { loading ? 'Activating...' : 'Activate' }
-              </Button>
+              <>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  disabled={archiving}
+                  onClick={handleArchive}
+                >
+                  { archiving ? 'Dropping ' : 'Archive'}
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  disabled={activating}
+                  onClick={handleActivation}
+                >
+                  { activating ? 'Activating...' : 'Activate' }
+                </Button>
+              </>
             }
             <Button
               variant="primary"
