@@ -70,6 +70,11 @@ export function ProductFormDialog(
         })
         .catch((err: ResponseError) => {
           helpers.setSubmitting(false);
+          toast.error(err.message);
+          if (err.statusCode === 422) {
+            helpers.setErrors(err.toFormFields);
+            return;
+          }
           setErr(err.message);
         });
     }
