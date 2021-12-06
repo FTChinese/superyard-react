@@ -193,13 +193,15 @@ function LoadPrices(
               />
             ))
           }
-          <PriceFormDialog
-            passport={props.passport}
-            show={show}
-            onHide={() => setShow(false)}
-            onUpserted={handleCreate}
-            product={props.product}
-          />
+          { props.product &&
+            <PriceFormDialog
+              passport={props.passport}
+              show={show}
+              onHide={() => setShow(false)}
+              onUpserted={handleCreate}
+              product={props.product}
+            />
+          }
         </>
       </LoadingSpinner>
     </ErrorBoudary>
