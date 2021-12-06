@@ -54,6 +54,26 @@ export function BannerForm(
     setErrMsg(props.errMsg);
   }, [props.errMsg]);
 
+  let schema = Yup.object({
+    heading: Yup.string()
+      .required(invalidMessages.required)
+  });
+
+  if (props.hasPeriod) {
+    schema = Yup.object({
+      heading: Yup.string()
+        .required(invalidMessages.required),
+      start: Yup.object({
+        date: Yup.string().required(invalidMessages.required),
+        time: Yup.string().required(invalidMessages.required),
+      }),
+      end: Yup.object({
+        date: Yup.string().required(invalidMessages.required),
+        time: Yup.string().required(invalidMessages.required),
+      }),
+    });
+  }
+
   return (
     <>
       {
@@ -81,10 +101,7 @@ export function BannerForm(
             time: '00:00:00',
           }
         }}
-        validationSchema={Yup.object({
-          heading: Yup.string()
-            .required(invalidMessages.required)
-        })}
+        validationSchema={schema}
         onSubmit={props.onSubmit}
       >
         { formik => (
