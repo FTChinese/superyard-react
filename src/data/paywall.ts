@@ -89,8 +89,8 @@ export type StripeRawPrice = {
   livemode: boolean;
   metadata: {
     end_utc?: string;
-    introductory: boolean;
-    period_days: number;
+    introductory: 'true' | 'false';
+    period_days: string; // number
     start_utc?: string;
     tier: Tier;
   };
