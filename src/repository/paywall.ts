@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProductParams, PromoParams, NewProductParams, RebuiltResult } from '../data/paywall';
+import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProductParams, PromoParams, NewProductParams, RebuiltResult, StripePrice } from '../data/paywall';
 import { Discount, DiscountParams, Price, NewPriceParams, UpdatePriceParams } from '../data/price';
 import { endpoint } from './endpoint';
 import { buildReqConfig, ReqConfig } from './ReqConfig';
@@ -170,4 +170,11 @@ export function dropOffer(id: string, config: ReqConfig): Promise<PaywallPrice> 
   )
   .then(resp => resp.data)
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+
+export function loadStripePrice(id: string, config: ReqConfig): Promise<StripePrice> {
+  return axios.get(endpoint.stripePriceOf(id), buildReqConfig(config))
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }

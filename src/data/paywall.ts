@@ -79,3 +79,30 @@ export type StripePrice = {
     endUtc?: string;
   }
 };
+
+export type StripeRawPrice = {
+  active: boolean;
+  created: number;
+  currency: string;
+  deleted: boolean;
+  id: string;
+  livemode: boolean;
+  metadata: {
+    end_utc?: string;
+    introductory: boolean;
+    period_days: number;
+    start_utc?: string;
+    tier: Tier;
+  };
+  nickname: string;
+  product: {
+    id: string;
+  },
+  recurring?: {
+    aggregate_usage: 'sum' | 'last_during_period';
+    interval: 'month' | 'year' | 'week' | 'day';
+    interval_count: number;
+    usage_type: 'metered' | 'licensed';
+  },
+  type: 'one_time' | 'recurring';
+};
