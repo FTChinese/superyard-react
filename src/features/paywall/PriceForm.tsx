@@ -17,10 +17,13 @@ import { liveModeState } from '../../store/recoil-state';
 import { useAuthContext } from '../../store/AuthContext';
 import { ResponseError } from '../../repository/response-error';
 import { StripeRawPrice } from '../../data/paywall';
+import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
+import { YearMonthDay } from '../../data/period';
 
 export type PriceFormVal = {
   tier: Tier;
   cycle: Cycle;
+  periodCount: YearMonthDay;
   unitAmount: number;
   stripePriceId: string;
   description?: string;
@@ -118,6 +121,11 @@ export function PriceForm(
         initialValues={{
           tier: props.tier,
           cycle: props.price?.cycle || ('' as Cycle),
+          periodCount: {
+            years: 0,
+            months: 0,
+            days: 0,
+          },
           unitAmount: props.price?.unitAmount || 0,
           stripePriceId: props.price?.stripePriceId || '',
           description: props.price?.description || '',
@@ -128,6 +136,17 @@ export function PriceForm(
             .required(invalidMessages.required),
           cycle: Yup.string()
             .required(invalidMessages.required),
+          periodCount: Yup.object({
+            years: Yup.number().test('periodCount', 'One of period count is required', function() {
+              return this.parent.years || this.parent.months || this.parent.days;
+            }),
+            months: Yup.number().test('periodCount', 'One of period count is required', function() {
+              return this.parent.years || this.parent.months || this.parent.days;
+            }),
+            days: Yup.number().test('periodCount', 'One of period count is required', function() {
+              return this.parent.years || this.parent.months || this.parent.days;
+            }),
+          }),
           unitAmount: Yup.number()
             .min(0, 'Price cannot be less than 0')
             .required(),
@@ -151,6 +170,12 @@ export function PriceForm(
               opts={cycleOpts}
               disabled={isUpdate}
             />
+            <YearMonthDayInput
+              title="Period Count *"
+              namePrefix="periodCount"
+              disabled={isUpdate}
+              desc="How many years, months, or days user will get for this price"
+            />
             <TextInput
               label="Price Unit Amount *"
               name="unitAmount"
@@ -161,7 +186,7 @@ export function PriceForm(
               controlId="stripePriceId"
               type="text"
               label="Stripe Price ID *"
-              desc="The Stripe price id matching this price. Click Verify to view the the price details."
+              desc="The Stripe price id matching this price. Click Inspect to view the the price details."
               suffix={
                 <Button
                   variant="primary"
