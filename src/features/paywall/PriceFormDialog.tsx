@@ -1,18 +1,27 @@
-import { FormikHelpers } from 'formik';
+import { FormikHelpers, useFormikContext } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 import { useRecoilValue } from 'recoil';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { CMSPassport } from '../../data/cms-account';
-import { PaywallPrice, Product } from '../../data/paywall';
+import { PaywallPrice, Product, StripeRawPrice } from '../../data/paywall';
 import { Price } from '../../data/price';
 import { createPrice, updatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { liveModeState } from '../../store/recoil-state';
 import { ModeBadge } from './Badge';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
+import { StripeRawPriceContent } from './StripeRawPrice';
 
+/**
+ * @description A dialog presenting PriceForm.
+ * The dialog is in fullscreen mode, diviced into 2 columns,
+ * with price form on the left.
+ * Once user entered stripe price id, it can be
+ * inspected by loading the stripe price data,
+ * presented on the right.
+ */
 export function PriceFormDialog(
   props: {
     passport: CMSPassport;
@@ -32,6 +41,7 @@ export function PriceFormDialog(
 
   const live = useRecoilValue(liveModeState);
   const [ err, setErr ] = useState('');
+  const [ stripePrice, setStripePrice ] = useState<StripeRawPrice>();
 
   const handleSubmit = (
     values: PriceFormVal,
@@ -105,9 +115,17 @@ export function PriceFormDialog(
         <ModeBadge live={live} />
       </Modal.Header>
       <Modal.Body>
-        <FullscreenTwoCols>
+        <FullscreenTwoCols
+          right={
+            stripePrice &&
+            <StripeRawPriceContent
+              price={stripePrice}
+            />
+          }
+        >
           <PriceForm
             onSubmit={handleSubmit}
+            onStripePrice={setStripePrice}
             errMsg={err}
             tier={tier}
             price={props.price}

@@ -8,6 +8,15 @@ import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
 import { TextInput } from '../../components/controls/TextInput';
 import ProgressButton from '../../components/buttons/ProgressButton';
+import { InputGroup } from '../../components/controls/InputGroup';
+import Button from 'react-bootstrap/Button';
+import { loadStripePrice } from '../../repository/paywall';
+import { toast } from 'react-toastify';
+import { useRecoilValue } from 'recoil';
+import { liveModeState } from '../../store/recoil-state';
+import { useAuthContext } from '../../store/AuthContext';
+import { ResponseError } from '../../repository/response-error';
+import { StripeRawPrice } from '../../data/paywall';
 
 export type PriceFormVal = {
   tier: Tier;
@@ -50,18 +59,49 @@ export function PriceForm(
       values: PriceFormVal,
       formikHelpers: FormikHelpers<PriceFormVal>
     ) => void | Promise<any>;
+    onStripePrice: (price: StripeRawPrice) => void;
     errMsg: string;
     tier: Tier;
     price?: Price;
   }
 ) {
-  const [errMsg, setErrMsg] = useState('');
+  const { passport } = useAuthContext();
+  const live = useRecoilValue(liveModeState);
+  const [ errMsg, setErrMsg ] = useState('');
+  const [ loading, setLoading ] = useState(false);
 
   const isUpdate = !!props.price;
 
   useEffect(() => {
     setErrMsg(props.errMsg);
   }, [props.errMsg]);
+
+  const handleLoadStripe = (id: string) => {
+    if (!passport) {
+      toast.error('No credentials!');
+      return;
+    }
+
+    if (!id) {
+      toast.error('You must provide a stripe price id to preview');
+      return;
+    }
+
+    setLoading(true);
+
+    loadStripePrice(
+        id,
+        { live, token: passport.token }
+      )
+      .then(rawPrice => {
+        setLoading(false);
+        props.onStripePrice(rawPrice);
+      })
+      .catch((err: ResponseError) => {
+        setLoading(false);
+        toast.error(err.message);
+      });
+  }
 
   return (
     <>
@@ -92,6 +132,7 @@ export function PriceForm(
             .min(0, 'Price cannot be less than 0')
             .required(),
           stripePriceId: Yup.string()
+            .trim()
             .required(invalidMessages.required)
         })}
         onSubmit={props.onSubmit}
@@ -116,11 +157,20 @@ export function PriceForm(
               type="number"
               disabled={isUpdate}
             />
-            <TextInput
-              label="Stripe Price ID *"
-              name="stripePriceId"
+            <InputGroup
+              controlId="stripePriceId"
               type="text"
-              desc="The Stripe price id matching this price"
+              label="Stripe Price ID *"
+              desc="The Stripe price id matching this price. Click Verify to view the the price details."
+              suffix={
+                <Button
+                  variant="primary"
+                  onClick={() => handleLoadStripe(formik.values.stripePriceId)}
+                  disabled={loading || (!formik.values.stripePriceId)}
+                >
+                  { loading ? 'Loading' : 'Inspect' }
+                </Button>
+              }
             />
             <TextInput
               label="Description"
