@@ -39,4 +39,10 @@ export function localizedEdition(e: Edition): string {
   return `${localizedTier(e.tier)}/${localizedCycle(e.cycle)}`;
 }
 
+export function localizeBool(b: boolean): string {
+  if (b) {
+    return "True"
+  }
 
+  return 'False'
+}
