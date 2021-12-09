@@ -47,6 +47,8 @@ export function PriceFormDialog(
     values: PriceFormVal,
     helpers: FormikHelpers<PriceFormVal>
   ) => {
+    console.log(values);
+
     helpers.setSubmitting(true);
     setErr('');
 
@@ -73,6 +75,7 @@ export function PriceFormDialog(
           setErr(err.message);
         });
     } else if(props.product) {
+
       const body = buildNewPriceParams(
         values,
         {
