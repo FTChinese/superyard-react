@@ -1,4 +1,4 @@
-import { FormText } from './FormText';
+import { FormText } from './FormControl';
 import { TextInput } from './TextInput';
 
 export function YearMonthDayInput(

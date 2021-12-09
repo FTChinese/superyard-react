@@ -1,5 +1,5 @@
 import { useField } from 'formik';
-import { FormText } from './FormText';
+import { FormText } from './FormControl';
 import { InvalidFeedback } from './InvalidFeedback';
 import { TextInputProps } from './TextInputProps';
 
