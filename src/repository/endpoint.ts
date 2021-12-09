@@ -1,5 +1,7 @@
 const authBase = '/api/auth'
 const pwResetBase = `${authBase}/password-reset`;
+const paywallBase = '/api/paywall';
+const stripeBase = '/api/stripe';
 
 export const endpoint = {
   login: `${authBase}/login`,
@@ -9,26 +11,31 @@ export const endpoint = {
     return `${pwResetBase}/tokens/${token}`;
   },
 
-  paywall: '/api/paywall',
-  refreshPaywall: '/api/paywall/build',
-  banner: '/api/paywall/banner',
-  promo: '/api/paywall/banner/promo',
+  paywall: paywallBase,
+  refreshPaywall: `${paywallBase}/build`,
+  banner: `${paywallBase}/banner`,
+  promo: `${paywallBase}/banner/promo`,
 
-  product: '/api/products',
+  product: `${paywallBase}/products`,
   productOf: function(id: string): string {
-    return `/api/products/${id}`;
+    return `${paywallBase}/products/${id}`;
   },
 
-  price: '/api/prices',
+  price: `${paywallBase}/prices`,
   priceOf: function(id: string): string {
-    return `/api/prices/${id}`;
+    return `${paywallBase}/prices/${id}`;
   },
   offerOfPrice: function(id: string): string {
-    return `/api/prices/${id}/discounts`;
+    return `${paywallBase}/prices/${id}/discounts`;
   },
 
-  discount: '/api/discounts',
+  discount: `${paywallBase}/discounts`,
   discountOf: function(id: string): string {
-    return `/api/discounts/${id}`;
+    return `${paywallBase}/discounts/${id}`;
   },
+
+  stripePrice: `${stripeBase}/prices`,
+  stripePriceOf: function(id: string): string {
+    return `${stripeBase}/prices/${id}`
+  }
 };
