@@ -36,7 +36,7 @@ export function PriceContent(
         </tr>
         <tr>
           <th>Created</th>
-          <td>at {props.price.createdUtc} by {props.price.createdBy}</td>
+          <td>At {props.price.createdUtc}</td>
         </tr>
       </tbody>
     </table>
