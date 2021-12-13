@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { toast } from 'react-toastify';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Discount } from '../../data/price'
-import { ModeBadge, TimezoneBadage } from './Badge';
+import { ModeBadge, TimezoneBadge } from './Badge';
 import { buildDiscountParams, DiscountForm, DiscountFormVal } from './DiscountForm';
 import { createOffer, dropOffer, refreshPriceOffers } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
@@ -174,7 +174,7 @@ export function DiscountList(
               />
 
               <h5 className="mt-3">Current Timezone</h5>
-              <TimezoneBadage offset={offset}/>
+              <TimezoneBadge offset={offset}/>
 
               <h5 className="mt-3">Guide</h5>
               <ListLines
