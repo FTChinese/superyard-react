@@ -15,6 +15,7 @@ import { ResponseError } from '../../repository/response-error';
 import { useAuthContext } from '../../store/AuthContext';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
+import { IntroductoryDetails } from '../../features/paywall/IntroductoryDetails';
 
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
@@ -93,6 +94,14 @@ function LoadProduct(
               passport={props.passport}
               product={product}
               onUpdated={setProduct}
+            />
+          }
+
+          <h4>Introductory Price</h4>
+          {
+            product &&
+            <IntroductoryDetails
+              price={product.introductory}
             />
           }
         </>
