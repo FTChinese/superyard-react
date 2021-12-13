@@ -1,5 +1,5 @@
 import { Edition } from './edition';
-import { DiscountStatus, OfferKind } from './enum';
+import { DiscountStatus, OfferKind, PriceKind } from './enum';
 import { ISOPeriod, YearMonthDay } from './period';
 
 export type UpdatePriceParams = {
@@ -9,10 +9,11 @@ export type UpdatePriceParams = {
 };
 
 export type NewPriceParams = Edition & {
+  kind: PriceKind;
+  periodCount: YearMonthDay;
   productId: string;
-  createdBy: string; // Not part of form data.
   unitAmount: number;
-} & UpdatePriceParams;
+} & Partial<ISOPeriod> & UpdatePriceParams;
 
 /**
  * @description Price determines how much a product cost.
