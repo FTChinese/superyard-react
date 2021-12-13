@@ -7,7 +7,7 @@ export type Platform = 'web' | 'ios' | 'android';
 export type SubStatus = 'active' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'trialing' | 'unpaid';
 export type OrderKind = 'create' | 'renew' | 'upgrade' | 'downgrade' | 'add_on';
 export type AccountKind = 'ftc' | 'mobile' | 'wechat' | 'linked';
-export type PriceSource = 'ftc' | 'stripe';
+export type PriceKind = 'recurring' | 'one_time';
 export type OfferKind = 'promotion' | 'retention' | 'win_back' | 'introductory';
 export type DiscountStatus = 'active' | 'paused' | 'cancelled';
 export type WxOAuthKind = 'login' | 'link';
@@ -76,5 +76,18 @@ export const offerKindOpts: SelectOption<OfferKind>[] = [
     disabled: false,
     name: 'Win back - expired subscripiton only',
     value: 'win_back',
+  }
+];
+
+export const priceKindOpts: SelectOption<PriceKind>[] = [
+  {
+    disabled: false,
+    name: 'Recurring - Regular price',
+    value: 'recurring',
+  },
+  {
+    disabled: false,
+    name: 'One time - Introductory price',
+    value: 'one_time',
   }
 ];
