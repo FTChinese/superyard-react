@@ -10,8 +10,8 @@ import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { JSONBlock } from '../../components/JSONBlock';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
-import { Banner, Paywall, PaywallDoc, PaywallPrice, PaywallProduct, Promo } from '../../data/paywall';
-import { Discount } from '../../data/price';
+import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
+import { Discount, Price } from '../../data/price';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { formatYearMonthDay } from '../../utils/format-datetime';
@@ -19,7 +19,6 @@ import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from './Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
-import { TwoColList } from '../../components/list/TwoColList';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
 
@@ -329,26 +328,26 @@ function ProductCard(
         </Link>
       </Card.Header>
       <Card.Body>
+
         <Card.Title as="h5" className="text-center border-bottom">
           {props.product.heading}
         </Card.Title>
         <TextList text={props.product.description}/>
 
-        <section className="mb-5">
-          <Card.Subtitle as="h6" className="text-center border-bottom">
-            Introductory
-          </Card.Subtitle>
-          <TwoColList
-            rows={[
-              ['Stripe Introductory Price ID', props.product.introductory.stripePriceId || 'NULL']
-            ]}
+        {
+          props.product.introductory &&
+          <PriceOverview
+            price={props.product.introductory}
           />
-        </section>
-
+        }
 
         {
           props.product.prices.map((p, i) => (
-            <PriceOverview key={i} price={p} />
+            <PriceOverview
+              key={i}
+              price={p}
+              offers={p.offers}
+            />
           ))
         }
       </Card.Body>
@@ -358,17 +357,29 @@ function ProductCard(
 
 function PriceOverview(
   props: {
-    price: PaywallPrice;
+    price: Price;
+    offers?: Discount[];
   }
 ) {
   return (
     <section className="mb-5">
-      <h6 className="text-center border-bottom">{formatPrice(props.price)}</h6>
+      <h6 className="text-center border-bottom">
+        {formatPrice(props.price)}
+      </h6>
       <dl>
+        <dt>Kind</dt>
+        <dd>{props.price.kind}</dd>
+
+        <dt>Period Count</dt>
+        <dd>{formatYearMonthDay(props.price.periodCount)}</dd>
+
         <dt>Stripe Price ID</dt>
         <dd>{props.price.stripePriceId || 'NULL'}</dd>
       </dl>
-      <PriceOfferList offers={props.price.offers} />
+      {
+        props.offers &&
+        <PriceOfferList offers={props.offers} />
+      }
     </section>
   );
 }
@@ -389,7 +400,7 @@ function PriceOfferList(
       <thead>
         <tr>
           <th>Kind</th>
-          <th>Period</th>
+          <th>Override Period</th>
           <th>Price Off</th>
           <th>Effective</th>
         </tr>
