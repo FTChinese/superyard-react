@@ -33,7 +33,7 @@ export function TimezoneBadge(
 
 
   return (
-    <div className="mb-3">
+    <div className="mb-3 text-muted">
       <div>
         当前时区
         <Badge bg="info">{offset}</Badge>
