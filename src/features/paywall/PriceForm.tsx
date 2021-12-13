@@ -2,7 +2,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
-import { Cycle, cycleOpts, Tier, tierOpts } from '../../data/enum';
+import { Cycle, cycleOpts, PriceKind, priceKindOpts, Tier, tierOpts } from '../../data/enum';
 import { NewPriceParams, UpdatePriceParams, Price } from '../../data/price';
 import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
@@ -18,33 +18,42 @@ import { useAuthContext } from '../../store/AuthContext';
 import { ResponseError } from '../../repository/response-error';
 import { StripeRawPrice } from '../../data/paywall';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
-import { YearMonthDay } from '../../data/period';
+import { concatDateTime, DateTime, YearMonthDay } from '../../data/period';
+import { DateTimeInput } from '../../components/controls/DateTimeInput';
+import { TimezoneBadge } from './Badge';
 
 export type PriceFormVal = {
   tier: Tier;
   cycle: Cycle;
-  periodCount: YearMonthDay;
-  unitAmount: number;
-  stripePriceId: string;
   description?: string;
+  kind: PriceKind;
   nickname?: string;
+  periodCount: YearMonthDay;
+  stripePriceId: string;
+  start: DateTime;
+  end: DateTime;
+  unitAmount: number;
 };
 
 export function buildNewPriceParams(
   v: PriceFormVal,
   meta: {
     productId: string,
-    createdBy: string,
+    offset: string,
   }
 ): NewPriceParams {
   return {
-    ...meta,
-    unitAmount: v.unitAmount,
     tier: v.tier,
     cycle: v.cycle,
-    stripePriceId: v.stripePriceId,
-    nickname: v.nickname || undefined,
     description: v.description || undefined,
+    kind: v.kind,
+    nickname: v.nickname || undefined,
+    periodCount: v.periodCount,
+    productId: meta.productId,
+    stripePriceId: v.stripePriceId,
+    startUtc: concatDateTime(v.start, meta.offset) || undefined,
+    endUtc: concatDateTime(v.end, meta.offset) || undefined,
+    unitAmount: v.unitAmount,
   };
 }
 
@@ -64,6 +73,8 @@ export function PriceForm(
     ) => void | Promise<any>;
     onStripePrice: (price: StripeRawPrice) => void;
     errMsg: string;
+    // Passed either from product when creating a price,
+    // of existing price when updating.
     tier: Tier;
     price?: Price;
   }
@@ -121,20 +132,31 @@ export function PriceForm(
         initialValues={{
           tier: props.tier,
           cycle: props.price?.cycle || ('' as Cycle),
+          description: props.price?.description || '',
+          kind: '' as PriceKind,
+          nickname: props.price?.nickname || '',
           periodCount: {
             years: 0,
             months: 0,
             days: 0,
           },
-          unitAmount: props.price?.unitAmount || 0,
           stripePriceId: props.price?.stripePriceId || '',
-          description: props.price?.description || '',
-          nickname: props.price?.nickname || ''
+          start: {
+            date: '',
+            time: '00:00:00',
+          },
+          end: {
+            date: '',
+            time: '00:00:00',
+          },
+          unitAmount: props.price?.unitAmount || 0,
         }}
         validationSchema={Yup.object({
           tier: Yup.string()
             .required(invalidMessages.required),
           cycle: Yup.string()
+            .required(invalidMessages.required),
+          kind: Yup.string()
             .required(invalidMessages.required),
           periodCount: Yup.object({
             years: Yup.number().test('periodCount', 'One of period count is required', function() {
@@ -176,6 +198,12 @@ export function PriceForm(
               disabled={isUpdate}
               desc="How many years, months, or days user will get for this price"
             />
+            <Dropdown
+              label="Kind *"
+              name="kind"
+              opts={priceKindOpts}
+              disabled={isUpdate}
+            />
             <TextInput
               label="Price Unit Amount *"
               name="unitAmount"
@@ -207,6 +235,19 @@ export function PriceForm(
               name="nickname"
               type="text"
             />
+            <DateTimeInput
+              title="Start Date Time"
+              namePrefix="start"
+              desc="Optional for one time price"
+              disabled={formik.values.kind === 'recurring' || isUpdate}
+            />
+            <DateTimeInput
+              title="End Date Time"
+              namePrefix="end"
+              desc="Optional for one time price"
+              disabled={formik.values.kind === 'recurring' || isUpdate}
+            />
+            <TimezoneBadge/>
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
               text="Save"
