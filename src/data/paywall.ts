@@ -30,9 +30,7 @@ export type UpdateProductParams = {
   description: string;
   heading: string;
   smallPrint?: string;
-  introductory: {
-    stripePriceId?: string;
-  }
+
 }
 
 export type NewProductParams = {
@@ -44,6 +42,7 @@ export type Product = {
   id: string;
   active: boolean;
   liveMode: boolean;
+  introductory?: Price;
   createdUtc: string;
   updatedUtc?: string;
 } & NewProductParams;

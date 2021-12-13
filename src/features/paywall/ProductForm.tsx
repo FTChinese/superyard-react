@@ -15,7 +15,6 @@ export type ProductFormVal = {
   heading: string;
   description: string;
   smallPrint: string;
-  stripePriceId: string;
 };
 
 export function buildNewProductParams(v: ProductFormVal, by: string): NewProductParams {
@@ -25,9 +24,6 @@ export function buildNewProductParams(v: ProductFormVal, by: string): NewProduct
     description: v.description,
     heading: v.heading,
     smallPrint: v.smallPrint || undefined,
-    introductory: {
-      stripePriceId: v.stripePriceId || undefined,
-    },
   };
 }
 
@@ -36,9 +32,6 @@ export function buildUpdateProductParams(v: ProductFormVal): UpdateProductParams
     description: v.description,
     heading: v.heading,
     smallPrint: v.smallPrint || undefined,
-    introductory: {
-      stripePriceId: v.stripePriceId || undefined
-    }
   };
 }
 
@@ -75,7 +68,6 @@ export function ProductForm(
           heading: props.product?.heading || '',
           description: props.product?.description || '',
           smallPrint: props.product?.smallPrint || '',
-          stripePriceId: props.product?.introductory.stripePriceId || '',
         }}
         validationSchema={Yup.object({
           tier: Yup.string().required(invalidMessages.required),
@@ -108,12 +100,6 @@ export function ProductForm(
               name="smallPrint"
               rows={5}
               desc="Optional legal terms and conditions"
-            />
-            <TextInput
-              label="Stripe Introductory Price ID"
-              name="stripePriceId"
-              type="text"
-              desc="Introductory price belongs to the product rather than invididual price."
             />
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
