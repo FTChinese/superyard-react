@@ -82,6 +82,7 @@ export function PriceFormDialog(
         values,
         {
           productId: props.product.id,
+          tier: tier,
           offset: offset,
         }
       );
@@ -115,7 +116,7 @@ export function PriceFormDialog(
     >
       <Modal.Header closeButton>
         <Modal.Title className="me-3">
-          {props.price ? 'Update' : 'Create'} Price
+          {props.price ? 'Update' : 'Create'} Price for a {tier.toUpperCase()} Product
         </Modal.Title>
         <ModeBadge live={live} />
       </Modal.Header>
