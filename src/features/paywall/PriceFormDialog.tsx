@@ -10,6 +10,7 @@ import { Price } from '../../data/price';
 import { createPrice, updatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { liveModeState } from '../../store/recoil-state';
+import { isoOffset } from '../../utils/time-formatter';
 import { ModeBadge } from './Badge';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
 import { StripeRawPriceContent } from './StripeRawPrice';
@@ -42,6 +43,7 @@ export function PriceFormDialog(
   const live = useRecoilValue(liveModeState);
   const [ err, setErr ] = useState('');
   const [ stripePrice, setStripePrice ] = useState<StripeRawPrice>();
+  const offset = isoOffset(new Date());
 
   const handleSubmit = (
     values: PriceFormVal,
@@ -80,7 +82,7 @@ export function PriceFormDialog(
         values,
         {
           productId: props.product.id,
-          createdBy: props.passport.userName
+          offset: offset,
         }
       );
 
