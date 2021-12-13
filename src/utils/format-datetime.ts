@@ -6,23 +6,18 @@ export function formatISODateTime(dateString: string): string {
 }
 
 export function formatYearMonthDay(ymd: YearMonthDay): string {
-  if (isZeroYMD(ymd)) {
-    return '';
-  }
 
   const str: string[] = [];
 
-  if (ymd.years !== 0) {
-    str.push(`${ymd.years}年`);
-  }
+  str.push(`${ymd.years} ${pluralize('year', ymd.years > 1)}`);
 
-  if (ymd.months !== 0) {
-    str.push(`${ymd.months}个月`);
-  }
+  str.push(`${ymd.months} ${pluralize('month', ymd.months > 1)}`);
 
-  if (ymd.days !== 0) {
-    str.push(`${ymd.days}天`);
-  }
+  str.push(`${ymd.days} ${pluralize('day', ymd.days > 1)}`);
 
-  return str.join('');
+  return str.join(', ');
+}
+
+function pluralize(word: string, plural: boolean): string {
+  return plural ? `${word}s` : word
 }
