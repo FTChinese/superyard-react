@@ -24,12 +24,21 @@ export function ActiveBadge(
   return <Badge bg="secondary">Inactive</Badge>;
 }
 
-export function TimezoneBadage(
+export function TimezoneBadge(
   props: {
     offset?: string
   }
 ) {
   const offset = props.offset || isoOffset(new Date());
 
-  return <Badge bg="info">{offset}</Badge>
+
+  return (
+    <div className="mb-3">
+      <div>
+        当前时区
+        <Badge bg="info">{offset}</Badge>
+      </div>
+      <div>时间按你当前所处时区选择即可，不需要做转换。数据提交后会统一转换为0区ISO8601标准时间格式</div>
+    </div>
+  );
 }
