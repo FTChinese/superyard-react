@@ -23,7 +23,6 @@ import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { TimezoneBadge } from './Badge';
 
 export type PriceFormVal = {
-  tier: Tier;
   cycle: Cycle;
   description?: string;
   kind: PriceKind;
@@ -39,20 +38,27 @@ export function buildNewPriceParams(
   v: PriceFormVal,
   meta: {
     productId: string,
+    tier: Tier,
     offset: string,
   }
 ): NewPriceParams {
+  const isRecurring = v.kind === 'recurring';
+
   return {
-    tier: v.tier,
-    cycle: v.cycle,
+    tier: meta.tier,
+    cycle: isRecurring ? v.cycle : undefined,
     description: v.description || undefined,
     kind: v.kind,
     nickname: v.nickname || undefined,
     periodCount: v.periodCount,
     productId: meta.productId,
     stripePriceId: v.stripePriceId,
-    startUtc: concatDateTime(v.start, meta.offset) || undefined,
-    endUtc: concatDateTime(v.end, meta.offset) || undefined,
+    startUtc: isRecurring
+      ? undefined
+      : (concatDateTime(v.start, meta.offset) || undefined),
+    endUtc: isRecurring
+      ? undefined
+      : (concatDateTime(v.end, meta.offset) || undefined),
     unitAmount: v.unitAmount,
   };
 }
@@ -130,7 +136,6 @@ export function PriceForm(
       }
       <Formik<PriceFormVal>
         initialValues={{
-          tier: props.tier,
           cycle: props.price?.cycle || ('' as Cycle),
           description: props.price?.description || '',
           kind: '' as PriceKind,
@@ -152,12 +157,13 @@ export function PriceForm(
           unitAmount: props.price?.unitAmount || 0,
         }}
         validationSchema={Yup.object({
-          tier: Yup.string()
-            .required(invalidMessages.required),
-          cycle: Yup.string()
-            .required(invalidMessages.required),
           kind: Yup.string()
             .required(invalidMessages.required),
+          cycle: Yup.string()
+            .when('kind', {
+              is: 'recurring',
+              then: Yup.string().required(invalidMessages.required)
+            }),
           periodCount: Yup.object({
             years: Yup.number().test('periodCount', 'One of period count is required', function() {
               return this.parent.years || this.parent.months || this.parent.days;
@@ -181,29 +187,22 @@ export function PriceForm(
         { formik => (
           <Form>
             <Dropdown
-              name="tier"
-              label="Tier *"
-              opts={tierOpts}
-              disabled={true}
-            />
-            <Dropdown
-              name="cycle"
-              label="Cycle *"
-              opts={cycleOpts}
-              disabled={isUpdate}
-            />
-            <YearMonthDayInput
-              title="Period Count *"
-              namePrefix="periodCount"
-              disabled={isUpdate}
-              desc="How many years, months, or days user will get for this price"
-            />
-            <Dropdown
               label="Kind *"
               name="kind"
               opts={priceKindOpts}
               disabled={isUpdate}
+              desc="Only one time price could be used as introductory"
             />
+            {
+              (formik.values.kind === 'recurring') &&
+              <Dropdown
+                name="cycle"
+                label="Cycle *"
+                opts={cycleOpts}
+                disabled={isUpdate}
+                desc="Billiing interval. Only required when kind is recurring"
+              />
+            }
             <TextInput
               label="Price Unit Amount *"
               name="unitAmount"
@@ -225,29 +224,42 @@ export function PriceForm(
                 </Button>
               }
             />
+            <YearMonthDayInput
+              title="Period Count *"
+              namePrefix="periodCount"
+              disabled={isUpdate}
+              desc="How many years, months, or days user will get for this price. At least one of them should be provided."
+            />
             <TextInput
               label="Description"
               name="description"
               type="text"
+              desc="Optional short descriptive text that might be present to user"
             />
             <TextInput
               label="Nickname"
               name="nickname"
               type="text"
+              desc="In case you need to recall why this price is created"
             />
-            <DateTimeInput
-              title="Start Date Time"
-              namePrefix="start"
-              desc="Optional for one time price"
-              disabled={formik.values.kind === 'recurring' || isUpdate}
-            />
-            <DateTimeInput
-              title="End Date Time"
-              namePrefix="end"
-              desc="Optional for one time price"
-              disabled={formik.values.kind === 'recurring' || isUpdate}
-            />
-            <TimezoneBadge/>
+            {
+              (formik.values.kind === 'one_time') &&
+              <>
+                <DateTimeInput
+                  title="Start Date Time"
+                  namePrefix="start"
+                  desc="Optional for one time price"
+                  disabled={isUpdate}
+                />
+                <DateTimeInput
+                  title="End Date Time"
+                  namePrefix="end"
+                  desc="Optional for one time price"
+                  disabled={isUpdate}
+                />
+                <TimezoneBadge/>
+              </>
+            }
             <ProgressButton
               disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
               text="Save"
