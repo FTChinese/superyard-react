@@ -4,7 +4,6 @@ import { useParams } from 'react-router';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
-import { CMSPassport } from '../../data/cms-account';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { PriceFormDialog } from '../../features/paywall/PriceFormDialog';
 import { PriceListItem } from '../../features/paywall/PriceListItem';
@@ -20,7 +19,7 @@ import { IntroductoryDetails } from '../../features/paywall/IntroductoryDetails'
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
   const { passport } = useAuthContext();
-  const [ product, setProduct ] = useState<Product>();
+
 
   if (!productId) {
     return <div>Product id missing in url!</div>;
@@ -30,128 +29,66 @@ export function ProductDetailPage() {
     return <Unauthorized />;
   }
 
-  return (
-    <>
-      <section className="mb-3">
-        <LoadProduct
-          passport={passport}
-          productId={productId}
-          onLoaded={setProduct}
-        />
-      </section>
-      <section>
-        <LoadPrices
-          passport={passport}
-          productId={productId}
-          product={product}
-        />
-      </section>
-    </>
-  );
-}
-
-function LoadProduct(
-  props: {
-    passport: CMSPassport;
-    productId: string;
-    onLoaded: (product: Product) => void;
-  }
-) {
   const live = useRecoilValue(liveModeState);
 
-  const [ err, setErr ] = useState('');
-  const [ loading, setLoading ] = useState(true);
   const [ product, setProduct ] = useState<Product>();
+  const [ errLoadProduct, setErrLoadProduct ] = useState('');
+  const [ loadingProduct, setLoadingProduct ] = useState(true);
+
+  const [ prices, setPrices ] = useState<PaywallPrice[]>([]);
+  const [ errLoadPrice, setErrLoadPrice ] = useState('');
+  const [ loadingPrice, setLoadingPrice ] = useState(true);
+
+  const [ showNewPrice, setShowNewPrice ] = useState(false);
 
   useEffect(() => {
-    setErr('');
-    setLoading(true);
+    setErrLoadProduct('');
+    setLoadingProduct(true);
     setProduct(undefined);
 
     loadProduct(
-        props.productId,
-        { live, token: props.passport.token}
+        productId,
+        { live, token: passport.token }
       )
       .then(product => {
-        setLoading(false);
+        setLoadingProduct(false);
         setProduct(product);
-        props.onLoaded(product);
       })
       .catch((err: ResponseError) => {
-        setLoading(false);
-        setErr(err.message)
+        setLoadingProduct(false);
+        setErrLoadProduct(err.message)
       });
   }, [live]);
 
-  return (
-    <ErrorBoudary errMsg={err}>
-      <LoadingSpinner loading={loading}>
-        <>
-          <h4>Product Details</h4>
-          {
-            product &&
-            <ProductDetails
-              passport={props.passport}
-              product={product}
-              onUpdated={setProduct}
-            />
-          }
-
-          <h4>Introductory Price</h4>
-          {
-            product &&
-            <IntroductoryDetails
-              price={product.introductory}
-            />
-          }
-        </>
-      </LoadingSpinner>
-    </ErrorBoudary>
-  );
-}
-
-function LoadPrices(
-  props: {
-    passport: CMSPassport,
-    productId: string;
-    product?: Product; // Passed from sibling component after product loaded.
-  }
-) {
-  const live = useRecoilValue(liveModeState);
-  const [ err, setErr ] = useState('');
-  const [ loading, setLoading ] = useState(true);
-  const [ prices, setPrices ] = useState<PaywallPrice[]>([]);
-
-  const [ show, setShow ] = useState(false);
-
   useEffect(() => {
-    setErr('');
-    setLoading(false);
+    setErrLoadPrice('');
+    setLoadingPrice(false);
     setPrices([]);
 
     listPriceOfProduct(
-        props.productId,
-        { live, token: props.passport.token}
+        productId,
+        { live, token: passport.token}
       )
       .then(prices => {
-        setLoading(false);
+        setLoadingPrice(false);
         setPrices(prices);
       })
       .catch((err: ResponseError) => {
-        setLoading(false);
-        setErr(err.message)
+        setLoadingPrice(false);
+        setErrLoadPrice(err.message)
       });
-    }, [live]);
+  }, [live]);
 
-  const handleCreate: OnPriceUpserted = (price: PaywallPrice) => {
-    setShow(false);
+
+  const handlePriceCreated: OnPriceUpserted = (price: PaywallPrice) => {
+    setShowNewPrice(false);
     setPrices([
       price,
       ...prices
     ]);
   }
 
-  const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
+  const handlePriceUpdated: OnPriceUpserted = (price: PaywallPrice) => {
     setPrices(prices.map(p => {
       if (p.id === price.id) {
         return price;
@@ -161,12 +98,12 @@ function LoadPrices(
     }));
   }
 
-  const handleActivate: OnPriceUpserted = (price: PaywallPrice) => {
+  const handlePriceActivated: OnPriceUpserted = (price: PaywallPrice) => {
     setPrices(prices.map(p => {
       if (p.id === price.id) {
         return price;
       }
-      if (p.cycle === price.cycle && p.active) {
+      if (p.cycle === price.cycle && p.kind === price.kind && p.active) {
         return {
           ...p,
           active: false,
@@ -177,47 +114,89 @@ function LoadPrices(
     }));
   };
 
-  const handleArchiv: OnPriceUpserted = (target: PaywallPrice) => {
+  const handlePriceArchived: OnPriceUpserted = (target: PaywallPrice) => {
     setPrices(prices.filter(p => p.id !== target.id));
   };
 
   return (
-    <ErrorBoudary errMsg={err}>
-      <LoadingSpinner loading={loading}>
-        <>
-          <h4 className="d-flex justify-content-between">
-            <span>Price List</span>
-            { props.product &&
-              <Button
-                onClick={() => setShow(true)}
-              >
-                New Price
-              </Button>
-            }
-          </h4>
+    <>
+      <section className="mb-3">
+        <h4>Product Details</h4>
+        <ErrorBoudary errMsg={errLoadProduct}>
+          <LoadingSpinner loading={loadingProduct}>
+            <>
+              {
+                product &&
+                <ProductDetails
+                  passport={passport}
+                  product={product}
+                  onUpdated={setProduct}
+                />
+              }
+            </>
+          </LoadingSpinner>
+        </ErrorBoudary>
+      </section>
+
+      <section className="mb-3">
+        <h4>Introductory Price</h4>
+        <LoadingSpinner loading={loadingProduct}>
           {
-            prices.map(price => (
-              <PriceListItem
-                passport={props.passport}
-                price={price}
-                onUpdated={handleUpdate}
-                onActivated={handleActivate}
-                onArchived={handleArchiv}
-                key={price.id}
-              />
-            ))
+            (product && product.introductory) ?
+            <IntroductoryDetails
+              passport={passport}
+              price={product.introductory}
+              onRefreshed={setProduct}
+            /> :
+            <p>Not set</p>
           }
-          { props.product &&
-            <PriceFormDialog
-              passport={props.passport}
-              show={show}
-              onHide={() => setShow(false)}
-              onUpserted={handleCreate}
-              product={props.product}
-            />
+        </LoadingSpinner>
+      </section>
+
+      <section>
+        <h4 className="d-flex justify-content-between">
+          <span>Price List</span>
+          {
+            product &&
+            <Button
+              onClick={() => setShowNewPrice(true)}
+            >
+              New Price
+            </Button>
           }
-        </>
-      </LoadingSpinner>
-    </ErrorBoudary>
+        </h4>
+        <ErrorBoudary errMsg={errLoadPrice}>
+          <LoadingSpinner loading={loadingPrice}>
+            <>
+              {
+                prices.map(price => (
+                  <PriceListItem
+                    passport={passport}
+                    price={price}
+                    onUpdated={handlePriceUpdated}
+                    onActivated={handlePriceActivated}
+                    onArchived={handlePriceArchived}
+                    onIntroAttached={setProduct}
+                    key={price.id}
+                  />
+                ))
+              }
+            </>
+          </LoadingSpinner>
+        </ErrorBoudary>
+      </section>
+      {
+        product &&
+        <PriceFormDialog
+          passport={passport}
+          show={showNewPrice}
+          onHide={() => setShowNewPrice(false)}
+          onUpserted={handlePriceCreated}
+          product={product}
+        />
+      }
+    </>
   );
 }
+
+
