@@ -1,6 +1,7 @@
 import { Price } from '../../data/price';
 import { formatYearMonthDay } from '../../utils/format-datetime';
 import { ModeBadge } from './Badge';
+import { EffectiveRow } from './EffectivePeriod';
 
 export function PriceContent(
   props: {
@@ -42,6 +43,12 @@ export function PriceContent(
         <tr>
           <th>Mode</th>
           <td><ModeBadge live={props.price.liveMode}/></td>
+        </tr>
+        <tr>
+          <th>Valid Period</th>
+          <td>
+            <EffectiveRow start={props.price.startUtc} end={props.price.endUtc} />
+          </td>
         </tr>
         <tr>
           <th>Created</th>

@@ -17,3 +17,23 @@ export function EffectivePeriod(
     </span>
   );
 }
+
+export function EffectiveRow(
+  props: {
+    start?: string;
+    end?: string;
+  }
+) {
+  if (!props.start || !props.end) {
+    return <>NULL</>;
+  }
+
+  return (
+    <span className="d-flex flex-row">
+      <span className="me-3">From</span>
+      <span>{props.start}</span>
+      <span className="me-3 ms-3">To</span>
+      <span>{props.end}</span>
+    </span>
+  );
+}
