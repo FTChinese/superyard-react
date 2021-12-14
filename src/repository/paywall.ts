@@ -113,6 +113,15 @@ export function dropIntroPrice(prodId: string, config: ReqConfig): Promise<Produ
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
+export function listPriceOfProduct(prodId: string, config: ReqConfig): Promise<PaywallPrice[]> {
+  return axios.get<PaywallPrice[]>(
+      endpoint.price,
+      buildReqConfig(config, new URLSearchParams({'product_id': prodId})),
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
 export function createPrice(body: NewPriceParams, config: ReqConfig): Promise<Price> {
   return axios.post<Product, AxiosResponse<Price>, NewPriceParams>(
       endpoint.price,
@@ -123,28 +132,8 @@ export function createPrice(body: NewPriceParams, config: ReqConfig): Promise<Pr
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function listPriceOfProduct(prodId: string, config: ReqConfig): Promise<PaywallPrice[]> {
-  return axios.get<PaywallPrice[]>(
-      endpoint.price,
-      buildReqConfig(config, new URLSearchParams({'product_id': prodId})),
-    )
-    .then(resp => resp.data)
-    .catch(error => Promise.reject(ResponseError.newInstance(error)));
-}
-
-export function activatePrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
-  return axios.post<PaywallPrice>(
-    endpoint.priceOf(id),
-    undefined,
-    buildReqConfig(config),
-  )
-  .then(resp => resp.data)
-  .catch(error => Promise.reject(ResponseError.newInstance(error)));
-}
-
-
-export function updatePrice(id: string, body: UpdatePriceParams, config: ReqConfig): Promise<PaywallPrice> {
-  return axios.patch<PaywallPrice>(
+export function updatePrice(id: string, body: UpdatePriceParams, config: ReqConfig): Promise<Price> {
+  return axios.patch<Price>(
     endpoint.priceOf(id),
     body,
     buildReqConfig(config),
@@ -153,8 +142,18 @@ export function updatePrice(id: string, body: UpdatePriceParams, config: ReqConf
   .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function archivePrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
-  return axios.delete<PaywallPrice>(
+export function activatePrice(id: string, config: ReqConfig): Promise<Price> {
+  return axios.post<Price>(
+    endpoint.priceOf(id),
+    undefined,
+    buildReqConfig(config),
+  )
+  .then(resp => resp.data)
+  .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function archivePrice(id: string, config: ReqConfig): Promise<Price> {
+  return axios.delete<Price>(
       endpoint.priceOf(id),
       buildReqConfig(config)
     )
