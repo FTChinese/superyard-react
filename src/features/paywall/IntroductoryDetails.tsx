@@ -11,12 +11,13 @@ import { useState } from 'react';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { OnProductUpserted } from './callbacks';
+import { formatPrice } from '../../utils/format-price';
 
 export function IntroductoryDetails(
   props: {
     passport: CMSPassport;
     price: Price;
-    onRefreshed: OnProductUpserted;
+    onRefreshOrDrop: OnProductUpserted;
   }
 ) {
 
@@ -34,7 +35,7 @@ export function IntroductoryDetails(
       )
       .then(prod => {
         setRefreshing(false);
-        props.onRefreshed(prod);
+        props.onRefreshOrDrop(prod);
       })
       .catch((err: ResponseError) => {
         setRefreshing(false);
@@ -51,7 +52,7 @@ export function IntroductoryDetails(
     )
     .then(prod => {
       setDropping(false);
-      props.onRefreshed(prod);
+      props.onRefreshOrDrop(prod);
     })
     .catch((err: ResponseError) => {
       setDropping(false);
@@ -62,7 +63,7 @@ export function IntroductoryDetails(
   return (
     <Card>
       <Card.Header className="d-flex justify-content-between">
-        <span>Introductory Price</span>
+        <span>{formatPrice(props.price)}</span>
         <ButtonGroup size="sm">
           <Button
             variant="outline-primary"
