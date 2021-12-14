@@ -12,6 +12,7 @@ import { ResponseError } from '../../repository/response-error';
 import { liveModeState } from '../../store/recoil-state';
 import { isoOffset } from '../../utils/time-formatter';
 import { ModeBadge } from './Badge';
+import { OnPriceUpserted } from './callbacks';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
 import { StripeRawPriceContent } from './StripeRawPrice';
 
@@ -28,7 +29,7 @@ export function PriceFormDialog(
     passport: CMSPassport;
     show: boolean;
     onHide: () => void;
-    onUpserted: (price: PaywallPrice) => void;
+    onUpserted: OnPriceUpserted;
     product?: Product; // Exists upon creation.
     price?: Price; // Exists upon updating.
   }
@@ -94,10 +95,7 @@ export function PriceFormDialog(
         .then(price => {
           helpers.setSubmitting(false);
           toast.success('Price created!');
-          props.onUpserted({
-            ...price,
-            offers: [],
-          });
+          props.onUpserted(price);
         })
         .catch((err: ResponseError) => {
           helpers.setSubmitting(false);
