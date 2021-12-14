@@ -7,7 +7,7 @@ import { Unauthorized } from '../../components/routes/Unauthorized';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { PriceFormDialog } from '../../features/paywall/PriceFormDialog';
 import { PriceListItem } from '../../features/paywall/PriceListItem';
-import { OnPriceUpserted } from "../../features/paywall/callbacks";
+import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from "../../features/paywall/callbacks";
 import { ProductDetails } from '../../features/paywall/ProductDetails';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
@@ -15,6 +15,8 @@ import { useAuthContext } from '../../store/AuthContext';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
 import { IntroductoryDetails } from '../../features/paywall/IntroductoryDetails';
+import { isRecurring } from '../../data/enum';
+import { Price } from '../../data/price';
 
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
@@ -35,7 +37,7 @@ export function ProductDetailPage() {
   const [ errLoadProduct, setErrLoadProduct ] = useState('');
   const [ loadingProduct, setLoadingProduct ] = useState(true);
 
-  const [ prices, setPrices ] = useState<PaywallPrice[]>([]);
+  const [ paywallPrices, setPaywallPrices ] = useState<PaywallPrice[]>([]);
   const [ errLoadPrice, setErrLoadPrice ] = useState('');
   const [ loadingPrice, setLoadingPrice ] = useState(true);
 
@@ -63,7 +65,7 @@ export function ProductDetailPage() {
   useEffect(() => {
     setErrLoadPrice('');
     setLoadingPrice(false);
-    setPrices([]);
+    setPaywallPrices([]);
 
     listPriceOfProduct(
         productId,
@@ -71,7 +73,7 @@ export function ProductDetailPage() {
       )
       .then(prices => {
         setLoadingPrice(false);
-        setPrices(prices);
+        setPaywallPrices(prices);
       })
       .catch((err: ResponseError) => {
         setLoadingPrice(false);
@@ -80,42 +82,73 @@ export function ProductDetailPage() {
   }, [live]);
 
 
-  const handlePriceCreated: OnPriceUpserted = (price: PaywallPrice) => {
+  const handlePriceCreated: OnPriceUpserted = (price: Price) => {
     setShowNewPrice(false);
-    setPrices([
-      price,
-      ...prices
+    setPaywallPrices([
+      {
+        ...price,
+        offers: [],
+      },
+      ...paywallPrices
     ]);
   }
 
-  const handlePriceUpdated: OnPriceUpserted = (price: PaywallPrice) => {
-    setPrices(prices.map(p => {
+  // When a price is edited, or discount list added/removed.
+  const priceUpdated: OnPaywallPriceUpserted = (price: PaywallPrice) => {
+    setPaywallPrices(paywallPrices.map(p => {
       if (p.id === price.id) {
         return price;
-      }
-
-      return p;
-    }));
-  }
-
-  const handlePriceActivated: OnPriceUpserted = (price: PaywallPrice) => {
-    setPrices(prices.map(p => {
-      if (p.id === price.id) {
-        return price;
-      }
-      if (p.cycle === price.cycle && p.kind === price.kind && p.active) {
-        return {
-          ...p,
-          active: false,
-        }
       }
 
       return p;
     }));
   };
 
-  const handlePriceArchived: OnPriceUpserted = (target: PaywallPrice) => {
-    setPrices(prices.filter(p => p.id !== target.id));
+  const priceActivated: OnPriceUpserted = (price: Price) => {
+    setPaywallPrices(paywallPrices.map(item => {
+      // The modified price.
+      if (item.id === price.id) {
+        return {
+          ...price,
+          offers: item.offers,
+        };
+      }
+      // Flag all others' active to false.
+      if (item.cycle === price.cycle && item.kind === price.kind && item.active) {
+        return {
+          ...item,
+          active: false,
+        }
+      }
+
+      // Fallback.
+      return item;
+    }));
+  };
+
+  const priceArchived: OnPriceUpserted = (price: Price) => {
+    setPaywallPrices(paywallPrices.filter(item => item.id !== price.id));
+  };
+
+  const handleIntro: OnProductUpserted = (prod: Product) => {
+    setProduct(prod);
+
+    // Price attached.
+    if (prod.introductory) {
+      return;
+    }
+
+    // Deactivate all one time prices.
+    setPaywallPrices(paywallPrices.map(p => {
+      if (isRecurring(p.kind)) {
+        return p;
+      }
+
+      return {
+        ...p,
+        active: false,
+      }
+    }));
   };
 
   return (
@@ -146,7 +179,7 @@ export function ProductDetailPage() {
             <IntroductoryDetails
               passport={passport}
               price={product.introductory}
-              onRefreshed={setProduct}
+              onRefreshOrDrop={handleIntro}
             /> :
             <p>Not set</p>
           }
@@ -169,13 +202,13 @@ export function ProductDetailPage() {
           <LoadingSpinner loading={loadingPrice}>
             <>
               {
-                prices.map(price => (
+                paywallPrices.map(price => (
                   <PriceListItem
                     passport={passport}
-                    price={price}
-                    onUpdated={handlePriceUpdated}
-                    onActivated={handlePriceActivated}
-                    onArchived={handlePriceArchived}
+                    paywallPrice={price}
+                    onUpdated={priceUpdated}
+                    onActivated={priceActivated}
+                    onArchived={priceArchived}
                     onIntroAttached={setProduct}
                     key={price.id}
                   />
