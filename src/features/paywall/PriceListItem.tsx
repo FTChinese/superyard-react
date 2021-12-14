@@ -9,19 +9,21 @@ import { useState } from 'react';
 import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
 import { PriceContent } from './PriceContent';
-import { OnPriceUpserted, OnProductUpserted } from './callbacks';
+import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from './callbacks';
 import { activatePrice, archivePrice, attachIntroPrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
+import { Price } from '../../data/price';
 
 export function PriceListItem(
   props: {
     passport: CMSPassport;
-    price: PaywallPrice;
-    // The result of editing price
-    onUpdated: OnPriceUpserted;
+    paywallPrice: PaywallPrice;
+    // The result of editing price,
+    // or discount list add/removal.
+    onUpdated: OnPaywallPriceUpserted;
     // The result of activating a recurringprice
     onActivated: OnPriceUpserted;
     // The result of deleting a price.
@@ -33,28 +35,26 @@ export function PriceListItem(
 ) {
 
   // Show discount list only for recurring.
-  const isRecurring = props.price.kind === 'recurring';
-  const isActive = props.price.active;
+  const isRecurring = props.paywallPrice.kind === 'recurring';
+  const isActive = props.paywallPrice.active;
 
   const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
   const [ activating, setActivating ] = useState(false);
   const [ archiving, setArchiving ] = useState(false);
 
-
-
   // Activate recurring price.
   const activateRecurring = () => {
     setActivating(true);
 
     activatePrice(
-        props.price.id,
+        props.paywallPrice.id,
         { live, token: props.passport.token }
       )
-      .then(pwp => {
+      .then(price => {
         setActivating(false);
         toast.success('Price activated');
-        props.onActivated(pwp);
+        props.onActivated(price);
       })
       .catch((err: ResponseError) => {
         setActivating(false);
@@ -66,8 +66,8 @@ export function PriceListItem(
     setActivating(true);
 
     attachIntroPrice(
-        props.price.productId,
-        { priceId: props.price.id },
+        props.paywallPrice.productId,
+        { priceId: props.paywallPrice.id },
         { live, token: props.passport.token }
       )
       .then(prod => {
@@ -83,21 +83,24 @@ export function PriceListItem(
       });
   };
 
-  const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
+  const pricedUpdated: OnPriceUpserted = (price: Price) => {
     setShow(false);
-    props.onUpdated(price);
-  }
+    props.onUpdated({
+      ...price,
+      offers: props.paywallPrice.offers
+    })
+  };
 
   const handleArchive = () => {
     setArchiving(true);
 
     archivePrice(
-        props.price.id,
+        props.paywallPrice.id,
         { live, token: props.passport.token }
       )
-      .then(pwp => {
+      .then(price => {
         setArchiving(false);
-        props.onArchived(pwp);
+        props.onArchived(price);
       })
       .catch((err: ResponseError) => {
         setArchiving(false);
@@ -156,10 +159,10 @@ export function PriceListItem(
         <Card.Header className="d-flex justify-content-between">
           <div>
             <span className="me-2">
-              {formatPrice(props.price)}
+              {formatPrice(props.paywallPrice)}
             </span>
             {
-              props.price.active &&
+              props.paywallPrice.active &&
               <ActiveBadge active={true}/>
             }
           </div>
@@ -184,7 +187,7 @@ export function PriceListItem(
         </Card.Header>
         <Card.Body>
           <PriceContent
-            price={props.price}
+            price={props.paywallPrice}
           />
         </Card.Body>
       </Card>
@@ -193,8 +196,8 @@ export function PriceListItem(
         isRecurring &&
         <DiscountList
           passport={props.passport}
-          price={props.price}
-          onUpdatePrice={props.onUpdated}
+          price={props.paywallPrice}
+          onPaywallPrice={props.onUpdated}
         />
       }
 
@@ -202,8 +205,8 @@ export function PriceListItem(
         passport={props.passport}
         show={show}
         onHide={() => setShow(false)}
-        onUpserted={handleUpdate}
-        price={props.price}
+        onUpserted={pricedUpdated}
+        price={props.paywallPrice}
       />
     </div>
   );
