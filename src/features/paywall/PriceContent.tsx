@@ -1,4 +1,5 @@
 import { Price } from '../../data/price';
+import { formatYearMonthDay } from '../../utils/format-datetime';
 import { ModeBadge } from './Badge';
 
 export function PriceContent(
@@ -15,8 +16,16 @@ export function PriceContent(
           <td>{props.price.id}</td>
         </tr>
         <tr>
+          <th>Kind</th>
+          <td>{props.price.kind}</td>
+        </tr>
+        <tr>
           <th>Tier</th>
           <td>{props.price.tier}</td>
+        </tr>
+        <tr>
+          <th>Period Count</th>
+          <td>{formatYearMonthDay(props.price.periodCount)}</td>
         </tr>
         <tr>
           <th>Nickname</th>
