@@ -17,7 +17,7 @@ import { PaywallPrice } from '../../data/paywall';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { PriceContent } from './PriceContent';
 import { ListLines } from '../../components/list/TextList';
-import { OnPriceUpserted } from './callbacks';
+import { OnPaywallPriceUpserted } from './callbacks';
 import { EffectivePeriod } from './EffectivePeriod';
 import { formatPrice } from '../../utils/format-price';
 import { liveModeState } from '../../store/recoil-state';
@@ -30,7 +30,7 @@ export function DiscountList(
     // - New discount created;
     // - Discount list refresh;
     // - Discount dropped.
-    onUpdatePrice: (price: PaywallPrice) => void;
+    onPaywallPrice: OnPaywallPriceUpserted;
   }
 ) {
 
@@ -69,7 +69,7 @@ export function DiscountList(
         helpers.setSubmitting(false);
         toast.success('New offer created!')
         setShow(false);
-        props.onUpdatePrice({
+        props.onPaywallPrice({
           ...props.price,
           offers: [
             discount,
@@ -99,7 +99,7 @@ export function DiscountList(
       .then(pwp => {
         setRefreshing(false);
         toast.success('Discounts refreshed!')
-        props.onUpdatePrice(pwp);
+        props.onPaywallPrice(pwp);
       })
       .catch((err: ResponseError) => {
         setRefreshing(false);
@@ -141,7 +141,7 @@ export function DiscountList(
                   key={offer.id}
                   passport={props.passport}
                   offer={offer}
-                  onDeleted={props.onUpdatePrice}
+                  onDeleted={props.onPaywallPrice}
                 />
               )
             }
@@ -217,7 +217,7 @@ function OfferRow(
   props: {
     passport: CMSPassport;
     offer: Discount;
-    onDeleted: OnPriceUpserted;
+    onDeleted: OnPaywallPriceUpserted;
   }
 ) {
 
