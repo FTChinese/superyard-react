@@ -30,13 +30,16 @@ export type UpdateProductParams = {
   description: string;
   heading: string;
   smallPrint?: string;
-
 }
 
 export type NewProductParams = {
   tier: Tier;
   createdBy: string;
 } & UpdateProductParams;
+
+export type AttachIntroParams = {
+  priceId: string;
+};
 
 export type Product = {
   id: string;
