@@ -231,6 +231,11 @@ function PromoCard(
       })
   };
 
+  const hideDialog = () => {
+    setPaywallDoc(undefined);
+    setShow(false);
+  };
+
   const body = (props.promo.id === '')
     ? (<p>Not promotion set.</p>)
     : (
@@ -250,7 +255,7 @@ function PromoCard(
           direction="column"
         />
       </>
-    )
+    );
 
   return (
     <>
@@ -285,7 +290,7 @@ function PromoCard(
       <Modal
         show={show}
         fullscreen={true}
-        onHide={() => setShow(false)}
+        onHide={hideDialog}
       >
         <Modal.Header closeButton>
           <Modal.Title className="me-3">Create Promotion Banner</Modal.Title>
