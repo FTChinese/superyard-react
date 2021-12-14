@@ -20,6 +20,9 @@ export const endpoint = {
   productOf: function(id: string): string {
     return `${paywallBase}/products/${id}`;
   },
+  introForProductOf: function(id: string): string {
+    return `${paywallBase}/products/${id}/intro`;
+  },
 
   price: `${paywallBase}/prices`,
   priceOf: function(id: string): string {
