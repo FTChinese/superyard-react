@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
 import { PriceContent } from './PriceContent';
-import { OnPriceUpserted } from './callbacks';
-import { activatePrice, archivePrice } from '../../repository/paywall';
+import { OnPriceUpserted, OnProductUpserted } from './callbacks';
+import { activatePrice, archivePrice, attachIntroPrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { useRecoilValue } from 'recoil';
@@ -20,18 +20,31 @@ export function PriceListItem(
   props: {
     passport: CMSPassport;
     price: PaywallPrice;
+    // The result of editing price
     onUpdated: OnPriceUpserted;
+    // The result of activating a recurringprice
     onActivated: OnPriceUpserted;
+    // The result of deleting a price.
     onArchived: OnPriceUpserted;
+    // The result of activating a one time price
+    // and attaching it to a product.
+    onIntroAttached: OnProductUpserted;
   }
 ) {
+
+  // Show discount list only for recurring.
+  const isRecurring = props.price.kind === 'recurring';
+  const isActive = props.price.active;
 
   const live = useRecoilValue(liveModeState);
   const [ show, setShow ] = useState(false);
   const [ activating, setActivating ] = useState(false);
   const [ archiving, setArchiving ] = useState(false);
 
-  const handleActivation = () => {
+
+
+  // Activate recurring price.
+  const activateRecurring = () => {
     setActivating(true);
 
     activatePrice(
@@ -39,12 +52,35 @@ export function PriceListItem(
         { live, token: props.passport.token }
       )
       .then(pwp => {
+        setActivating(false);
         toast.success('Price activated');
         props.onActivated(pwp);
       })
       .catch((err: ResponseError) => {
+        setActivating(false);
         toast.error(err.message);
+      });
+  };
+
+  const activateOneTime = () => {
+    setActivating(true);
+
+    attachIntroPrice(
+        props.price.productId,
+        { priceId: props.price.id },
+        { live, token: props.passport.token }
+      )
+      .then(prod => {
+        setActivating(false);
+
+        toast.success('Price set as introductory!');
+
+        props.onIntroAttached(prod);
       })
+      .catch((err: ResponseError) => {
+        setActivating(false);
+        toast.error(err.message);
+      });
   };
 
   const handleUpdate: OnPriceUpserted = (price: PaywallPrice) => {
@@ -69,6 +105,51 @@ export function PriceListItem(
       });
   }
 
+  const activateBtn = isRecurring ?
+    (
+      <Button
+        variant="outline-primary"
+        size="sm"
+        disabled={activating}
+        onClick={activateRecurring}
+      >
+        {
+          activating
+            ? 'Activating...'
+            : 'Activate'
+        }
+      </Button>
+    ) :
+    (
+      <Button
+        variant="outline-primary"
+        size="sm"
+        disabled={activating}
+        onClick={activateOneTime}
+      >
+        {
+          activating
+            ? 'Activating...'
+            : 'Use as Intro'
+        }
+      </Button>
+    );
+
+  const archiveBtn = (
+    <Button
+      variant="danger"
+      size="sm"
+      disabled={archiving}
+      onClick={handleArchive}
+    >
+      {
+        archiving
+          ? 'Dropping '
+          : 'Archive'
+      }
+    </Button>
+  );
+
   return (
     <div className="mb-3">
       <Card>
@@ -87,25 +168,10 @@ export function PriceListItem(
             size="sm"
           >
             {
-              !props.price.active &&
-              <>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  disabled={archiving}
-                  onClick={handleArchive}
-                >
-                  { archiving ? 'Dropping ' : 'Archive'}
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  disabled={activating}
-                  onClick={handleActivation}
-                >
-                  { activating ? 'Activating...' : 'Activate' }
-                </Button>
-              </>
+              !isActive && archiveBtn
+            }
+            {
+              !isActive && activateBtn
             }
             <Button
               variant="primary"
@@ -123,11 +189,15 @@ export function PriceListItem(
         </Card.Body>
       </Card>
 
-      <DiscountList
-        passport={props.passport}
-        price={props.price}
-        onUpdatePrice={props.onUpdated}
-      />
+      {
+        isRecurring &&
+        <DiscountList
+          passport={props.passport}
+          price={props.price}
+          onUpdatePrice={props.onUpdated}
+        />
+      }
+
       <PriceFormDialog
         passport={props.passport}
         show={show}
