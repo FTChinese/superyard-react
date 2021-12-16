@@ -14,13 +14,13 @@ import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/p
 import { Discount, Price } from '../../data/price';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { formatYearMonthDay } from '../../utils/format-datetime';
 import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from './Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
+import { formatYMD } from '../../data/period';
 
 
 export function PaywallContent(
@@ -376,7 +376,7 @@ function PriceOverview(
         <dd>{props.price.kind}</dd>
 
         <dt>Period Count</dt>
-        <dd>{formatYearMonthDay(props.price.periodCount)}</dd>
+        <dd>{formatYMD(props.price.periodCount)}</dd>
 
         <dt>Stripe Price ID</dt>
         <dd>{props.price.stripePriceId || 'NULL'}</dd>
@@ -429,7 +429,7 @@ function PriceOfferRow(
   return (
     <tr>
       <td>{props.offer.kind}</td>
-      <td>{formatYearMonthDay(props.offer.overridePeriod)}</td>
+      <td>{formatYMD(props.offer.overridePeriod)}</td>
       <td>{props.offer.priceOff}</td>
       <td>
         <EffectivePeriod period={props.offer} direction="column" />
