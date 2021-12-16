@@ -1,5 +1,5 @@
+import { formatYMD } from '../../data/period';
 import { Price } from '../../data/price';
-import { formatYearMonthDay } from '../../utils/format-datetime';
 import { ModeBadge } from './Badge';
 import { EffectiveRow } from './EffectivePeriod';
 
@@ -26,15 +26,15 @@ export function PriceContent(
         </tr>
         <tr>
           <th>Period Count</th>
-          <td>{formatYearMonthDay(props.price.periodCount)}</td>
+          <td>{formatYMD(props.price.periodCount)}</td>
         </tr>
         <tr>
           <th>Nickname</th>
           <td>{props.price.nickname}</td>
         </tr>
         <tr>
-          <th>Description</th>
-          <td>{props.price.description}</td>
+          <th>Title</th>
+          <td>{props.price.title}</td>
         </tr>
         <tr>
           <th>Stripe Price ID</th>
