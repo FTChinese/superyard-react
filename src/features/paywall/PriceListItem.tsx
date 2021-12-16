@@ -83,6 +83,14 @@ export function PriceListItem(
       });
   };
 
+  // When a price is updated, tell parent to sync
+  // the whole list of prices.
+  // For one_time prices used as introdcutory,
+  // the change won't be reflected in the IntroductoryDetails component since
+  // the data used there is saved in the product table
+  // while the price is updated in the price table.
+  // To since the two tables, you have to click the
+  // `Refresh` button in that component.
   const pricedUpdated: OnPriceUpserted = (price: Price) => {
     setShow(false);
     props.onUpdated({
