@@ -2,7 +2,9 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
-import { Cycle, cycleOpts, PriceKind, priceKindOpts, Tier, tierOpts } from '../../data/enum';
+import { toast } from 'react-toastify';
+import { useRecoilValue } from 'recoil';
+import { Cycle, cycleOpts, PriceKind, priceKindOpts, Tier } from '../../data/enum';
 import { NewPriceParams, UpdatePriceParams, Price } from '../../data/price';
 import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
@@ -11,20 +13,19 @@ import ProgressButton from '../../components/buttons/ProgressButton';
 import { InputGroup } from '../../components/controls/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { loadStripePrice } from '../../repository/paywall';
-import { toast } from 'react-toastify';
-import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
 import { useAuthContext } from '../../store/AuthContext';
 import { ResponseError } from '../../repository/response-error';
 import { StripeRawPrice } from '../../data/paywall';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
-import { concatDateTime, DateTime, YearMonthDay } from '../../data/period';
+import { isZeroYMD, YearMonthDay, ymdZero } from '../../data/period';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { TimezoneBadge } from './Badge';
+import { DateTime, dateTimeFromISO, dateTimeToISO, dateTimeZero } from '../../data/date-time';
 
 export type PriceFormVal = {
   cycle: Cycle;
-  description?: string;
+  title?: string;
   kind: PriceKind;
   nickname?: string;
   periodCount: YearMonthDay;
@@ -47,7 +48,7 @@ export function buildNewPriceParams(
   return {
     tier: meta.tier,
     cycle: isRecurring ? v.cycle : undefined,
-    description: v.description || undefined,
+    title: v.title || undefined,
     kind: v.kind,
     nickname: v.nickname || undefined,
     periodCount: v.periodCount,
@@ -55,10 +56,10 @@ export function buildNewPriceParams(
     stripePriceId: v.stripePriceId,
     startUtc: isRecurring
       ? undefined
-      : (concatDateTime(v.start, meta.offset) || undefined),
+      : (dateTimeToISO(v.start, meta.offset) || undefined),
     endUtc: isRecurring
       ? undefined
-      : (concatDateTime(v.end, meta.offset) || undefined),
+      : (dateTimeToISO(v.end, meta.offset) || undefined),
     unitAmount: v.unitAmount,
   };
 }
@@ -67,7 +68,8 @@ export function buildUpdatePriceParams(v: PriceFormVal): UpdatePriceParams {
   return {
     stripePriceId: v.stripePriceId,
     nickname: v.nickname || undefined,
-    description: v.description || undefined,
+    periodCount: v.periodCount,
+    title: v.title || undefined,
   }
 }
 
@@ -91,6 +93,7 @@ export function PriceForm(
   const [ loading, setLoading ] = useState(false);
 
   const isUpdate = !!props.price;
+  const isPeriodSet = props.price ? !isZeroYMD(props.price.periodCount) : false;
 
   useEffect(() => {
     setErrMsg(props.errMsg);
@@ -137,23 +140,17 @@ export function PriceForm(
       <Formik<PriceFormVal>
         initialValues={{
           cycle: props.price?.cycle || ('' as Cycle),
-          description: props.price?.description || '',
-          kind: '' as PriceKind,
+          title: props.price?.title || '',
+          kind: props.price?.kind || ('' as PriceKind),
           nickname: props.price?.nickname || '',
-          periodCount: {
-            years: 0,
-            months: 0,
-            days: 0,
-          },
+          periodCount: props.price?.periodCount || ymdZero(),
           stripePriceId: props.price?.stripePriceId || '',
-          start: {
-            date: '',
-            time: '00:00:00',
-          },
-          end: {
-            date: '',
-            time: '00:00:00',
-          },
+          start: props.price?.startUtc
+            ? dateTimeFromISO(props.price.startUtc)
+            : dateTimeZero(),
+          end: props.price?.endUtc
+            ? dateTimeFromISO(props.price.endUtc)
+            : dateTimeZero(),
           unitAmount: props.price?.unitAmount || 0,
         }}
         validationSchema={Yup.object({
@@ -227,12 +224,12 @@ export function PriceForm(
             <YearMonthDayInput
               title="Period Count *"
               namePrefix="periodCount"
-              disabled={isUpdate}
+              disabled={isPeriodSet}
               desc="How many years, months, or days user will get for this price. At least one of them should be provided."
             />
             <TextInput
-              label="Description"
-              name="description"
+              label="Title"
+              name="title"
               type="text"
               desc="Optional short descriptive text that might be present to user"
             />
@@ -240,7 +237,7 @@ export function PriceForm(
               label="Nickname"
               name="nickname"
               type="text"
-              desc="In case you need to recall why this price is created"
+              desc="Optional. For your own reference."
             />
             {
               (formik.values.kind === 'one_time') &&
