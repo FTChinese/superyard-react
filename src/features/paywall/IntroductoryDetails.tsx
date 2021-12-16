@@ -7,7 +7,7 @@ import { attachIntroPrice, dropIntroPrice } from '../../repository/paywall';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
 import { CMSPassport } from '../../data/cms-account';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { OnProductUpserted } from './callbacks';
@@ -17,6 +17,8 @@ export function IntroductoryDetails(
   props: {
     passport: CMSPassport;
     price: Price;
+    // If the price is updated, auto refresh so that data in product table and price table is synced.
+    updated: boolean;
     onRefreshOrDrop: OnProductUpserted;
   }
 ) {
@@ -59,6 +61,14 @@ export function IntroductoryDetails(
       toast.error(err.message);
     });
   };
+
+  useEffect(() => {
+    if (!props.updated) {
+      return;
+    }
+
+    handleRefresh();
+  }, [props.updated]);
 
   return (
     <Card>
