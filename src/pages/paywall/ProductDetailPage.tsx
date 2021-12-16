@@ -41,7 +41,10 @@ export function ProductDetailPage() {
   const [ errLoadPrice, setErrLoadPrice ] = useState('');
   const [ loadingPrice, setLoadingPrice ] = useState(true);
 
+  // Show create new price dialog.
   const [ showNewPrice, setShowNewPrice ] = useState(false);
+
+  const [ refreshIntro, setRefreshIntro ] = useState(false);
 
   useEffect(() => {
     setErrLoadProduct('');
@@ -82,6 +85,7 @@ export function ProductDetailPage() {
   }, [live]);
 
 
+  // When a price is created, update the price list.
   const handlePriceCreated: OnPriceUpserted = (price: Price) => {
     setShowNewPrice(false);
     setPaywallPrices([
@@ -102,8 +106,15 @@ export function ProductDetailPage() {
 
       return p;
     }));
+
+    // If the updated price is used as an introductory,
+    // tell the IntroductoryDetails
+    // componnet to auto-refresh.
+    setRefreshIntro(price.id === product?.introductory?.id)
   };
 
+  // When a price is activated, update the item in
+  // the list to reflect the changes.
   const priceActivated: OnPriceUpserted = (price: Price) => {
     setPaywallPrices(paywallPrices.map(item => {
       // The modified price.
@@ -126,10 +137,13 @@ export function ProductDetailPage() {
     }));
   };
 
+  // When a price is archived, removed it from the current list.
   const priceArchived: OnPriceUpserted = (price: Price) => {
     setPaywallPrices(paywallPrices.filter(item => item.id !== price.id));
   };
 
+  // When introdudctory price under this product
+  // is refreshed or dropped.
   const handleIntro: OnProductUpserted = (prod: Product) => {
     setProduct(prod);
 
@@ -179,6 +193,7 @@ export function ProductDetailPage() {
             <IntroductoryDetails
               passport={passport}
               price={product.introductory}
+              updated={refreshIntro}
               onRefreshOrDrop={handleIntro}
             /> :
             <p>Not set</p>
