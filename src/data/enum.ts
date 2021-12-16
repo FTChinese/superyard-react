@@ -27,6 +27,10 @@ export function isInvalidSubStatus(s: SubStatus): boolean {
 export function isRecurring(k: PriceKind): boolean {
   return k === 'recurring';
 }
+
+export function isOneTime(k: PriceKind): boolean {
+  return k === 'one_time';
+}
 export interface SelectOption<T> {
   disabled: boolean;
   name: string;
