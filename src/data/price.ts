@@ -2,8 +2,9 @@ import { Cycle, DiscountStatus, OfferKind, PriceKind, Tier } from './enum';
 import { ISOPeriod, YearMonthDay } from './period';
 
 export type UpdatePriceParams = {
-  description?: string;
+  title?: string;
   nickname?: string;
+  periodCount: YearMonthDay;
   stripePriceId: string;
 };
 
@@ -11,7 +12,6 @@ export type NewPriceParams = {
   tier: Tier;
   cycle?: Cycle;
   kind: PriceKind;
-  periodCount: YearMonthDay;
   productId: string;
   unitAmount: number;
   startUtc?: string;
