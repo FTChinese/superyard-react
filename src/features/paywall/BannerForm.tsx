@@ -8,9 +8,9 @@ import ProgressButton from '../../components/buttons/ProgressButton';
 import { TextInput } from '../../components/controls/TextInput';
 import { DateTimeInput } from "../../components/controls/DateTimeInput";
 import { Textarea } from '../../components/controls/Textarea';
-import { concatDateTime, DateTime } from '../../data/period';
 import { isoOffset } from '../../utils/time-formatter';
 import { SupportMarkdown } from '../../components/SupportMarkdown';
+import { DateTime, dateTimeToISO } from '../../data/date-time';
 
 export type BannerFormVal = BannerParams & {
   start: DateTime;
@@ -32,8 +32,8 @@ export function buildPromoParams(v: BannerFormVal): PromoParams {
 
   return {
     ...buildBannerParams(v),
-    startUtc: concatDateTime(v.start, offset),
-    endUtc: concatDateTime(v.end, offset),
+    startUtc: dateTimeToISO(v.start, offset),
+    endUtc: dateTimeToISO(v.end, offset),
   };
 }
 
