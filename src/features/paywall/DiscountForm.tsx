@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { OfferKind, offerKindOpts } from '../../data/enum';
-import { concatDateTime, DateTime, YearMonthDay } from '../../data/period';
+import { YearMonthDay } from '../../data/period';
 import { DiscountParams } from '../../data/price';
 import { invalidMessages } from '../../data/form-value';
 import { TextInput } from '../../components/controls/TextInput';
@@ -12,6 +12,7 @@ import { Dropdown } from '../../components/controls/Dropdown';
 import ProgressButton from '../../components/buttons/ProgressButton';
 import { Switch } from '../../components/controls/Switch';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
+import { DateTime, dateTimeToISO } from '../../data/date-time';
 
 export type DiscountFormVal = {
   title: string;
@@ -37,8 +38,8 @@ export function buildDiscountParams(
     priceOff: v.priceOff,
     recurring: v.recurring,
     overridePeriod: v.period,
-    startUtc: concatDateTime(v.start, meta.offset) || undefined,
-    endUtc: concatDateTime(v.end, meta.offset) || undefined,
+    startUtc: dateTimeToISO(v.start, meta.offset) || undefined,
+    endUtc: dateTimeToISO(v.end, meta.offset) || undefined,
     createdBy: meta.createdBy,
     priceId: meta.priceId,
   }
