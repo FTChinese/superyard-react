@@ -1,5 +1,5 @@
-import { Tier } from './enum';
-import { ISOPeriod } from './period';
+import { PriceKind, Tier } from './enum';
+import { ISOPeriod, YearMonthDay } from './period';
 import { Discount, Price } from './price';
 
 export type BannerParams = {
@@ -70,31 +70,33 @@ export type RebuiltResult = {
 export type StripePrice = {
   id: string;
   active: boolean;
-  created: number;
   currency: string;
+  isIntroductory: boolean;
+  kind: PriceKind;
   liveMode: boolean;
-  metadata: {
-    tier?: Tier;
-    periodDays: number;
-    introductory: boolean;
-    startUtc?: string;
-    endUtc?: string;
-  }
+  nickname: string;
+  productId: string;
+  periodCount: YearMonthDay;
+  tier: Tier;
+  unitAmount: number;
+  startUtc?: string;
+  endUtc?: string;
+  created: number;
+
 };
 
 export type StripeRawPrice = {
-  active: boolean;
-  created: number;
-  currency: string;
-  deleted: boolean;
   id: string;
-  livemode: boolean;
+  active: boolean;
+  currency: string;
   metadata: {
-    end_utc?: string;
-    introductory: 'true' | 'false';
-    period_days: string; // number
-    start_utc?: string;
     tier: Tier;
+    years: string;
+    months: string;
+    days: string;
+    introductory: 'true' | 'false';
+    start_utc?: string;
+    end_utc?: string;
   };
   nickname: string;
   product: {
@@ -106,5 +108,9 @@ export type StripeRawPrice = {
     interval_count: number;
     usage_type: 'metered' | 'licensed';
   },
-  type: 'one_time' | 'recurring';
+  type: PriceKind;
+  unit_amount: number;
+  deleted: boolean;
+  livemode: boolean;
+  created: number;
 };

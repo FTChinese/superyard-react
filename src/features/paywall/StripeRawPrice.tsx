@@ -18,12 +18,12 @@ export function StripeRawPriceContent(
       data: [localizeBool(props.price.active)],
     },
     {
-      head: 'Currency',
-      data: [props.price.currency],
+      head: 'Price',
+      data: [`${props.price.currency}/${props.price.unit_amount/100}`],
     },
     {
-      head: 'Live',
-      data: [localizeBool(props.price.livemode)],
+      head: 'Introductory',
+      data: [props.price.metadata.introductory]
     },
     {
       head: 'Nickname',
@@ -32,6 +32,10 @@ export function StripeRawPriceContent(
     {
       head: 'Type',
       data: [props.price.type],
+    },
+    {
+      head: 'Live',
+      data: [localizeBool(props.price.livemode)],
     },
     {
       head: 'Recurring Interval',
@@ -46,7 +50,7 @@ export function StripeRawPriceContent(
     },
     {
       head: 'Period Days',
-      data: [props.price.metadata.period_days]
+      data: [`${props.price.metadata.years} years, ${props.price.metadata.months} months, ${props.price.metadata.days} days`]
     },
     {
       head: 'Is introductory',
