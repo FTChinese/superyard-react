@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailForm } from '../components/forms/EmailForm';
 import { EmailVal } from '../data/form-value';
-import { passwordResetUrl, siteRoot } from '../data/sitemap';
+import { passwordResetUrl, sitePath } from '../data/sitemap';
 import { requestPasswordReset } from '../repository/auth';
 import { ResponseError } from '../repository/response-error';
 
@@ -20,7 +20,7 @@ function RequestPwResetLetter(
       <div>
         <span>请检查您的邮件，点击邮件中的“重置密码”按钮修改您的密码。如果几分钟内没有看到邮件，请检查是否被放进了垃圾邮件列表。</span>
         <div className="d-grid mt-3">
-          <Link to={siteRoot.login} className="btn btn-primary">返回</Link>
+          <Link to={sitePath.login} className="btn btn-primary">返回</Link>
         </div>
       </div>
     );

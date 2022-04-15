@@ -7,7 +7,7 @@ import ProgressButton from '../components/buttons/ProgressButton';
 import { TextInput } from '../components/controls/TextInput';
 import { verifyPasswordSchema } from '../data/form-value';
 import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-reset';
-import { siteRoot } from '../data/sitemap';
+import { sitePath } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { cancelSource } from '../repository/cancel';
 import { resetPassword, verifyPwToken } from '../repository/auth';
@@ -23,7 +23,7 @@ function ResetPassword(
       <div>
         <div className="text-center">密码已更新</div>
         <div className="d-grid mt-3">
-          <Link to={siteRoot.login} className="btn btn-primary">登录</Link>
+          <Link to={sitePath.login} className="btn btn-primary">登录</Link>
         </div>
       </div>
     )
@@ -142,7 +142,7 @@ function VerifyToken(props: {
       <div className="text-center">
         <h5>无法重置密码</h5>
         <p>
-        您似乎使用了无效的重置密码链接，请重新<Link to={siteRoot.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={siteRoot.login}>登录</Link>
+        您似乎使用了无效的重置密码链接，请重新<Link to={sitePath.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitePath.login}>登录</Link>
         </p>
       </div>
     );
