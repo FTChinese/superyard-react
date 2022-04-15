@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useAuthContext } from '../../store/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import { Logout } from './Logout';
 import styles from  './Toolbar.module.css';
 
 export function Toolbar() {
-  const { passport, setLoggedOut: logout } = useAuthContext();
+  const { passport } = useAuth();
 
   return (
     <div className={`d-flex justify-content-between ${styles.toolbar}`}>
@@ -15,8 +16,7 @@ export function Toolbar() {
         <div className="d-flex align-items-center">
           <span className="border-end pe-3">{passport.userName}</span>
 
-          <button className="btn btn-link" onClick={() => logout() }>Logout</button>
-
+          <Logout />
         </div>
       }
     </div>

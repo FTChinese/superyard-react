@@ -1,7 +1,7 @@
 export const prefixNext = '/next';
 export const prefixNg = '/ng'
 
-export const siteRoot = {
+export const sitePath = {
   login: 'login',
   forgotPassword: 'forgot-password',
   passwordReset: 'password-reset',
@@ -21,12 +21,13 @@ export const siteRoot = {
 };
 
 export const sitemap = {
-  login: `/${siteRoot.login}`,
-  forgotPassword: `/${siteRoot.forgotPassword}`,
-  paywall: `/${siteRoot.paywall}`,
-  products: `/${siteRoot.paywall}/products`,
+  home: '/',
+  login: `/${sitePath.login}`,
+  forgotPassword: `/${sitePath.forgotPassword}`,
+  paywall: `/${sitePath.paywall}`,
+  products: `/${sitePath.paywall}/products`,
 };
 
 export function passwordResetUrl(baseUrl: string): string {
-  return `${baseUrl}/reader${siteRoot.passwordReset}`;
+  return `${baseUrl}/reader${sitePath.passwordReset}`;
 }
