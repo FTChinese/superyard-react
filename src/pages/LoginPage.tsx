@@ -1,5 +1,4 @@
 import { Link, Navigate } from 'react-router-dom';
-import { useAuthContext } from '../store/AuthContext';
 import { sitemap } from '../data/sitemap';
 import { login } from '../repository/auth';
 import { ResponseError } from '../repository/response-error';
@@ -7,9 +6,10 @@ import { useState } from 'react';
 import { FormikHelpers } from 'formik';
 import { LoginForm } from '../components/forms/LoginForm';
 import { CMSCredentials } from '../data/cms-account';
+import { useAuth } from '../components/hooks/useAuth';
 
 function Login() {
-  const { setLoggedIn, passport } = useAuthContext();
+  const { setLogin, passport } = useAuth();
   const [ errMsg, setErrMsg ] = useState('');
 
   const handleSubmit = (
@@ -22,7 +22,9 @@ function Login() {
     login(values)
       .then(passport => {
         helper.setSubmitting(false);
-        setLoggedIn(passport);
+        setLogin(passport, () => {
+
+        });
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);

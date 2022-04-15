@@ -3,11 +3,11 @@ import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import ProgressButton from '../../components/buttons/ProgressButton';
+import { useAuth } from '../../components/hooks/useAuth';
 import { JSONBlock } from '../../components/JSONBlock';
 import { RebuiltResult } from '../../data/paywall';
 import { rebuildPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { useAuthContext } from '../../store/AuthContext';
 import { liveModeState, paywallRebuiltState } from '../../store/recoil-state';
 import { ModeBadge } from './Badge';
 
@@ -15,7 +15,7 @@ export function RebuildButton() {
 
   const live = useRecoilValue(liveModeState);
   const setPaywall = useSetRecoilState(paywallRebuiltState);
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
   const [ submitting, setSubmitting ] = useState(false);
   const [ show, setShow ] = useState(false);
   const [ result, setResult ] = useState<RebuiltResult>();

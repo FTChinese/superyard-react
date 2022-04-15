@@ -5,13 +5,13 @@ import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { useEffect, useState } from 'react';
 import { loadPaywall } from '../../repository/paywall';
-import { useAuthContext } from '../../store/AuthContext';
 import { ResponseError } from '../../repository/response-error';
 import { Paywall } from '../../data/paywall';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { PaywallContent } from '../../features/paywall/PaywallContent';
 import { useRecoilValue } from 'recoil';
 import { liveModeState, paywallRebuiltState } from '../../store/recoil-state';
+import { useAuth } from '../../components/hooks/useAuth';
 
 export function PaywallLayout() {
   return (
@@ -28,7 +28,7 @@ export function PaywallLayout() {
 export function PaywallPage() {
 
   const live = useRecoilValue(liveModeState);
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
   const [ err, setErr ] = useState('');
   const [ loading, setLoading ] = useState(true);
   const [ paywall, setPaywall ] = useState<Paywall>();

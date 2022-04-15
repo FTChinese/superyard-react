@@ -11,16 +11,16 @@ import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from "../.
 import { ProductDetails } from '../../features/paywall/ProductDetails';
 import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { useAuthContext } from '../../store/AuthContext';
 import { useRecoilValue } from 'recoil';
 import { liveModeState } from '../../store/recoil-state';
 import { IntroductoryDetails } from '../../features/paywall/IntroductoryDetails';
 import { isRecurring } from '../../data/enum';
 import { Price } from '../../data/price';
+import { useAuth } from '../../components/hooks/useAuth';
 
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
 
 
   if (!productId) {

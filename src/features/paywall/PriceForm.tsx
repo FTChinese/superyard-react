@@ -14,7 +14,6 @@ import { InputGroup } from '../../components/controls/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { loadStripePrice } from '../../repository/paywall';
 import { liveModeState } from '../../store/recoil-state';
-import { useAuthContext } from '../../store/AuthContext';
 import { ResponseError } from '../../repository/response-error';
 import { StripeRawPrice } from '../../data/paywall';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
@@ -22,6 +21,7 @@ import { isZeroYMD, YearMonthDay, ymdZero } from '../../data/period';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { TimezoneBadge } from './Badge';
 import { DateTime, dateTimeFromISO, dateTimeToISO, dateTimeZero } from '../../data/date-time';
+import { useAuth } from '../../components/hooks/useAuth';
 
 export type PriceFormVal = {
   cycle: Cycle;
@@ -87,7 +87,7 @@ export function PriceForm(
     price?: Price;
   }
 ) {
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
   const live = useRecoilValue(liveModeState);
   const [ errMsg, setErrMsg ] = useState('');
   const [ loading, setLoading ] = useState(false);

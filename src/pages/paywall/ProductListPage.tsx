@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { ErrorBoudary } from '../../components/ErrorBoundary';
+import { useAuth } from '../../components/hooks/useAuth';
 import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
@@ -10,13 +11,12 @@ import { ProductFormDialog } from '../../features/paywall/ProductFormDialog';
 import { ProductList } from '../../features/paywall/ProductList';
 import { listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { useAuthContext } from '../../store/AuthContext';
 import { liveModeState } from '../../store/recoil-state';
 
 export function ProductListPage() {
 
   const live = useRecoilValue(liveModeState);
-  const { passport } = useAuthContext();
+  const { passport } = useAuth();
 
   const [ err, setErr ] = useState('');
   const [ loading, setLoading ] = useState(true);
