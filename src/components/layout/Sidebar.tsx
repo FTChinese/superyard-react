@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { prefixNg, sitemap, siteRoot } from '../../data/sitemap';
+import { prefixNg, sitemap, sitePath } from '../../data/sitemap';
 
 export interface ILink {
   href: string;
@@ -11,68 +11,68 @@ export interface ILink {
 const navItems: ILink[] = [
   {
     name: 'Admin',
-    href: `${prefixNg}/${siteRoot.admin}`,
+    href: `${prefixNg}/${sitePath.admin}`,
     ext: true,
     children: [
       {
         name: 'VIP',
-        href: `${prefixNg}/${siteRoot.admin}/vip`,
+        href: `${prefixNg}/${sitePath.admin}/vip`,
         ext: true,
       }
     ]
   },
   {
     name: 'Push Notification',
-    href: `${prefixNg}/${siteRoot.apn}`,
+    href: `${prefixNg}/${sitePath.apn}`,
     ext: true,
   },
   {
     name: 'API Access',
-    href: `${prefixNg}/${siteRoot.oauth}`,
+    href: `${prefixNg}/${sitePath.oauth}`,
     ext: true,
     children: [
       {
         name: 'Personal Keys',
-        href: `${prefixNg}/${siteRoot.oauth}/keys`,
+        href: `${prefixNg}/${sitePath.oauth}/keys`,
         ext: true,
       }
     ]
   },
   {
     name: 'Wiki',
-    href: `${prefixNg}/${siteRoot.wiki}`,
+    href: `${prefixNg}/${sitePath.wiki}`,
     ext: true,
   },
   {
     name: 'Android Release',
-    href: `${prefixNg}/${siteRoot.android}`,
+    href: `${prefixNg}/${sitePath.android}`,
     ext: true,
   },
   {
     name: 'Readers',
-    href: `${prefixNg}/${siteRoot.readers}`,
+    href: `${prefixNg}/${sitePath.readers}`,
     ext: true,
     children: [
       {
         name: 'Orders',
-        href: `${prefixNg}/${siteRoot.readers}/orders`,
+        href: `${prefixNg}/${sitePath.readers}/orders`,
         ext: true,
       },
       {
         name: 'Confirmation Failure',
-        href: `${prefixNg}/${siteRoot.readers}/wh-unconfirmed`,
+        href: `${prefixNg}/${sitePath.readers}/wh-unconfirmed`,
         ext: true,
       },
       {
         name: 'Test Account',
-        href: `${prefixNg}/${siteRoot.readers}/sandbox`,
+        href: `${prefixNg}/${sitePath.readers}/sandbox`,
         ext: true,
       },
     ]
   },
   {
     name: 'B2B Subscription',
-    href: `${prefixNg}/${siteRoot.b2b}`,
+    href: `${prefixNg}/${sitePath.b2b}`,
     ext: true,
   },
   {
