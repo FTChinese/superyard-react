@@ -1,9 +1,9 @@
 import { parseISO } from 'date-fns';
-import { SubStatus, isInvalidSubStatus } from '../../data/enum';
-import { localizedTier } from '../../data/localization';
-import { Membership, isMembershipZero } from '../../data/membership';
-import { diffToday, isExpired } from '../../utils/now';
-import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../../components/list/pair';
+import { SubStatus, isInvalidSubStatus } from './enum'
+import { localizedTier } from './localization'
+import { Membership, isMembershipZero } from './membership'
+import { diffToday, isExpired } from '../utils/now'
+import { StringPair, rowExpiration, rowSubsSource, rowAutoRenewOn, rowAutoRenewDate, rowAutoRenewOff } from '../components/list/pair'
 
 /**
  * @description Describes the UI used to present Membership.
