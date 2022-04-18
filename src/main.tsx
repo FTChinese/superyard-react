@@ -9,9 +9,7 @@ render(
   <React.StrictMode>
     <BrowserRouter basename="/next">
       <RecoilRoot>
-        <Routes>
-          <App />
-        </Routes>
+        <App />
       </RecoilRoot>
     </BrowserRouter>
   </React.StrictMode>,
