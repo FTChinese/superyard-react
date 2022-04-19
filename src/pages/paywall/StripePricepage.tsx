@@ -7,7 +7,7 @@ import { Flex } from '../../components/layout/Flex';
 import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
 import { StripePrice } from '../../data/stripe-price';
-import { CouponFormDialog, StripePriceDetail } from '../../features/paywall/StripePriceDetail';
+import { CouponFormDialog, StripePriceDetail } from '../../features/stripe/StripePriceDetail';
 import { loadStripePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 

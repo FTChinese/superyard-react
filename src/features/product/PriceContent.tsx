@@ -3,7 +3,7 @@ import { formatYMD } from '../../data/period';
 import { Price } from '../../data/price';
 import { sitemap } from '../../data/sitemap';
 import { ModeBadge } from '../../components/text/Badge';
-import { EffectiveRow } from './EffectivePeriod';
+import { EffectiveRow } from '../paywall/EffectivePeriod';
 
 export function PriceContent(
   props: {

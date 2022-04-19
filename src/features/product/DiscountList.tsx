@@ -17,7 +17,7 @@ import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { PriceContent } from './PriceContent';
 import { ListLines } from '../../components/list/TextList';
 import { OnPaywallPriceUpserted } from './callbacks';
-import { EffectivePeriod } from './EffectivePeriod';
+import { EffectivePeriod } from '../paywall/EffectivePeriod';
 import { formatPrice } from '../../utils/format-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 

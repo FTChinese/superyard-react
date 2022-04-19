@@ -4,7 +4,7 @@ import { TableBody, TRow } from '../../components/list/Table';
 import { localizedTier } from '../../data/localization';
 import { newStripePriceParts, StripePrice } from '../../data/stripe-price';
 import { ActiveBadge, ModeBadge } from '../../components/text/Badge';
-import { PriceHighlight } from './PriceHighlight';
+import { PriceHighlight } from '../../components/text/PriceHighlight';
 
 export function StripePriceDetail(
   props: {

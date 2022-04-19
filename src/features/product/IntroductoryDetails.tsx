@@ -2,15 +2,15 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Price } from '../../data/price';
-import { PriceContent } from './PriceContent';
 import { attachIntroPrice, dropIntroPrice } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
-import { OnProductUpserted } from './callbacks';
 import { formatPrice } from '../../utils/format-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { OnProductUpserted } from './callbacks';
+import { PriceContent } from './PriceContent';
 
 export function IntroductoryDetails(
   props: {

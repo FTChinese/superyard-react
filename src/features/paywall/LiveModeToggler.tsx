@@ -3,7 +3,7 @@ import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function LiveModeToggler() {
 
-  const { live, setLive} = useLiveMode();
+  const { live, toggle } = useLiveMode();
 
   return (
     <div className={live ? '' : 'text-danger'}>
@@ -11,7 +11,7 @@ export function LiveModeToggler() {
         name="live"
         label={live ? 'Live Mode' : 'Sandbox Mode'}
         checked={live}
-        onToggle={setLive}
+        onClick={toggle}
       />
     </div>
   );

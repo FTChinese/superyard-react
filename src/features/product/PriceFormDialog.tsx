@@ -14,7 +14,7 @@ import { isoOffset } from '../../utils/time-formatter';
 import { ModeBadge } from '../../components/text/Badge';
 import { OnPriceUpserted } from './callbacks';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
-import { StripePriceDetail } from './StripePriceDetail';
+import { StripePriceDetail } from '../stripe/StripePriceDetail';
 
 /**
  * @description A dialog presenting PriceForm.

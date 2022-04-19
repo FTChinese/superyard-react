@@ -5,9 +5,9 @@ import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from 
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { OnProductUpserted } from '../../features/paywall/callbacks';
-import { ProductFormDialog } from '../../features/paywall/ProductFormDialog';
-import { ProductList } from '../../features/paywall/ProductList';
+import { OnProductUpserted } from '../../features/product/callbacks';
+import { ProductFormDialog } from '../../features/product/ProductFormDialog';
+import { ProductList } from '../../features/product/ProductList';
 import { listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 
