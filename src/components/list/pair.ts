@@ -1,5 +1,4 @@
 import { getDate, getMonth } from 'date-fns';
-import { isAccountWxOnly, isMobileDerivedEmail, ReaderAccount } from '../../data/reader-account';
 import { Cycle, PaymentMethod, Tier } from '../../data/enum';
 import { localizedCycle, localizedTier, localizePaymentMethod } from '../../data/localization';
 
