@@ -15,6 +15,5 @@ export function useLiveMode() {
   return {
     live,
     toggle,
-    setLive,
   };
 }

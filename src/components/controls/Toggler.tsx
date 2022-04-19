@@ -5,13 +5,9 @@ export function Toggler(
     name: string;
     label: string;
     checked: boolean;
-    onToggle: (checked: boolean) => void;
+    onClick: () => void;
   }
 ) {
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    props.onToggle(e.target.checked);
-  }
 
   return (
     <div className="form-check form-switch">
@@ -20,7 +16,7 @@ export function Toggler(
         type="checkbox"
         checked={props.checked}
         id={props.name}
-        onChange={handleChange}
+        onChange={props.onClick}
       />
       <label
         className="form-check-label"
