@@ -10,16 +10,16 @@ import { ImageRatio } from '../../components/graphics/ImageRatio';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
 import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
-import { Discount, Price } from '../../data/price';
+import { Discount, ftcPriceFormat, Price } from '../../data/ftc-price';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { formatPrice } from '../../utils/format-price';
 import { ModeBadge } from '../../components/text/Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
 import { formatYMD } from '../../data/period';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { JSONBlock } from '../../components/text/JSONBlock';
+import { PriceHighlight } from '../../components/text/PriceHighlight';
 
 
 export function PaywallContent(
@@ -368,7 +368,9 @@ function PriceOverview(
   return (
     <section className="mb-5">
       <h6 className="text-center border-bottom">
-        {formatPrice(props.price)}
+        <PriceHighlight
+          parts={ftcPriceFormat(props.price).formatToParts()}
+        />
       </h6>
       <dl>
         <dt>Kind</dt>
