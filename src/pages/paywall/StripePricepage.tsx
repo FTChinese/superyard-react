@@ -6,9 +6,11 @@ import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { Flex } from '../../components/layout/Flex';
 import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
-import { StripePrice } from '../../data/stripe-price';
-import { CouponFormDialog, StripePriceDetail } from '../../features/stripe/StripePriceDetail';
-import { loadStripePrice } from '../../repository/paywall';
+import { StripeCoupon, StripePrice } from '../../data/stripe-price';
+import { CouponFormDialog } from '../../features/stripe/CouponFromDialog';
+import { CouponItem } from '../../features/stripe/CouponItem';
+import { StripePriceDetail } from '../../features/stripe/StripePriceDetail';
+import { loadStripeCoupons, loadStripePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 
 export function StripePricePage() {
@@ -19,6 +21,10 @@ export function StripePricePage() {
 
   const [ priceLoading, setPriceLoading ] = useState(loadingStopped);
   const [ stripePrice, setStripePrice ] = useState<StripePrice>();
+
+  const [ couponsLoading, setCouponsLoading ] = useState(loadingStopped);
+  const [ coupons, setCoupons ] = useState<StripeCoupon[]>();
+
 
   if (!priceId) {
     return <Missing message="Missing price id"/>;
@@ -36,7 +42,7 @@ export function StripePricePage() {
         priceId,
         {
           live,
-          token: passport?.token,
+          token: passport.token,
         }
       )
       .then(sp => {
@@ -45,6 +51,26 @@ export function StripePricePage() {
       })
       .catch((err: ResponseError) => {
         setPriceLoading(loadingErrored(err.message));
+      });
+
+  }, [live]);
+
+  useEffect(() =>{
+    setCouponsLoading(loadingStarted());
+
+    loadStripeCoupons(
+        priceId,
+        {
+          live,
+          token: passport.token
+        }
+      )
+      .then(c => {
+        setCouponsLoading(loadingStopped());
+        setCoupons(c);
+      })
+      .catch((err: ResponseError) => {
+        setCouponsLoading(loadingErrored(err.message));
       });
 
   }, [live]);
@@ -81,6 +107,20 @@ export function StripePricePage() {
             </Button>
           </>
         </Flex>
+
+        <ProgressOrError
+          state={couponsLoading}
+        >
+          <>
+            {
+              coupons?.map(c => (
+                <CouponItem
+                  coupon={c}
+                />
+              ))
+            }
+          </>
+        </ProgressOrError>
       </section>
 
       <CouponFormDialog
