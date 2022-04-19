@@ -1,5 +1,6 @@
 import { Cycle, PaymentMethod, Tier } from './enum';
 import { Edition } from './edition';
+import { cycleOfYMD, YearMonthDay } from './period';
 
 const tiers: Record<Tier, string> = {
   standard: '标准会员',
@@ -37,6 +38,13 @@ export function localizePaymentMethod(m: PaymentMethod | null): string {
 
 export function localizedEdition(e: Edition): string {
   return `${localizedTier(e.tier)}/${localizedCycle(e.cycle)}`;
+}
+
+export function formatEdition(t: Tier, ymd: YearMonthDay): string {
+  return localizedEdition({
+    tier: t,
+    cycle: cycleOfYMD(ymd)
+  });
 }
 
 export function localizeBool(b: boolean): string {
