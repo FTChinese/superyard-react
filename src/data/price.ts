@@ -1,5 +1,5 @@
 import { Cycle, DiscountStatus, OfferKind, PriceKind, Tier } from './enum';
-import { ISOPeriod, YearMonthDay } from './period';
+import { ValidPeriod, YearMonthDay } from './period';
 
 export type UpdatePriceParams = {
   title?: string;
@@ -30,7 +30,7 @@ export type Price = {
   liveMode: boolean;
 } & NewPriceParams;
 
-export type DiscountParams = Partial<ISOPeriod> & {
+export type DiscountParams = Partial<ValidPeriod> & {
   description?: string;
   kind: OfferKind;
   priceOff: number;
