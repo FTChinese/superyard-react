@@ -1,7 +1,7 @@
 import { useFormikContext } from 'formik';
 import Button from 'react-bootstrap/esm/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
-import { CircleLoader } from '../progress/LoadIndicator';
+import { CircleLoader } from '../progress/CircleLoader';
 
 export function FormikSubmitButton<T>(
   props: {

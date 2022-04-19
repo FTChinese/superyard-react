@@ -1,6 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/types';
-import { CircleLoader } from '../progress/LoadIndicator';
+import { CircleLoader } from '../progress/CircleLoader';
 
 /**
  * @description Used when we need to submit data
