@@ -84,6 +84,11 @@ const navItems: ILink[] = [
         name: 'Products',
         href: sitemap.products,
         ext: false,
+      },
+      {
+        name: 'Stripe Prices',
+        href: sitemap.stripePrices,
+        ext: false
       }
     ]
   },
