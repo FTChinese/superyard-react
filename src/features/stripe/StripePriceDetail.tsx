@@ -1,8 +1,7 @@
-import { Modal } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import { TableBody, TRow } from '../../components/list/Table';
 import { localizedTier } from '../../data/localization';
-import { newStripePriceParts, StripePrice } from '../../data/stripe-price';
+import { StripePrice, stripePriceFormat } from '../../data/stripe-price';
 import { ActiveBadge, ModeBadge } from '../../components/text/Badge';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
 
@@ -19,7 +18,7 @@ export function StripePriceDetail(
       <Card.Body>
         <Card.Title className="text-center">
           <PriceHighlight
-            parts={newStripePriceParts(props.price)}
+            parts={stripePriceFormat(props.price).formatToParts()}
           />
         </Card.Title>
 
@@ -70,29 +69,4 @@ function PriceTable(
   )
 }
 
-export function CouponFormDialog(
-  props: {
-    show: boolean,
-    onHide: () => void;
-    live: boolean;
-  }
-) {
-  return (
-    <Modal
-      show={props.show}
-      fullscreen={true}
-      onHide={props.onHide}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title className="me-3">
-          Create Coupon
-        </Modal.Title>
-        <ModeBadge live={props.live} />
-      </Modal.Header>
 
-      <Modal.Body>
-
-      </Modal.Body>
-    </Modal>
-  );
-}
