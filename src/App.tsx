@@ -15,6 +15,7 @@ import { RequireAuth } from './components/routes/RequireAuth';
 import { PaywallLayout, PaywallPage } from './pages/paywall/PaywallPage';
 import { ProductDetailPage } from './pages/paywall/ProductDetailPage';
 import { ProductListPage } from './pages/paywall/ProductListPage';
+import { StripePricePage } from './pages/paywall/StripePricepage';
 
 function Skeleton() {
   return (
@@ -64,6 +65,7 @@ function App() {
               <Route path="" element={<PaywallPage />} />
               <Route path={sitePath.products} element={<ProductListPage />} />
               <Route path={`${sitePath.products}/:productId`} element={<ProductDetailPage />} />
+              <Route path={`${sitePath.stripePrices}/:priceId`} element={<StripePricePage />}/>
             </Route>
           </Route>
         </Route>
