@@ -16,10 +16,10 @@ import { ResponseError } from '../../repository/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
-import { formatYMD } from '../../data/period';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { JSONBlock } from '../../components/text/JSONBlock';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
+import { YearMonthDayFormat } from '../../data/ymd';
 
 
 export function PaywallContent(
@@ -377,7 +377,7 @@ function PriceOverview(
         <dd>{props.price.kind}</dd>
 
         <dt>Period Count</dt>
-        <dd>{formatYMD(props.price.periodCount)}</dd>
+        <dd>{new YearMonthDayFormat(props.price.periodCount).format()}</dd>
 
         <dt>Stripe Price ID</dt>
         <dd>{props.price.stripePriceId || 'NULL'}</dd>
@@ -430,7 +430,7 @@ function PriceOfferRow(
   return (
     <tr>
       <td>{props.offer.kind}</td>
-      <td>{formatYMD(props.offer.overridePeriod)}</td>
+      <td>{new YearMonthDayFormat(props.offer.overridePeriod).format()}</td>
       <td>{props.offer.priceOff}</td>
       <td>
         <EffectivePeriod period={props.offer} direction="column" />

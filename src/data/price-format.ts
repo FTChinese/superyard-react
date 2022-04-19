@@ -1,5 +1,5 @@
 import { MoneyFormat, MoneyParts } from './money-parts';
-import { formatPeriods, YearMonthDay } from './period';
+import { YearMonthDayFormat, YearMonthDay } from './ymd';
 
 export type PriceParts = MoneyParts & {
   cycle: string;
@@ -16,7 +16,9 @@ export class PriceFormat {
   constructor(private params: PriceFormatParams) {}
 
   private get formatCycle(): string {
-    return '/' + formatPeriods(this.params.period, this.params.recurring)
+    return new YearMonthDayFormat(this.params.period)
+    .withSeporator()
+    .formatToCycle(this.params.recurring);
   }
 
   formatToParts(): PriceParts {
@@ -39,6 +41,6 @@ export class PriceFormat {
       )
       .format();
 
-    return `${money}/${formatPeriods(this.params.period, this.params.recurring)}`;
+    return `${money}${this.formatCycle}`;
   }
 }

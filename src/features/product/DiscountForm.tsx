@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { OfferKind, offerKindOpts } from '../../data/enum';
-import { YearMonthDay } from '../../data/period';
+import { YearMonthDay } from '../../data/ymd';
 import { DiscountParams } from '../../data/ftc-price';
 import { invalidMessages } from '../../data/form-value';
 import { TextInput } from '../../components/controls/TextInput';

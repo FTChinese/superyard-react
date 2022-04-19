@@ -1,6 +1,7 @@
 import { Cycle, DiscountStatus, OfferKind, PriceKind, Tier } from './enum';
-import { ValidPeriod, YearMonthDay } from './period';
+import { ValidPeriod } from './period';
 import { PriceFormat } from './price-format';
+import { YearMonthDay } from './ymd';
 
 export type UpdatePriceParams = {
   title?: string;

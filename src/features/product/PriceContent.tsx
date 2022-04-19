@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { formatYMD } from '../../data/period';
 import { Price } from '../../data/ftc-price';
 import { sitemap } from '../../data/sitemap';
 import { ModeBadge } from '../../components/text/Badge';
 import { EffectiveRow } from '../paywall/EffectivePeriod';
+import { YearMonthDayFormat } from '../../data/ymd';
 
 export function PriceContent(
   props: {
@@ -28,7 +28,7 @@ export function PriceContent(
         </tr>
         <tr>
           <th>Period Count</th>
-          <td>{formatYMD(props.price.periodCount)}</td>
+          <td>{new YearMonthDayFormat(props.price.periodCount).format()}</td>
         </tr>
         <tr>
           <th>Nickname</th>

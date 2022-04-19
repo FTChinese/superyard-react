@@ -1,6 +1,6 @@
 import { DiscountStatus, PriceKind, Tier } from './enum';
-import { YearMonthDay } from './period';
 import { PriceFormat } from './price-format';
+import { YearMonthDay } from './ymd';
 
 export type StripePrice = {
   id: string;

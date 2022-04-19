@@ -14,7 +14,7 @@ import Button from 'react-bootstrap/Button';
 import { loadStripePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
-import { isZeroYMD, YearMonthDay, ymdZero } from '../../data/period';
+import { isZeroYMD, ymdZero, YearMonthDay } from '../../data/ymd';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { TimezoneBadge } from '../../components/text/Badge';
 import { DateTime, dateTimeFromISO, dateTimeToISO, dateTimeZero } from '../../data/date-time';
