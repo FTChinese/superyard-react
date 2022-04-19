@@ -3,11 +3,10 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { FormikHelpers } from 'formik';
-import { useRecoilValue } from 'recoil';
 import { toast } from 'react-toastify';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Discount } from '../../data/price'
-import { ModeBadge, TimezoneBadge } from './Badge';
+import { ModeBadge, TimezoneBadge } from '../../components/text/Badge';
 import { buildDiscountParams, DiscountForm, DiscountFormVal } from './DiscountForm';
 import { createOffer, dropOffer, refreshPriceOffers } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
@@ -20,7 +19,7 @@ import { ListLines } from '../../components/list/TextList';
 import { OnPaywallPriceUpserted } from './callbacks';
 import { EffectivePeriod } from './EffectivePeriod';
 import { formatPrice } from '../../utils/format-price';
-import { liveModeState } from '../../store/recoil-state';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function DiscountList(
   props: {
@@ -34,7 +33,7 @@ export function DiscountList(
   }
 ) {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ refreshing, setRefreshing ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ show, setShow ] = useState(false);
@@ -221,7 +220,7 @@ function OfferRow(
   }
 ) {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ show, setShow ] = useState(false);
   const [ loading, setLoading ] = useState(false);
 

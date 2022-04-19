@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { toast } from 'react-toastify';
-import { useRecoilValue } from 'recoil';
 import { Cycle, cycleOpts, PriceKind, priceKindOpts, Tier } from '../../data/enum';
 import { NewPriceParams, UpdatePriceParams, Price } from '../../data/price';
 import { invalidMessages } from '../../data/form-value';
@@ -13,15 +12,14 @@ import ProgressButton from '../../components/buttons/ProgressButton';
 import { InputGroup } from '../../components/controls/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { loadStripePrice } from '../../repository/paywall';
-import { liveModeState } from '../../store/recoil-state';
 import { ResponseError } from '../../repository/response-error';
-import { StripeRawPrice } from '../../data/paywall';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
 import { isZeroYMD, YearMonthDay, ymdZero } from '../../data/period';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
-import { TimezoneBadge } from './Badge';
+import { TimezoneBadge } from '../../components/text/Badge';
 import { DateTime, dateTimeFromISO, dateTimeToISO, dateTimeZero } from '../../data/date-time';
 import { useAuth } from '../../components/hooks/useAuth';
+import { StripePrice } from '../../data/stripe-price';
 
 export type PriceFormVal = {
   cycle: Cycle;
@@ -79,7 +77,7 @@ export function PriceForm(
       values: PriceFormVal,
       formikHelpers: FormikHelpers<PriceFormVal>
     ) => void | Promise<any>;
-    onStripePrice: (price: StripeRawPrice) => void;
+    onStripePrice: (price: StripePrice) => void;
     errMsg: string;
     // Passed either from product when creating a price,
     // of existing price when updating.
@@ -88,7 +86,7 @@ export function PriceForm(
   }
 ) {
   const { passport } = useAuth();
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ errMsg, setErrMsg ] = useState('');
   const [ loading, setLoading ] = useState(false);
 
@@ -268,3 +266,7 @@ export function PriceForm(
     </>
   );
 }
+function useLiveMode(): { live: any; } {
+  throw new Error('Function not implemented.');
+}
+

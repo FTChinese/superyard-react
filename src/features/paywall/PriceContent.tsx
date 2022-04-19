@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
 import { formatYMD } from '../../data/period';
 import { Price } from '../../data/price';
-import { ModeBadge } from './Badge';
+import { sitemap } from '../../data/sitemap';
+import { ModeBadge } from '../../components/text/Badge';
 import { EffectiveRow } from './EffectivePeriod';
 
 export function PriceContent(
@@ -38,7 +40,9 @@ export function PriceContent(
         </tr>
         <tr>
           <th>Stripe Price ID</th>
-          <td>{props.price.stripePriceId}</td>
+          <td>
+            <Link to={sitemap.stripePriceOf(props.price.stripePriceId)}>{props.price.stripePriceId}</Link>
+          </td>
         </tr>
         <tr>
           <th>Mode</th>

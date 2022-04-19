@@ -4,14 +4,13 @@ import Card from 'react-bootstrap/Card';
 import { Price } from '../../data/price';
 import { PriceContent } from './PriceContent';
 import { attachIntroPrice, dropIntroPrice } from '../../repository/paywall';
-import { useRecoilValue } from 'recoil';
-import { liveModeState } from '../../store/recoil-state';
 import { CMSPassport } from '../../data/cms-account';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { OnProductUpserted } from './callbacks';
 import { formatPrice } from '../../utils/format-price';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function IntroductoryDetails(
   props: {
@@ -23,7 +22,7 @@ export function IntroductoryDetails(
   }
 ) {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ refreshing, setRefreshing ] = useState(false);
   const [ dropping, setDropping ] = useState(false);
 

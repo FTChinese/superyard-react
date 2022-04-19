@@ -2,16 +2,16 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { useRecoilValue } from 'recoil';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { CMSPassport } from '../../data/cms-account';
-import { PaywallPrice, Product, StripeRawPrice } from '../../data/paywall';
+import { Product } from '../../data/paywall';
 import { Price } from '../../data/price';
+import { StripePrice } from '../../data/stripe-price';
 import { createPrice, updatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { liveModeState } from '../../store/recoil-state';
 import { isoOffset } from '../../utils/time-formatter';
-import { ModeBadge } from './Badge';
+import { ModeBadge } from '../../components/text/Badge';
 import { OnPriceUpserted } from './callbacks';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
 import { StripeRawPriceContent } from './StripeRawPrice';
@@ -41,9 +41,9 @@ export function PriceFormDialog(
     return <div>Error: either product or price should be set</div>;
   }
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ err, setErr ] = useState('');
-  const [ stripePrice, setStripePrice ] = useState<StripeRawPrice>();
+  const [ stripePrice, setStripePrice ] = useState<StripePrice>();
   const offset = isoOffset(new Date());
 
   const handleSubmit = (
@@ -139,3 +139,5 @@ export function PriceFormDialog(
     </Modal>
   );
 }
+
+

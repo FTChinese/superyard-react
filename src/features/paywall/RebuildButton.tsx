@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import ProgressButton from '../../components/buttons/ProgressButton';
+import { paywallRebuiltState } from '../../components/hooks/recoil-state';
 import { useAuth } from '../../components/hooks/useAuth';
-import { JSONBlock } from '../../components/JSONBlock';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { RebuiltResult } from '../../data/paywall';
 import { rebuildPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { liveModeState, paywallRebuiltState } from '../../store/recoil-state';
-import { ModeBadge } from './Badge';
+import { ModeBadge } from '../../components/text/Badge';
+import { JSONBlock } from '../../components/text/JSONBlock';
 
 export function RebuildButton() {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const setPaywall = useSetRecoilState(paywallRebuiltState);
   const { passport } = useAuth();
   const [ submitting, setSubmitting ] = useState(false);

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { ErrorBoudary } from '../../components/ErrorBoundary';
 import { useAuth } from '../../components/hooks/useAuth';
-import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
@@ -11,15 +10,13 @@ import { ProductFormDialog } from '../../features/paywall/ProductFormDialog';
 import { ProductList } from '../../features/paywall/ProductList';
 import { listProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { liveModeState } from '../../store/recoil-state';
 
 export function ProductListPage() {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const { passport } = useAuth();
 
-  const [ err, setErr ] = useState('');
-  const [ loading, setLoading ] = useState(true);
+  const [ loading, setLoading ] = useState(loadingStarted());
   const [ products, setProducts ] = useState<Product[]>([]);
 
   if (!passport) {
@@ -27,18 +24,16 @@ export function ProductListPage() {
   }
 
   useEffect(() => {
-    setErr('');
-    setLoading(true);
+    setLoading(loadingStarted());
     setProducts([]);
 
     listProduct({ live, token: passport.token})
       .then(products => {
-        setLoading(false);
+        setLoading(loadingStopped());
         setProducts(products);
       })
       .catch((err: ResponseError) => {
-        setLoading(false);
-        setErr(err.message)
+        setLoading(loadingErrored(err.message));
       });
   }, [live]);
 
@@ -64,21 +59,19 @@ export function ProductListPage() {
   };
 
   return (
-    <ErrorBoudary errMsg={err}>
-      <LoadingSpinner loading={loading}>
-        <div>
-          <PageHead
-            passport={passport}
-            onCreated={handleCreate}
-          />
-          <ProductList
-            products={products}
-            passport={passport}
-            onActivated={handleActivate}
-          />
-        </div>
-      </LoadingSpinner>
-    </ErrorBoudary>
+    <ProgressOrError state={loading}>
+      <div>
+        <PageHead
+          passport={passport}
+          onCreated={handleCreate}
+        />
+        <ProductList
+          products={products}
+          passport={passport}
+          onActivated={handleActivate}
+        />
+      </div>
+    </ProgressOrError>
   );
 }
 

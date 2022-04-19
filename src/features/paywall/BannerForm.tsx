@@ -9,8 +9,8 @@ import { TextInput } from '../../components/controls/TextInput';
 import { DateTimeInput } from "../../components/controls/DateTimeInput";
 import { Textarea } from '../../components/controls/Textarea';
 import { isoOffset } from '../../utils/time-formatter';
-import { SupportMarkdown } from '../../components/SupportMarkdown';
 import { DateTime, dateTimeToISO } from '../../data/date-time';
+import { SupportMarkdown } from '../../components/text/SupportMarkdown';
 
 export type BannerFormVal = BannerParams & {
   start: DateTime;

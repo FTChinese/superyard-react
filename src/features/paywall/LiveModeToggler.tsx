@@ -1,10 +1,9 @@
-import { useRecoilState } from 'recoil';
 import { Toggler } from '../../components/controls/Toggler';
-import { liveModeState } from '../../store/recoil-state';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function LiveModeToggler() {
 
-  const [ live, setLive ] = useRecoilState(liveModeState);
+  const { live, setLive} = useLiveMode();
 
   return (
     <div className={live ? '' : 'text-danger'}>

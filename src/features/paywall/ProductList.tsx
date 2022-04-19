@@ -6,7 +6,7 @@ import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { activateProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { ActiveBadge } from './Badge';
+import { ActiveBadge } from '../../components/text/Badge';
 
 export function ProductList(
   props: {

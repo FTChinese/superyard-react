@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { PaywallPrice } from '../../data/paywall';
 import { formatPrice } from '../../utils/format-price';
-import { ActiveBadge } from './Badge';
+import { ActiveBadge } from '../../components/text/Badge';
 import { DiscountList } from './DiscountList';
 import { useState } from 'react';
 import { PriceFormDialog } from './PriceFormDialog';
@@ -13,9 +13,8 @@ import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from './ca
 import { activatePrice, archivePrice, attachIntroPrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
-import { useRecoilValue } from 'recoil';
-import { liveModeState } from '../../store/recoil-state';
 import { Price } from '../../data/price';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function PriceListItem(
   props: {
@@ -38,7 +37,7 @@ export function PriceListItem(
   const isRecurring = props.paywallPrice.kind === 'recurring';
   const isActive = props.paywallPrice.active;
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ show, setShow ] = useState(false);
   const [ activating, setActivating ] = useState(false);
   const [ archiving, setArchiving ] = useState(false);

@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { ActiveBadge, ModeBadge } from './Badge';
+import { ActiveBadge, ModeBadge } from '../../components/text/Badge';
 import { ProductFormDialog } from './ProductFormDialog';
 import { OnProductUpserted } from './callbacks';
 

@@ -1,8 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { LiveModeToggler } from '../../features/paywall/LiveModeToggler';
 import { RebuildButton } from '../../features/paywall/RebuildButton';
-import { ErrorBoudary } from '../../components/ErrorBoundary';
-import { LoadingSpinner } from '../../components/progress/LoadingSpinner';
 import { useEffect, useState } from 'react';
 import { loadPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
@@ -10,8 +8,10 @@ import { Paywall } from '../../data/paywall';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { PaywallContent } from '../../features/paywall/PaywallContent';
 import { useRecoilValue } from 'recoil';
-import { liveModeState, paywallRebuiltState } from '../../store/recoil-state';
 import { useAuth } from '../../components/hooks/useAuth';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { paywallRebuiltState } from '../../components/hooks/recoil-state';
+import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
 
 export function PaywallLayout() {
   return (
@@ -27,10 +27,10 @@ export function PaywallLayout() {
 
 export function PaywallPage() {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const { passport } = useAuth();
   const [ err, setErr ] = useState('');
-  const [ loading, setLoading ] = useState(true);
+  const [ loading, setLoading ] = useState(loadingStarted);
   const [ paywall, setPaywall ] = useState<Paywall>();
   const paywallRebuilt = useRecoilValue(paywallRebuiltState);
 
@@ -46,7 +46,7 @@ export function PaywallPage() {
     console.log(`Retrieving paywall data for ${live ? 'live' : 'sandbox'} mode`);
 
     setPaywall(undefined);
-    setLoading(true);
+    setLoading(loadingStarted());
     console.log('UI reset');
 
     loadPaywall({
@@ -54,35 +54,29 @@ export function PaywallPage() {
       token: passport.token,
     })
     .then(pw => {
-      setLoading(false);
+      setLoading(loadingStopped());
       setPaywall(pw);
       console.log(pw);
     })
     .catch((err: ResponseError) => {
-      setLoading(false);
-      setErr(err.message);
+      setLoading(loadingErrored(err.message));
     });
 
   }, [live]);
 
   return (
-    <ErrorBoudary
-      errMsg={err}
+    <ProgressOrError
+      state={loading}
     >
-      <LoadingSpinner
-        loading={loading}
-      >
-        <>
-          { paywall &&
-            <PaywallContent
-              paywall={paywall}
-              passport={passport}
-            />
-          }
-        </>
-      </LoadingSpinner>
-    </ErrorBoudary>
-
+      <>
+        { paywall &&
+          <PaywallContent
+            paywall={paywall}
+            passport={passport}
+          />
+        }
+      </>
+    </ProgressOrError>
   );
 }
 

@@ -7,7 +7,6 @@ import Modal from 'react-bootstrap/Modal'
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ImageRatio } from '../../components/graphics/ImageRatio';
-import { JSONBlock } from '../../components/JSONBlock';
 import { TextList } from '../../components/list/TextList';
 import { CMSPassport } from '../../data/cms-account';
 import { Banner, Paywall, PaywallDoc, PaywallProduct, Promo } from '../../data/paywall';
@@ -15,12 +14,12 @@ import { Discount, Price } from '../../data/price';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { formatPrice } from '../../utils/format-price';
-import { ModeBadge } from './Badge';
+import { ModeBadge } from '../../components/text/Badge';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
 import { EffectivePeriod } from './EffectivePeriod';
-import { useRecoilValue } from 'recoil';
-import { liveModeState } from '../../store/recoil-state';
 import { formatYMD } from '../../data/period';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { JSONBlock } from '../../components/text/JSONBlock';
 
 
 export function PaywallContent(
@@ -83,7 +82,7 @@ function BannerCard(
   }
 ) {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ show, setShow ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
@@ -180,7 +179,7 @@ function PromoCard(
 
   const isEmpty = props.promo.id === '';
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ show, setShow ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
@@ -437,5 +436,3 @@ function PriceOfferRow(
     </tr>
   );
 }
-
-

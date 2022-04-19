@@ -2,13 +2,12 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { useRecoilValue } from 'recoil';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { createProduct, updateProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { liveModeState } from '../../store/recoil-state';
-import { ModeBadge } from './Badge';
+import { ModeBadge } from '../../components/text/Badge';
 import { OnProductUpserted } from './callbacks';
 import { ProductFormVal, ProductForm, buildNewProductParams, buildUpdateProductParams } from './ProductForm';
 
@@ -26,7 +25,7 @@ export function ProductFormDialog(
   }
 ) {
 
-  const live = useRecoilValue(liveModeState);
+  const { live } = useLiveMode();
   const [ err, setErr ] = useState('');
 
   const handleSubmit = (
