@@ -1,9 +1,9 @@
-import { ISOPeriod } from '../../data/period';
+import { ValidPeriod } from '../../data/period';
 import { localizeISO } from '../../utils/format-datetime';
 
 export function EffectivePeriod(
   props: {
-    period: Partial<ISOPeriod>;
+    period: Partial<ValidPeriod>;
     direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
   }) {
   if (!props.period.startUtc || !props.period.endUtc) {
