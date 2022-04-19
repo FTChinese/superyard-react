@@ -1,6 +1,7 @@
 import { PriceKind, Tier } from './enum';
-import { ISOPeriod, YearMonthDay } from './period';
+import { ValidPeriod } from './period';
 import { Discount, Price } from './price';
+import { StripePrice } from './stripe-price';
 
 export type BannerParams = {
   heading: string;
@@ -14,9 +15,9 @@ export type Banner = {
   id: string;
 } & BannerParams;
 
-export type Promo = Banner & ISOPeriod;
+export type Promo = Banner & ValidPeriod;
 
-export type PromoParams =  BannerParams & ISOPeriod;
+export type PromoParams =  BannerParams & ValidPeriod;
 
 export type PaywallDoc = {
   id: number;
@@ -66,24 +67,6 @@ export type RebuiltResult = {
   paywall: Paywall;
   stripePrices: StripePrice[];
 }
-
-export type StripePrice = {
-  id: string;
-  active: boolean;
-  currency: string;
-  isIntroductory: boolean;
-  kind: PriceKind;
-  liveMode: boolean;
-  nickname: string;
-  productId: string;
-  periodCount: YearMonthDay;
-  tier: Tier;
-  unitAmount: number;
-  startUtc?: string;
-  endUtc?: string;
-  created: number;
-
-};
 
 export type StripeRawPrice = {
   id: string;
