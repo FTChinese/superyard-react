@@ -1,6 +1,6 @@
 import { DiscountStatus, PriceKind, Tier } from './enum';
-import { newMoneyParts, PriceParts } from './money-parts';
-import { formatPeriods, YearMonthDay } from './period';
+import { YearMonthDay } from './period';
+import { PriceFormat } from './price-format';
 
 export type StripePrice = {
   id: string;
@@ -19,14 +19,13 @@ export type StripePrice = {
   created: number;
 };
 
-export function newStripePriceParts(sp: StripePrice): PriceParts {
-  return {
-    ...newMoneyParts(
-      sp.currency,
-      sp.unitAmount / 100,
-    ),
-    cycle: '/' + formatPeriods(sp.periodCount, true)
-  }
+export function stripePriceFormat(sp: StripePrice): PriceFormat {
+  return new PriceFormat({
+    currency: sp.currency,
+    amount: sp.unitAmount / 100,
+    period: sp.periodCount,
+    recurring: true,
+  });
 }
 
 export type StripeCoupon = {
@@ -42,4 +41,4 @@ export type StripeCoupon = {
   startUtc?: string;
   redeemeBy: number;
   status: DiscountStatus
-}
+};
