@@ -1,6 +1,6 @@
 import { Tier } from './enum';
 import { ValidPeriod } from './period';
-import { Discount, Price } from './price';
+import { Discount, Price } from './ftc-price';
 import { StripePrice } from './stripe-price';
 
 export type BannerParams = {
