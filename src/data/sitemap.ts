@@ -18,6 +18,7 @@ export const sitePath = {
 
   paywall: 'paywall',
   products: 'products',
+  stripePrices: 'stripe/prices',
 };
 
 export const sitemap = {
@@ -26,6 +27,9 @@ export const sitemap = {
   forgotPassword: `/${sitePath.forgotPassword}`,
   paywall: `/${sitePath.paywall}`,
   products: `/${sitePath.paywall}/products`,
+  stripePriceOf: function(id: string): string {
+    return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`
+  },
 };
 
 export function passwordResetUrl(baseUrl: string): string {
