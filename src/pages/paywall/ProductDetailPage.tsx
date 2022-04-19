@@ -11,7 +11,7 @@ import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { IntroductoryDetails } from '../../features/product/IntroductoryDetails';
 import { isRecurring } from '../../data/enum';
-import { Price } from '../../data/price';
+import { Price } from '../../data/ftc-price';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
