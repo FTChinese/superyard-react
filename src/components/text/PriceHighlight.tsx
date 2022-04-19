@@ -1,10 +1,11 @@
-import { PriceParts } from '../../data/money-parts';
+import { PriceParts } from '../../data/price-format';
 
 export function PriceHighlight(
   props: {
     parts: PriceParts;
   }
 ) {
+
   return (
     <>
       <span>{props.parts.symbol}</span>
