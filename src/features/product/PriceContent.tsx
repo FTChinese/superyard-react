@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { formatYMD } from '../../data/period';
-import { Price } from '../../data/price';
+import { Price } from '../../data/ftc-price';
 import { sitemap } from '../../data/sitemap';
 import { ModeBadge } from '../../components/text/Badge';
 import { EffectiveRow } from '../paywall/EffectivePeriod';

@@ -6,7 +6,7 @@ import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { Price } from '../../data/price';
+import { Price } from '../../data/ftc-price';
 import { StripePrice } from '../../data/stripe-price';
 import { createPrice, updatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';

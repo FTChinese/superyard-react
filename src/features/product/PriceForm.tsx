@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { toast } from 'react-toastify';
 import { Cycle, cycleOpts, PriceKind, priceKindOpts, Tier } from '../../data/enum';
-import { NewPriceParams, UpdatePriceParams, Price } from '../../data/price';
+import { NewPriceParams, UpdatePriceParams, Price } from '../../data/ftc-price';
 import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
 import { TextInput } from '../../components/controls/TextInput';
@@ -20,6 +20,7 @@ import { TimezoneBadge } from '../../components/text/Badge';
 import { DateTime, dateTimeFromISO, dateTimeToISO, dateTimeZero } from '../../data/date-time';
 import { useAuth } from '../../components/hooks/useAuth';
 import { StripePrice } from '../../data/stripe-price';
+import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export type PriceFormVal = {
   cycle: Cycle;
@@ -265,8 +266,5 @@ export function PriceForm(
       </Formik>
     </>
   );
-}
-function useLiveMode(): { live: any; } {
-  throw new Error('Function not implemented.');
 }
 

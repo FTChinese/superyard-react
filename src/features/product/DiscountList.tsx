@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import { FormikHelpers } from 'formik';
 import { toast } from 'react-toastify';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { Discount } from '../../data/price'
+import { Discount, ftcPriceFormat } from '../../data/ftc-price'
 import { ModeBadge, TimezoneBadge } from '../../components/text/Badge';
 import { buildDiscountParams, DiscountForm, DiscountFormVal } from './DiscountForm';
 import { createOffer, dropOffer, refreshPriceOffers } from '../../repository/paywall';
@@ -18,7 +18,6 @@ import { PriceContent } from './PriceContent';
 import { ListLines } from '../../components/list/TextList';
 import { OnPaywallPriceUpserted } from './callbacks';
 import { EffectivePeriod } from '../paywall/EffectivePeriod';
-import { formatPrice } from '../../utils/format-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function DiscountList(
@@ -167,7 +166,12 @@ export function DiscountList(
             />}
           >
             <>
-              <h5>Create a discount for price {formatPrice(props.price)}</h5>
+              <h5>
+                Create a discount for price
+                {
+                  ftcPriceFormat(props.price).format()
+                }
+              </h5>
               <PriceContent
                 price={props.price}
               />

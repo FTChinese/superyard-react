@@ -2,7 +2,6 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { PaywallPrice } from '../../data/paywall';
-import { formatPrice } from '../../utils/format-price';
 import { ActiveBadge } from '../../components/text/Badge';
 import { DiscountList } from './DiscountList';
 import { useState } from 'react';
@@ -13,7 +12,7 @@ import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from './ca
 import { activatePrice, archivePrice, attachIntroPrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
-import { Price } from '../../data/price';
+import { ftcPriceFormat, Price } from '../../data/ftc-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 
 export function PriceListItem(
@@ -166,7 +165,9 @@ export function PriceListItem(
         <Card.Header className="d-flex justify-content-between">
           <div>
             <span className="me-2">
-              {formatPrice(props.paywallPrice)}
+              {
+                ftcPriceFormat(props.paywallPrice).format()
+              }
             </span>
             {
               props.paywallPrice.active &&

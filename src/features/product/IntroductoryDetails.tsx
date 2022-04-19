@@ -1,13 +1,12 @@
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { Price } from '../../data/price';
+import { ftcPriceFormat, Price } from '../../data/ftc-price';
 import { attachIntroPrice, dropIntroPrice } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
-import { formatPrice } from '../../utils/format-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { OnProductUpserted } from './callbacks';
 import { PriceContent } from './PriceContent';
@@ -72,7 +71,9 @@ export function IntroductoryDetails(
   return (
     <Card>
       <Card.Header className="d-flex justify-content-between">
-        <span>{formatPrice(props.price)}</span>
+        <span>
+          {ftcPriceFormat(props.price).format()}
+        </span>
         <ButtonGroup size="sm">
           <Button
             variant="outline-primary"
