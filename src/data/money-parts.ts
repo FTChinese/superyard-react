@@ -1,3 +1,4 @@
+
 export function formatMoney(currency: string, amount: number): string {
   return new Intl.NumberFormat(undefined, {
       style: 'currency',
@@ -7,19 +8,29 @@ export function formatMoney(currency: string, amount: number): string {
     .format(amount);
 }
 
+/**
+ * MoneyParts dissects payment amount so that UI
+ * could display each part in different ways.
+ */
 export type MoneyParts = {
   symbol: string;
   integer: string;
   decimal: string;
 };
 
-export function newMoneyParts(currency: string, amount: number): MoneyParts {
-  return new Intl.NumberFormat(undefined, {
+export class MoneyFormat {
+  constructor(
+    private currency: string,
+    private amount: number,
+  ) {}
+
+  formatToParts(): MoneyParts {
+    return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: currency.toUpperCase(),
+      currency: this.currency.toUpperCase(),
       currencyDisplay: 'narrowSymbol',
     })
-    .formatToParts(amount)
+    .formatToParts(this.amount)
     .reduce<MoneyParts>((prev, curr) => {
       switch (curr.type) {
         case 'currency':
@@ -41,11 +52,15 @@ export function newMoneyParts(currency: string, amount: number): MoneyParts {
       symbol: '',
       integer: '',
       decimal: '',
-    })
+    });
+  }
+
+  format(): string {
+    return new Intl.NumberFormat(undefined, {
+        style: 'currency',
+        currency: this.currency.toUpperCase(),
+        currencyDisplay: 'narrowSymbol',
+      })
+      .format(this.amount);
+  }
 }
-
-export type PriceParts = MoneyParts & {
-  cycle: string;
-}
-
-
