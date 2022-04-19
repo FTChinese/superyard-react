@@ -5,7 +5,7 @@ export function Toggler(
     name: string;
     label: string;
     checked: boolean;
-    onToggle: (checkd: boolean) => void;
+    onToggle: (checked: boolean) => void;
   }
 ) {
 
