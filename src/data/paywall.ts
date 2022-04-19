@@ -1,4 +1,4 @@
-import { PriceKind, Tier } from './enum';
+import { Tier } from './enum';
 import { ValidPeriod } from './period';
 import { Discount, Price } from './price';
 import { StripePrice } from './stripe-price';
@@ -68,32 +68,3 @@ export type RebuiltResult = {
   stripePrices: StripePrice[];
 }
 
-export type StripeRawPrice = {
-  id: string;
-  active: boolean;
-  currency: string;
-  metadata: {
-    tier: Tier;
-    years: string;
-    months: string;
-    days: string;
-    introductory: 'true' | 'false';
-    start_utc?: string;
-    end_utc?: string;
-  };
-  nickname: string;
-  product: {
-    id: string;
-  },
-  recurring?: {
-    aggregate_usage: 'sum' | 'last_during_period';
-    interval: 'month' | 'year' | 'week' | 'day';
-    interval_count: number;
-    usage_type: 'metered' | 'licensed';
-  },
-  type: PriceKind;
-  unit_amount: number;
-  deleted: boolean;
-  livemode: boolean;
-  created: number;
-};

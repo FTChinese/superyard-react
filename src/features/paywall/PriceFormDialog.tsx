@@ -14,7 +14,7 @@ import { isoOffset } from '../../utils/time-formatter';
 import { ModeBadge } from '../../components/text/Badge';
 import { OnPriceUpserted } from './callbacks';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
-import { StripeRawPriceContent } from './StripeRawPrice';
+import { StripePriceDetail } from './StripePriceDetail';
 
 /**
  * @description A dialog presenting PriceForm.
@@ -122,7 +122,7 @@ export function PriceFormDialog(
         <FullscreenTwoCols
           right={
             stripePrice &&
-            <StripeRawPriceContent
+            <StripePriceDetail
               price={stripePrice}
             />
           }
