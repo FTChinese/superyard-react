@@ -6,6 +6,8 @@ import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { Flex } from '../../components/layout/Flex';
 import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
+import { CMSPassport } from '../../data/cms-account';
+import { isOneTime } from '../../data/enum';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { CouponFormDialog } from '../../features/stripe/CouponFormDialog';
 import { CouponItem } from '../../features/stripe/CouponItem';
@@ -16,15 +18,11 @@ import { ResponseError } from '../../repository/response-error';
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
   const { passport } = useAuth();
-  const [ show, setShow ] = useState(false);
+
   const { live } = useLiveMode();
 
   const [ priceLoading, setPriceLoading ] = useState(loadingStopped);
   const [ stripePrice, setStripePrice ] = useState<StripePrice>();
-
-  const [ couponsLoading, setCouponsLoading ] = useState(loadingStopped);
-  const [ coupons, setCoupons ] = useState<StripeCoupon[]>();
-
 
   if (!priceId) {
     return <Missing message="Missing price id"/>;
@@ -34,6 +32,7 @@ export function StripePricePage() {
     return <Unauthorized/>;
   }
 
+  // Load stripe price
   useEffect(() => {
     setPriceLoading(loadingStarted());
     setStripePrice(undefined);
@@ -51,26 +50,6 @@ export function StripePricePage() {
       })
       .catch((err: ResponseError) => {
         setPriceLoading(loadingErrored(err.message));
-      });
-
-  }, [live]);
-
-  useEffect(() =>{
-    setCouponsLoading(loadingStarted());
-
-    loadStripeCoupons(
-        priceId,
-        {
-          live,
-          token: passport.token
-        }
-      )
-      .then(c => {
-        setCouponsLoading(loadingStopped());
-        setCoupons(c);
-      })
-      .catch((err: ResponseError) => {
-        setCouponsLoading(loadingErrored(err.message));
       });
 
   }, [live]);
@@ -94,6 +73,69 @@ export function StripePricePage() {
         </ProgressOrError>
       </section>
 
+      {
+        stripePrice &&
+        <CouponList
+          passport={passport}
+          live={live}
+          price={stripePrice}
+        />
+      }
+    </>
+  );
+}
+
+function CouponList(
+  props: {
+    passport: CMSPassport,
+    live: boolean;
+    price: StripePrice
+  }
+) {
+
+  const [ show, setShow ] = useState(false);
+
+  const [ couponsLoading, setCouponsLoading ] = useState(loadingStopped);
+  const [ coupons, setCoupons ] = useState<StripeCoupon[]>([]);
+
+  if (isOneTime(props.price.kind)) {
+    return (
+      <div>Introductory price cannot have any coupons</div>
+    );
+  }
+
+  // Load coupons attached to this price.
+  useEffect(() =>{
+    setCouponsLoading(loadingStarted());
+
+    loadStripeCoupons(
+        props.price.id,
+        {
+          live: props.live,
+          token: props.passport.token
+        }
+      )
+      .then(c => {
+        setCouponsLoading(loadingStopped());
+        setCoupons(c);
+      })
+      .catch((err: ResponseError) => {
+        setCouponsLoading(loadingErrored(err.message));
+      });
+
+  }, [props.live]);
+
+  const handleCoupon = (coupon: StripeCoupon) => {
+    setShow(false);
+
+    setCoupons([
+      coupon,
+      ...coupons
+    ])
+  };
+
+  return (
+    <>
       <section className="mb-3">
 
         <Flex>
@@ -113,20 +155,24 @@ export function StripePricePage() {
         >
           <>
             {
-              coupons?.map(c => (
+              coupons.map(c =>
                 <CouponItem
+                  key={c.id}
                   coupon={c}
                 />
-              ))
+              )
             }
           </>
         </ProgressOrError>
       </section>
 
       <CouponFormDialog
+        passport={props.passport}
+        live={props.live}
+        price={props.price}
         show={show}
         onHide={() => setShow(false)}
-        live={live}
+        onCreated={handleCoupon}
       />
     </>
   );
