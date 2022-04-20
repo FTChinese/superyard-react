@@ -1,4 +1,5 @@
-import { DiscountStatus, PriceKind, Tier } from './enum';
+import { DiscountStatus, isRecurring, PriceKind, Tier } from './enum';
+import { MoneyFormat } from './money-parts';
 import { PriceFormat } from './price-format';
 import { YearMonthDay } from './ymd';
 
@@ -6,7 +7,6 @@ export type StripePrice = {
   id: string;
   active: boolean;
   currency: string;
-  isIntroductory: boolean;
   kind: PriceKind;
   liveMode: boolean;
   nickname: string;
@@ -24,7 +24,7 @@ export function stripePriceFormat(sp: StripePrice): PriceFormat {
     currency: sp.currency,
     amount: sp.unitAmount / 100,
     period: sp.periodCount,
-    recurring: true,
+    recurring: isRecurring(sp.kind),
   });
 }
 
@@ -48,3 +48,11 @@ export type StripeCoupon = {
   redeemBy: number;
   status: DiscountStatus
 };
+
+export function foramtCouponAmount(c: StripeCoupon): string {
+  return new MoneyFormat(
+    c.currency,
+    c.amountOff / 100
+  )
+    .format()
+}
