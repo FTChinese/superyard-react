@@ -43,14 +43,14 @@ export function isoOffset(date: Date): string {
   return `${sign}${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
 }
 
-function padZero(num: number): string {
+export function padZero(num: number): string {
   return num.toFixed().padStart(2, '0');
 }
 
 /**
  * @description Turn a Date instance into ISO8601 time string in browser's time zone.
  */
-export function formatISOLocalTime(date: Date): string {
+export function formatISOTimeLocal(date: Date): string {
   return [
     padZero(date.getHours()),
     padZero(date.getMinutes()),
@@ -62,13 +62,13 @@ export function formatISOLocalTime(date: Date): string {
 /**
  * @description Turn a Date instance into ISO8601 data time string in browser's timezone
  */
-export function formatISOLocalDateTime(date: Date): string {
+export function formatISOLocal(date: Date): string {
   return [
     date.getFullYear(),
     padZero(date.getMonth() + 1),
     padZero(date.getDate()),
   ]
-    .join('-') + `T${formatISOLocalTime(date)}`;
+    .join('-') + `T${formatISOTimeLocal(date)}`;
 }
 
 /**
@@ -83,7 +83,7 @@ export function formtISOTimeUTC(date: Date): string {
     .join(':');
 }
 
-export function formatISODatetimeUTC(date: Date): string {
+export function formatISOUTC(date: Date): string {
   return [
     `${date.getUTCFullYear()}`,
     padZero(date.getUTCMonth() + 1),

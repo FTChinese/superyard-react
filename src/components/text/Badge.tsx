@@ -1,5 +1,5 @@
 import Badge from 'react-bootstrap/Badge';
-import { isoOffset } from '../../utils/time-formatter';
+import { isoOffset } from '../../utils/time-format';
 
 export function ModeBadge(
   props: {

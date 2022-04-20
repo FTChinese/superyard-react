@@ -1,4 +1,5 @@
 import Modal from 'react-bootstrap/Modal';
+import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
 import { ModeBadge } from '../../components/text/Badge';
 
 export function CouponFormDialog(
@@ -22,7 +23,11 @@ export function CouponFormDialog(
       </Modal.Header>
 
       <Modal.Body>
+        <FullscreenSingleCol>
+          <>
 
+          </>
+        </FullscreenSingleCol>
       </Modal.Body>
     </Modal>
   );

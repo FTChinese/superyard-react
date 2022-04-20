@@ -17,8 +17,8 @@ export class PriceFormat {
 
   private get formatCycle(): string {
     return new YearMonthDayFormat(this.params.period)
-    .withSeporator()
-    .formatToCycle(this.params.recurring);
+      .withSeporator()
+      .formatToCycle(this.params.recurring);
   }
 
   formatToParts(): PriceParts {

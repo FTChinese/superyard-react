@@ -17,7 +17,7 @@ import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
 import { isZeroYMD, ymdZero, YearMonthDay } from '../../data/ymd';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { TimezoneBadge } from '../../components/text/Badge';
-import { DateTime, dateTimeFromISO, dateTimeToISO, dateTimeZero } from '../../data/date-time';
+import { DateTimeParts, dateTimePartsFromISO, concatDateTimePartsISO, defaultDateTimeParts } from '../../data/datetime-parts';
 import { useAuth } from '../../components/hooks/useAuth';
 import { StripePrice } from '../../data/stripe-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
@@ -29,8 +29,8 @@ export type PriceFormVal = {
   nickname?: string;
   periodCount: YearMonthDay;
   stripePriceId: string;
-  start: DateTime;
-  end: DateTime;
+  start: DateTimeParts;
+  end: DateTimeParts;
   unitAmount: number;
 };
 
@@ -55,10 +55,10 @@ export function buildNewPriceParams(
     stripePriceId: v.stripePriceId,
     startUtc: isRecurring
       ? undefined
-      : (dateTimeToISO(v.start, meta.offset) || undefined),
+      : (concatDateTimePartsISO(v.start, meta.offset) || undefined),
     endUtc: isRecurring
       ? undefined
-      : (dateTimeToISO(v.end, meta.offset) || undefined),
+      : (concatDateTimePartsISO(v.end, meta.offset) || undefined),
     unitAmount: v.unitAmount,
   };
 }
@@ -145,11 +145,11 @@ export function PriceForm(
           periodCount: props.price?.periodCount || ymdZero(),
           stripePriceId: props.price?.stripePriceId || '',
           start: props.price?.startUtc
-            ? dateTimeFromISO(props.price.startUtc)
-            : dateTimeZero(),
+            ? dateTimePartsFromISO(props.price.startUtc)
+            : defaultDateTimeParts(),
           end: props.price?.endUtc
-            ? dateTimeFromISO(props.price.endUtc)
-            : dateTimeZero(),
+            ? dateTimePartsFromISO(props.price.endUtc)
+            : defaultDateTimeParts(),
           unitAmount: props.price?.unitAmount || 0,
         }}
         validationSchema={Yup.object({

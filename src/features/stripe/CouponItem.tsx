@@ -24,7 +24,7 @@ export function CouponItem(
     },
     {
       head: 'Redeem before',
-      data: [(new Date(props.coupon.redeemeBy)).toISOString()]
+      data: [(new Date(props.coupon.redeemBy)).toISOString()]
     },
     {
       head: 'Live',

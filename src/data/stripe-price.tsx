@@ -28,6 +28,12 @@ export function stripePriceFormat(sp: StripePrice): PriceFormat {
   });
 }
 
+export type CouponParams = {
+  priceId: string;
+  startUtc: string;
+  endUtc: string;
+};
+
 export type StripeCoupon = {
   id: string;
   amountOff: number;
@@ -39,6 +45,6 @@ export type StripeCoupon = {
   name: string;
   priceId?: string;
   startUtc?: string;
-  redeemeBy: number;
+  redeemBy: number;
   status: DiscountStatus
 };

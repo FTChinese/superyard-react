@@ -12,7 +12,7 @@ import { Dropdown } from '../../components/controls/Dropdown';
 import ProgressButton from '../../components/buttons/ProgressButton';
 import { Switch } from '../../components/controls/Switch';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
-import { DateTime, dateTimeToISO } from '../../data/date-time';
+import { DateTimeParts, concatDateTimePartsISO } from '../../data/datetime-parts';
 
 export type DiscountFormVal = {
   title: string;
@@ -20,8 +20,8 @@ export type DiscountFormVal = {
   priceOff: number;
   recurring: boolean;
   period: YearMonthDay;
-  start: DateTime;
-  end: DateTime;
+  start: DateTimeParts;
+  end: DateTimeParts;
 };
 
 export function buildDiscountParams(
@@ -38,8 +38,8 @@ export function buildDiscountParams(
     priceOff: v.priceOff,
     recurring: v.recurring,
     overridePeriod: v.period,
-    startUtc: dateTimeToISO(v.start, meta.offset) || undefined,
-    endUtc: dateTimeToISO(v.end, meta.offset) || undefined,
+    startUtc: concatDateTimePartsISO(v.start, meta.offset) || undefined,
+    endUtc: concatDateTimePartsISO(v.end, meta.offset) || undefined,
     createdBy: meta.createdBy,
     priceId: meta.priceId,
   }

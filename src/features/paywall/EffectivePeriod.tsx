@@ -1,5 +1,4 @@
 import { ValidPeriod } from '../../data/period';
-import { localizeISO } from '../../utils/format-datetime';
 
 export function EffectivePeriod(
   props: {
@@ -12,8 +11,8 @@ export function EffectivePeriod(
 
   return (
     <span className={`d-flex flex-${props.direction || 'row'}`}>
-      <span>Start: {localizeISO(props.period.startUtc)}</span>
-      <span>End: {localizeISO(props.period.endUtc)}</span>
+      <span>Start: {props.period.startUtc}</span>
+      <span>End: {props.period.endUtc}</span>
     </span>
   );
 }

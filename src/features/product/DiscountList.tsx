@@ -10,7 +10,7 @@ import { ModeBadge, TimezoneBadge } from '../../components/text/Badge';
 import { buildDiscountParams, DiscountForm, DiscountFormVal } from './DiscountForm';
 import { createOffer, dropOffer, refreshPriceOffers } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
-import { isoOffset } from '../../utils/time-formatter';
+import { isoOffset } from '../../utils/time-format'
 import { ResponseError } from '../../repository/response-error';
 import { PaywallPrice } from '../../data/paywall';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
