@@ -1,10 +1,26 @@
-export function extractDate(isoStr: string): string {
+import { format } from 'date-fns';
+
+export function extractISODate(isoStr: string): string {
   const arr = isoStr.split('T');
   if (arr.length > 1) {
     return arr[0];
   }
 
   return isoStr;
+}
+
+export const timeLayout = {
+  fullCn: 'yyyy年M月d日H时m分s秒',
+  isoDate: 'yyyy-MM-dd',
+  isoTime: 'hh:mm:ss'
+}
+
+export function formatNow(layout: string): string {
+  return format(new Date(), layout);
+}
+
+export function formatDate(date: Date, layout: string): string {
+  return format(date, layout);
 }
 
 /**
@@ -43,7 +59,11 @@ export function isoOffset(date: Date): string {
   return `${sign}${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
 }
 
-export function padZero(num: number): string {
+export function currentZone(): string {
+  return isoOffset(new Date());
+}
+
+function padZero(num: number): string {
   return num.toFixed().padStart(2, '0');
 }
 
