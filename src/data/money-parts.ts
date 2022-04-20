@@ -1,13 +1,3 @@
-
-export function formatMoney(currency: string, amount: number): string {
-  return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: currency.toUpperCase(),
-      currencyDisplay: 'narrowSymbol',
-    })
-    .format(amount);
-}
-
 /**
  * MoneyParts dissects payment amount so that UI
  * could display each part in different ways.
