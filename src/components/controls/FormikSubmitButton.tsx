@@ -34,7 +34,7 @@ export function FormikSubmitButton<T>(
 
   const btn = (
     <Button
-      disabled={!(dirty && isValid) || isSubmitting}
+      disabled={!dirty || !isValid || isSubmitting}
       size="sm"
       variant={props.variant}
       type="submit"
