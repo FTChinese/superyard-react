@@ -39,6 +39,10 @@ export const endpoint = {
 
   stripePrice: `${stripeBase}/prices`,
   stripePriceOf: function(id: string): string {
-    return `${stripeBase}/prices/${id}`
+    return `${stripeBase}/prices/${id}`;
+  },
+
+  stripeCouponOf: function(id: string): string {
+    return `${stripeBase}/coupons/${id}`;
   }
 };
