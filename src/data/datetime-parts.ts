@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns';
-import { padSeconds } from '../utils/time-format';
+import { padSeconds, timeLayout } from '../utils/time-format';
 
 export type DateTimeParts = {
   date: string;
@@ -13,15 +13,12 @@ export function defaultDateTimeParts(): DateTimeParts {
   };
 }
 
-/**
- * @deprecated - use DateTimeFormat.fromISO().foratToParts()
- */
 export function dateTimePartsFromISO(isoStr: string): DateTimeParts {
   const v = parseISO(isoStr);
 
   return {
-    date: format(v, 'yyyy-MM-dd'),
-    time: format(v, 'hh:mm:ss'),
+    date: format(v, timeLayout.isoDate),
+    time: format(v, timeLayout.isoTime),
   };
 }
 
