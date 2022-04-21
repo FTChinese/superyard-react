@@ -1,4 +1,4 @@
-import { pluralize } from '../utils/pluralize';
+import { formatDuration } from 'date-fns';
 import { Cycle } from './enum';
 
 enum TemporalUnit {
@@ -11,12 +11,6 @@ const temporalUnitsCN: Record<TemporalUnit, string> = {
   0: '年',
   1: '月',
   2: '天',
-}
-
-const temporalUnitsEN: Record<TemporalUnit, string> = {
-  0: 'year',
-  1: 'month',
-  2: 'day',
 }
 
 type TemporalDuration = {
@@ -38,10 +32,6 @@ function formatDurationCN(dur: TemporalDuration, recurring: boolean): string {
     }
 
     return `${dur.count}${infix}${temporalUnitsCN[dur.unit]}`;
-}
-
-function formatDurationEn(dur: TemporalDuration): string {
-  return `${dur.count} ${pluralize(temporalUnitsEN[dur.unit], dur.count > 1)}`
 }
 
 export type YearMonthDay = {
@@ -78,7 +68,15 @@ export function ymdToCycle(ymd: YearMonthDay): Cycle {
   return 'month';
 }
 
-export class YearMonthDayFormat {
+export function formatYMD(ymd: YearMonthDay): string {
+  return formatDuration({
+    years: ymd.years,
+    months: ymd.months,
+    days: ymd.days,
+  });
+}
+
+export class CycleFormat {
 
   private separator = '';
 
@@ -101,13 +99,13 @@ export class YearMonthDayFormat {
     ];
   }
 
-  withSeporator(s: string = '/'): YearMonthDayFormat {
+  withSeporator(s: string = '/'): CycleFormat {
     this.separator = s;
 
     return this;
   }
 
-  formatToCycle(recurring: boolean): string {
+  format(recurring: boolean): string {
     const durs = this.toDurations
       .filter(item => item.count > 0);
 
@@ -127,11 +125,5 @@ export class YearMonthDayFormat {
           return prev;
         }, '')
     }
-  }
-
-  format(): string {
-    return this.toDurations
-      .map(dur => formatDurationEn(dur))
-      .join(' ');
   }
 }
