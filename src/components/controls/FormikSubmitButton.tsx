@@ -16,19 +16,19 @@ export function FormikSubmitButton<T>(
   // FormikProps contains all of them.
   const { dirty, isValid, isSubmitting } = useFormikContext<T>();
 
-  let wrapperClass = '';
+  let wrapperClass = 'mt-3';
 
   switch (props.wrapped) {
     case 'block':
-      wrapperClass = 'd-grid mt-3';
+      wrapperClass += ' d-grid';
       break;
 
     case 'end':
-      wrapperClass = 'text-end mt-3';
+      wrapperClass += ' text-end';
       break;
 
     default:
-      wrapperClass = 'mt-3';
+      wrapperClass += ' d-grid';
       break;
   }
 
