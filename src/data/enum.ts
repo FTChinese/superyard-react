@@ -13,6 +13,8 @@ export type DiscountStatus = 'active' | 'paused' | 'cancelled';
 export type WxOAuthKind = 'login' | 'link';
 export type WxUnlinkAnchor = 'ftc' | 'wechat';
 
+export type Direction = 'row' | 'column';
+
 export const tiers: Tier[] = ['standard', 'premium'];
 export const cycles: Cycle[] = ['month', 'year'];
 
