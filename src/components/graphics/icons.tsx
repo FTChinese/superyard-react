@@ -47,3 +47,20 @@ export function XLarge() {
   );
 }
 
+export function AliPayBrand() {
+  return (
+    <img src="https://www.ftacademy.cn/images/alipay-68x24.png" />
+  )
+}
+
+export function WxPayBrand() {
+  return (
+    <img src="https://www.ftacademy.cn/images/wxpay-113x24.png" />
+  )
+}
+
+export function StripeBrand() {
+  return (
+    <img src="https://www.ftacademy.cn/images/stripe-58x24.png" />
+  )
+}
