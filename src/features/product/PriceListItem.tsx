@@ -7,7 +7,7 @@ import { DiscountList } from './DiscountList';
 import { useState } from 'react';
 import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
-import { PriceContent } from './PriceContent';
+import { PriceTable } from './PriceTable';
 import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from './callbacks';
 import { activatePrice, archivePrice, attachIntroPrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
@@ -194,7 +194,7 @@ export function PriceListItem(
           </ButtonGroup>
         </Card.Header>
         <Card.Body>
-          <PriceContent
+          <PriceTable
             price={props.paywallPrice}
           />
         </Card.Body>

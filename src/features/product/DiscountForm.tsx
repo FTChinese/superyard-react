@@ -9,10 +9,11 @@ import { invalidMessages } from '../../data/form-value';
 import { TextInput } from '../../components/controls/TextInput';
 import { DateTimeInput } from "../../components/controls/DateTimeInput";
 import { Dropdown } from '../../components/controls/Dropdown';
-import ProgressButton from '../../components/buttons/ProgressButton';
 import { Switch } from '../../components/controls/Switch';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
-import { DateTimeParts, concatDateTimePartsISO } from '../../data/datetime-parts';
+import { DateTimeParts, joinDateTimeParts } from '../../data/datetime-parts';
+import { isoOffset } from '../../utils/time-format';
+import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 
 export type DiscountFormVal = {
   title: string;
@@ -29,7 +30,6 @@ export function buildDiscountParams(
   meta: {
     createdBy: string;
     priceId: string;
-    offset: string;
   }
 ): DiscountParams {
   return {
@@ -38,8 +38,8 @@ export function buildDiscountParams(
     priceOff: v.priceOff,
     recurring: v.recurring,
     overridePeriod: v.period,
-    startUtc: concatDateTimePartsISO(v.start, meta.offset) || undefined,
-    endUtc: concatDateTimePartsISO(v.end, meta.offset) || undefined,
+    startUtc: joinDateTimeParts(v.start) || undefined,
+    endUtc: joinDateTimeParts(v.end) || undefined,
     createdBy: meta.createdBy,
     priceId: meta.priceId,
   }
@@ -54,6 +54,7 @@ export function DiscountForm(
     errMsg: string;
   }
 ) {
+  const zone = isoOffset(new Date());
   const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
@@ -85,10 +86,12 @@ export function DiscountForm(
           start: {
             date: '',
             time: '00:00:00',
+            zone,
           },
           end: {
             date: '',
             time: '00:00:00',
+            zone,
           }
         }}
         validationSchema={Yup.object({
@@ -113,7 +116,7 @@ export function DiscountForm(
               opts={offerKindOpts}
             />
             <TextInput
-              label="Price Off *"
+              label="Amount Off *"
               name="priceOff"
               type="number"
               desc="Minimum 0"
@@ -137,10 +140,9 @@ export function DiscountForm(
               namePrefix="end"
               desc="Leave untouched for permanent offer"
             />
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+
+            <FormikSubmitButton
               text="Save"
-              isSubmitting={formik.isSubmitting}
             />
           </Form>
         )}

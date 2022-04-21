@@ -3,8 +3,8 @@ import * as Yup from 'yup';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 import { TextInput } from '../../components/controls/TextInput';
-import { TimezoneBadge } from '../../components/text/Badge';
-import { concatDateTimePartsISO, DateTimeParts, defaultDateTimeParts } from '../../data/datetime-parts';
+import { TimezoneGuide } from '../../components/text/Badge';
+import { DateTimeParts, defaultDateTimeParts, joinDateTimeParts } from '../../data/datetime-parts';
 import { invalidMessages } from '../../data/form-value';
 import { CouponParams } from '../../data/stripe-price';
 import { currentZone } from '../../utils/time-format';
@@ -16,13 +16,12 @@ export type CouponFormVal = {
 };
 
 export function buildCouponParams(priceId: string, v: CouponFormVal): CouponParams {
-  const zone = currentZone();
 
   return {
     priceId: priceId,
-    startUtc: concatDateTimePartsISO(v.start, zone),
-    endUtc: concatDateTimePartsISO(v.end, zone),
-  }
+    startUtc: joinDateTimeParts(v.start),
+    endUtc: joinDateTimeParts(v.end),
+  };
 }
 
 export function CouponForm(
@@ -33,12 +32,15 @@ export function CouponForm(
     ) => void | Promise<any>;
   }
 ) {
+
+  const zone = currentZone();
+
   return (
     <Formik<CouponFormVal>
       initialValues={{
         couponId: '',
-        start: defaultDateTimeParts(),
-        end: defaultDateTimeParts(),
+        start: defaultDateTimeParts(zone),
+        end: defaultDateTimeParts(zone),
       }}
       validationSchema={Yup.object({
         couponId: Yup.string()
@@ -62,7 +64,7 @@ export function CouponForm(
           title="Promotion End"
           namePrefix="end"
         />
-        <TimezoneBadge/>
+        <TimezoneGuide/>
 
         <FormikSubmitButton
           text="Save"

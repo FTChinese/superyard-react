@@ -8,7 +8,6 @@ import { NewPriceParams, UpdatePriceParams, Price } from '../../data/ftc-price';
 import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
 import { TextInput } from '../../components/controls/TextInput';
-import ProgressButton from '../../components/buttons/ProgressButton';
 import { InputGroup } from '../../components/controls/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { loadStripePrice } from '../../repository/paywall';
@@ -16,11 +15,13 @@ import { ResponseError } from '../../repository/response-error';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
 import { isZeroYMD, ymdZero, YearMonthDay } from '../../data/ymd';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
-import { TimezoneBadge } from '../../components/text/Badge';
-import { DateTimeParts, dateTimePartsFromISO, concatDateTimePartsISO, defaultDateTimeParts } from '../../data/datetime-parts';
+import { TimezoneGuide } from '../../components/text/Badge';
+import { DateTimeParts, parseISOToParts, defaultDateTimeParts, joinDateTimeParts } from '../../data/datetime-parts';
 import { useAuth } from '../../components/hooks/useAuth';
 import { StripePrice } from '../../data/stripe-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { currentZone } from '../../utils/time-format';
+import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 
 export type PriceFormVal = {
   cycle: Cycle;
@@ -39,7 +40,6 @@ export function buildNewPriceParams(
   meta: {
     productId: string,
     tier: Tier,
-    offset: string,
   }
 ): NewPriceParams {
   const isRecurring = v.kind === 'recurring';
@@ -55,10 +55,10 @@ export function buildNewPriceParams(
     stripePriceId: v.stripePriceId,
     startUtc: isRecurring
       ? undefined
-      : (concatDateTimePartsISO(v.start, meta.offset) || undefined),
+      : (joinDateTimeParts(v.start) || undefined),
     endUtc: isRecurring
       ? undefined
-      : (concatDateTimePartsISO(v.end, meta.offset) || undefined),
+      : (joinDateTimeParts(v.end) || undefined),
     unitAmount: v.unitAmount,
   };
 }
@@ -86,6 +86,7 @@ export function PriceForm(
     price?: Price;
   }
 ) {
+  const zone = currentZone();
   const { passport } = useAuth();
   const { live } = useLiveMode();
   const [ errMsg, setErrMsg ] = useState('');
@@ -145,11 +146,11 @@ export function PriceForm(
           periodCount: props.price?.periodCount || ymdZero(),
           stripePriceId: props.price?.stripePriceId || '',
           start: props.price?.startUtc
-            ? dateTimePartsFromISO(props.price.startUtc)
-            : defaultDateTimeParts(),
+            ? parseISOToParts(props.price.startUtc)
+            : defaultDateTimeParts(zone),
           end: props.price?.endUtc
-            ? dateTimePartsFromISO(props.price.endUtc)
-            : defaultDateTimeParts(),
+            ? parseISOToParts(props.price.endUtc)
+            : defaultDateTimeParts(zone),
           unitAmount: props.price?.unitAmount || 0,
         }}
         validationSchema={Yup.object({
@@ -253,13 +254,12 @@ export function PriceForm(
                   desc="Optional for one time price"
                   disabled={isUpdate}
                 />
-                <TimezoneBadge/>
+                <TimezoneGuide/>
               </>
             }
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+
+            <FormikSubmitButton
               text="Save"
-              isSubmitting={formik.isSubmitting}
             />
           </Form>
         )}

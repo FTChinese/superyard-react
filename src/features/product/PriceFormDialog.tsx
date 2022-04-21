@@ -10,7 +10,6 @@ import { Price } from '../../data/ftc-price';
 import { StripePrice } from '../../data/stripe-price';
 import { createPrice, updatePrice } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
-import { isoOffset } from '../../utils/time-format'
 import { ModeBadge } from '../../components/text/Badge';
 import { OnPriceUpserted } from './callbacks';
 import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
@@ -44,7 +43,6 @@ export function PriceFormDialog(
   const { live } = useLiveMode();
   const [ err, setErr ] = useState('');
   const [ stripePrice, setStripePrice ] = useState<StripePrice>();
-  const offset = isoOffset(new Date());
 
   const handleSubmit = (
     values: PriceFormVal,
@@ -84,7 +82,6 @@ export function PriceFormDialog(
         {
           productId: props.product.id,
           tier: tier,
-          offset: offset,
         }
       );
 

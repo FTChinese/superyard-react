@@ -6,19 +6,19 @@ import { FormikHelpers } from 'formik';
 import { toast } from 'react-toastify';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { Discount, ftcPriceFormat } from '../../data/ftc-price'
-import { ModeBadge, TimezoneBadge } from '../../components/text/Badge';
+import { ModeBadge } from '../../components/text/Badge';
 import { buildDiscountParams, DiscountForm, DiscountFormVal } from './DiscountForm';
 import { createOffer, dropOffer, refreshPriceOffers } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
-import { isoOffset } from '../../utils/time-format'
 import { ResponseError } from '../../repository/response-error';
 import { PaywallPrice } from '../../data/paywall';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
-import { PriceContent } from './PriceContent';
 import { ListLines } from '../../components/list/TextList';
 import { OnPaywallPriceUpserted } from './callbacks';
-import { EffectivePeriod } from '../paywall/EffectivePeriod';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { Table, TableHead } from '../../components/list/Table';
+import { ISOTimeColumn } from '../../components/text/DateTimeBlock';
+import { PriceHighlight } from '../../components/text/PriceHighlight';
 
 export function DiscountList(
   props: {
@@ -36,7 +36,6 @@ export function DiscountList(
   const [ refreshing, setRefreshing ] = useState(false);
   const [ err, setErr ] = useState('');
   const [ show, setShow ] = useState(false);
-  const offset = isoOffset(new Date());
 
   // Create new discount.
   const handleSubmit = (
@@ -53,7 +52,6 @@ export function DiscountList(
       {
         createdBy: props.passport.userName,
         priceId: props.price.id,
-        offset,
       }
     );
 
@@ -105,6 +103,12 @@ export function DiscountList(
       });
   }
 
+  const head = (
+    <TableHead
+      cols={['Description', 'Kind', 'Price Off', 'Status', 'Recurring', 'Start', 'End', '']}
+    />
+  );
+
   return (
     <>
       <Card>
@@ -130,8 +134,10 @@ export function DiscountList(
             </Button>
           </ButtonGroup>
         </Card.Header>
-        <table className="table">
-          <OfferHead />
+
+        <Table
+          head={head}
+        >
           <tbody>
             {
               props.price.offers.map(offer =>
@@ -144,7 +150,7 @@ export function DiscountList(
               )
             }
           </tbody>
-        </table>
+        </Table>
       </Card>
 
       <Modal
@@ -167,24 +173,17 @@ export function DiscountList(
           >
             <>
               <h5>
-                Create a discount for price
-                {
-                  ftcPriceFormat(props.price).format()
-                }
+                <span className="me-2">Discount for price</span>
+                <PriceHighlight
+                  parts={ftcPriceFormat(props.price).formatToParts()}
+                />
               </h5>
-              <PriceContent
-                price={props.price}
-              />
-
-              <h5 className="mt-3">Current Timezone</h5>
-              <TimezoneBadge offset={offset}/>
 
               <h5 className="mt-3">Guide</h5>
               <ListLines
                 lines={[
-                  "起止时间按你当前所处时区选择即可，不需要做转换。数据提交后会统一转换为0区ISO8601标准时间格式",
                   "永久生效的折扣不需要设置起止时间",
-                  "如果一个价格下有多个同类Target，Price off最高者适用"
+                  "如果一个价格下有多个同类Target，Amount off最高者适用"
                 ]}
               />
             </>
@@ -195,22 +194,6 @@ export function DiscountList(
   );
 }
 
-/**
- * @description OfferHead shows the head row for discount list.
- */
-function OfferHead() {
-  const names = ['Description', 'Kind', 'Price Off', 'Status', 'Recurring', 'Effective', ''];
-
-  return (
-    <thead>
-      <tr>
-        {
-          names.map((n, i) => <th key={i}>{n}</th>)
-        }
-      </tr>
-    </thead>
-  );
-}
 
 /**
  * @description OfferRow shows an entry of discount.
@@ -256,7 +239,14 @@ function OfferRow(
         <td>{props.offer.status}</td>
         <td>{props.offer.recurring ? 'Yes' : 'No'}</td>
         <td>
-          <EffectivePeriod period={props.offer} direction="column" />
+          <ISOTimeColumn
+            date={props.offer.startUtc}
+          />
+        </td>
+        <td>
+          <ISOTimeColumn
+            date={props.offer.endUtc}
+          />
         </td>
         <td className="text-end">
           <Button

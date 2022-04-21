@@ -9,7 +9,7 @@ import { ResponseError } from '../../repository/response-error';
 import { toast } from 'react-toastify';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { OnProductUpserted } from './callbacks';
-import { PriceContent } from './PriceContent';
+import { PriceTable } from './PriceTable';
 
 export function IntroductoryDetails(
   props: {
@@ -101,7 +101,7 @@ export function IntroductoryDetails(
       </Card.Header>
 
       <Card.Body>
-        <PriceContent
+        <PriceTable
           price={props.price}
         />
       </Card.Body>

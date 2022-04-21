@@ -53,7 +53,6 @@ export function CouponItem(
       </Card.Header>
       <Card.Body>
         <Card.Title className="text-center">
-          -
           {
             foramtCouponAmount(props.coupon)
           }
