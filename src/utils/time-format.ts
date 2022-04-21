@@ -12,7 +12,8 @@ export function extractISODate(isoStr: string): string {
 export const timeLayout = {
   fullCn: 'yyyy年M月d日H时m分s秒',
   isoDate: 'yyyy-MM-dd',
-  isoTime: 'hh:mm:ss'
+  isoTime: 'HH:mm:ss',
+  isoZone: 'xxx' // ISO8601 timezone without z
 }
 
 export function formatNow(layout: string): string {
@@ -43,6 +44,10 @@ export function padSeconds(time: string): string {
   return parts.join(':');
 }
 
+/**
+ * @description Get timezone of a Date in ISO8601 format:
+ * +08:00
+ */
 export function isoOffset(date: Date): string {
   const offset = date.getTimezoneOffset();
   if (offset === 0) {
