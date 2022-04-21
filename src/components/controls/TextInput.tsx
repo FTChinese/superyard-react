@@ -34,6 +34,7 @@ export function TextInput(
         onBlur={field.onBlur}
         value={field.value}
         disabled={props.disabled === true}
+        readOnly={props.readOnly}
       />
       {
         props.desc &&
