@@ -2,9 +2,9 @@ import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-bootstrap';
 import { EmailVal, invalidMessages } from '../../data/form-value';
-import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 /**
  * @description An email input form used in multiple places:
@@ -67,11 +67,9 @@ export function EmailForm(
               desc={props.desc}
             />
 
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+            <FormikSubmitButton
               text={props.btnText}
-              inline={props.btnInline}
-              isSubmitting={formik.isSubmitting}/>
+            />
           </Form>
         )}
       </Formik>
