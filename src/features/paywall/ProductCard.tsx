@@ -1,46 +1,48 @@
-import Card from 'react-bootstrap/Card';
 import { Link } from 'react-router-dom';
 import { TextList } from '../../components/list/TextList';
-import { PaywallProduct } from '../../data/paywall';
-import { PriceCard } from './PriceCard';
+import { PaywallPrice, Product } from '../../data/paywall';
+import { StripePaywallItem } from '../../data/stripe-price';
+import { FtcPriceCard } from './FtcPriceCard';
+import { StripePriceCard } from './StripePriceCard';
 
 export function ProductCard(
   props: {
-    product: PaywallProduct;
+    product: Product;
+    ftc: PaywallPrice[];
+    stripe: StripePaywallItem[];
   }
 ) {
   return (
-    <Card className="h-100">
-      <Card.Header className="text-end">
+    <div className="h-100 p-3">
+      <h5 className="text-center mb-2 pb-1 border-bottom">
         <Link to={`products/${props.product.id}`}>
-          Details
-        </Link>
-      </Card.Header>
-      <Card.Body>
-
-        <Card.Title as="h5" className="text-center border-bottom">
           {props.product.heading}
-        </Card.Title>
+        </Link>
+      </h5>
 
-        <TextList text={props.product.description}/>
-
-        {
-          props.product.introductory &&
-          <PriceCard
-            price={props.product.introductory}
+      {
+        props.ftc.map((p, i) => (
+          <FtcPriceCard
+            key={i}
+            price={p}
           />
-        }
+        ))
+      }
 
-        {
-          props.product.prices.map((p, i) => (
-            <PriceCard
-              key={i}
-              price={p}
-              offers={p.offers}
-            />
-          ))
-        }
-      </Card.Body>
-    </Card>
+      {
+        props.stripe.map((p, i) => (
+          <StripePriceCard
+            key={i}
+            item={p}
+          />
+        ))
+      }
+
+      <TextList text={props.product.description}/>
+
+      <small className="text-muted">
+        {props.product.smallPrint}
+      </small>
+    </div>
   );
 }
