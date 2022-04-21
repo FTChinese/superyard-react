@@ -5,6 +5,7 @@ export interface TextInputProps {
   placeholder?: string;
   desc?: string | JSX.Element;
   disabled?: boolean;
+  readOnly?: boolean;
   wrapperClass?: string;
 }
 
