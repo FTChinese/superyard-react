@@ -12,7 +12,6 @@ import { Banner, PaywallDoc, Promo } from '../../data/paywall';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
-import { EffectivePeriod } from './EffectivePeriod';
 
 /**
  * @description - BannerBox shows a banner's content shared by default banner and promo banner.
@@ -215,10 +214,8 @@ export function PromoCard(
         <Card.Subtitle className="mt-3">
           Effective
         </Card.Subtitle>
-        <EffectivePeriod
-          period={props.promo}
-          direction="column"
-        />
+
+        <div>From {props.promo.startUtc} to {props.promo.endUtc}</div>
       </>
     );
 
