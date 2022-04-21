@@ -13,7 +13,7 @@ export function DateTimeInput(
   return (
     <fieldset className="mb-3">
       <legend>{props.title}</legend>
-      <div className="row row-cols-2">
+      <div className="row row-cols-3">
         <TextInput
           label="Date"
           name={`${props.namePrefix}.date`}
@@ -27,6 +27,13 @@ export function DateTimeInput(
           type="time"
           disabled={props.disabled}
           wrapperClass="col"
+        />
+        <TextInput
+          label="Timezone"
+          name={`${props.namePrefix}.zone`}
+          type="text"
+          wrapperClass='col'
+          readOnly={true}
         />
       </div>
       {
