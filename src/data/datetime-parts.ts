@@ -4,30 +4,34 @@ import { padSeconds, timeLayout } from '../utils/time-format';
 export type DateTimeParts = {
   date: string;
   time: string;
+  zone: string;
 }
 
-export function defaultDateTimeParts(): DateTimeParts {
+export function defaultDateTimeParts(zone: string = ''): DateTimeParts {
   return {
     date: '',
     time: '00:00:00',
+    zone: zone ? zone : format(new Date(), timeLayout.isoZone),
   };
 }
 
-export function dateTimePartsFromISO(isoStr: string): DateTimeParts {
-  const v = parseISO(isoStr);
-
+export function newDateTimeParts(date: Date): DateTimeParts {
   return {
-    date: format(v, timeLayout.isoDate),
-    time: format(v, timeLayout.isoTime),
+    date: format(date, timeLayout.isoDate),
+    time: format(date, timeLayout.isoTime),
+    zone: format(date, timeLayout.isoZone),
   };
 }
 
-export function concatDateTimePartsISO(dt: DateTimeParts, zone: string): string {
-  if (!dt.date  || !dt.time || !zone) {
+export function parseISOToParts(isoStr: string): DateTimeParts {
+  return newDateTimeParts(parseISO(isoStr));
+}
+
+export function joinDateTimeParts(parts: DateTimeParts): string {
+  if (!parts.date  || !parts.time || !parts.zone) {
     return '';
   }
 
-  return `${dt.date}T${padSeconds(dt.time)}${zone}`;
+  return `${parts.date}T${padSeconds(parts.time)}${parts.zone}`;
 }
-
 
