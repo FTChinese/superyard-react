@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { Link, useParams } from 'react-router-dom';
-import ProgressButton from '../components/buttons/ProgressButton';
 import { TextInput } from '../components/controls/TextInput';
 import { verifyPasswordSchema } from '../data/form-value';
 import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-reset';
@@ -11,6 +10,7 @@ import { sitePath } from '../data/sitemap';
 import { ResponseError } from '../repository/response-error';
 import { cancelSource } from '../repository/cancel';
 import { resetPassword, verifyPwToken } from '../repository/auth';
+import { FormikSubmitButton } from '../components/controls/FormikSubmitButton';
 
 function ResetPassword(
   props: PasswordResetVerified
@@ -75,26 +75,23 @@ function ResetPassword(
         validationSchema={Yup.object(verifyPasswordSchema)}
         onSubmit={handleSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label="密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认密码"
-              name="confirmPassword"
-              type="password"
-            />
-            <div className="d-grid">
-              <ProgressButton
-                disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
-                text="重置"
-                isSubmitting={formik.isSubmitting}/>
-            </div>
-          </Form>
-        )}
+
+        <Form>
+          <TextInput
+            label="密码"
+            name="password"
+            type="password"
+          />
+          <TextInput
+            label="确认密码"
+            name="confirmPassword"
+            type="password"
+          />
+
+          <FormikSubmitButton
+            text="重置"
+          />
+        </Form>
       </Formik>
     </>
   );

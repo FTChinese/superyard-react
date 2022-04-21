@@ -8,7 +8,7 @@ import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
 import { TextInput } from '../../components/controls/TextInput';
 import { Textarea } from '../../components/controls/Textarea';
-import ProgressButton from '../../components/buttons/ProgressButton';
+import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 
 export type ProductFormVal = {
   tier: Tier;
@@ -101,10 +101,8 @@ export function ProductForm(
               rows={5}
               desc="Optional legal terms and conditions"
             />
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+            <FormikSubmitButton
               text="Save"
-              isSubmitting={formik.isSubmitting}
             />
           </Form>
         )}

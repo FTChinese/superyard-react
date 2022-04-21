@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { verifyPasswordSchema } from '../../data/form-value';
 import { UpdatePasswordFormVal } from '../../data/update-account';
-import ProgressButton from '../buttons/ProgressButton';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 export function UpdatePasswordForm(
   props: {
@@ -63,11 +63,8 @@ export function UpdatePasswordForm(
               type="password"
             />
 
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+            <FormikSubmitButton
               text="重置"
-              inline={true}
-              isSubmitting={formik.isSubmitting}
             />
           </Form>
         )}

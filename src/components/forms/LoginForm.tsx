@@ -1,11 +1,11 @@
 import { Formik, Form, FormikHelpers } from "formik";
 import Alert from "react-bootstrap/Alert";
 import { invalidMessages } from "../../data/form-value";
-import ProgressButton from "../buttons/ProgressButton";
 import { TextInput } from "../controls/TextInput";
 import * as Yup from 'yup';
 import { useEffect, useState } from 'react';
 import { CMSCredentials } from '../../data/cms-account';
+import { FormikSubmitButton } from '../controls/FormikSubmitButton';
 
 /**
  * @description A form to collect email login data, used for:
@@ -70,10 +70,9 @@ export function LoginForm(
               name="password"
               type="password"
             />
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+
+            <FormikSubmitButton
               text={props.btnText}
-              isSubmitting={formik.isSubmitting}
             />
           </Form>
         )}
