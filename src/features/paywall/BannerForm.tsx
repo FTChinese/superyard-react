@@ -4,13 +4,14 @@ import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { BannerParams, PromoParams } from '../../data/paywall';
 import { invalidMessages } from '../../data/form-value';
-import ProgressButton from '../../components/buttons/ProgressButton';
 import { TextInput } from '../../components/controls/TextInput';
 import { DateTimeInput } from "../../components/controls/DateTimeInput";
 import { Textarea } from '../../components/controls/Textarea';
 import { isoOffset } from '../../utils/time-format';
-import { DateTimeParts, concatDateTimePartsISO } from '../../data/datetime-parts';
+import { DateTimeParts, defaultDateTimeParts, joinDateTimeParts } from '../../data/datetime-parts';
 import { SupportMarkdown } from '../../components/text/SupportMarkdown';
+import { TimezoneGuide } from '../../components/text/Badge';
+import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 
 export type BannerFormVal = BannerParams & {
   start: DateTimeParts;
@@ -28,12 +29,10 @@ export function buildBannerParams(v: BannerFormVal): BannerParams {
 }
 
 export function buildPromoParams(v: BannerFormVal): PromoParams {
-  const offset = isoOffset(new Date());
-
   return {
     ...buildBannerParams(v),
-    startUtc: concatDateTimePartsISO(v.start, offset),
-    endUtc: concatDateTimePartsISO(v.end, offset),
+    startUtc: joinDateTimeParts(v.start),
+    endUtc: joinDateTimeParts(v.end),
   };
 }
 
@@ -48,6 +47,8 @@ export function BannerForm(
     hasPeriod?: boolean;
   }
 ) {
+
+  const zone = isoOffset(new Date());
   const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
@@ -92,14 +93,8 @@ export function BannerForm(
           coverUrl: props.initial?.coverUrl || '',
           content: props.initial?.content || '',
           terms: props.initial?.terms || '',
-          start: {
-            date: '',
-            time: '00:00:00',
-          },
-          end: {
-            date: '',
-            time: '00:00:00',
-          }
+          start: defaultDateTimeParts(zone),
+          end: defaultDateTimeParts(zone),
         }}
         validationSchema={schema}
         onSubmit={props.onSubmit}
@@ -137,10 +132,11 @@ export function BannerForm(
               namePrefix="end"
               disabled={!props.hasPeriod}
             />
-            <ProgressButton
-              disabled={!(formik.dirty && formik.isValid) || formik.isSubmitting}
+            <TimezoneGuide />
+
+            <FormikSubmitButton
               text="Save"
-              isSubmitting={formik.isSubmitting}/>
+            />
           </Form>
         )}
       </Formik>
