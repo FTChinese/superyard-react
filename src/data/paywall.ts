@@ -1,7 +1,7 @@
 import { Tier } from './enum';
 import { ValidPeriod } from './period';
 import { Discount, Price } from './ftc-price';
-import { StripePrice } from './stripe-price';
+import { StripePaywallItem, StripePrice } from './stripe-price';
 
 export type BannerParams = {
   heading: string;
@@ -46,7 +46,7 @@ export type Product = {
   id: string;
   active: boolean;
   liveMode: boolean;
-  introductory?: Price;
+  introductory?: Price; // Deprecated
   createdUtc: string;
   updatedUtc?: string;
 } & NewProductParams;
@@ -61,10 +61,58 @@ export type PaywallProduct = Product & {
 
 export type Paywall = PaywallDoc & {
   products: PaywallProduct[];
+  stripe: StripePaywallItem[];
 };
 
+/**
+ * @deprecated
+ */
 export type RebuiltResult = {
   paywall: Paywall;
   stripePrices: StripePrice[];
 }
 
+/**
+ * @description Describes the structure of ui.
+ */
+export type ProductItem = {
+  product: Product;
+  ftcPrices: PaywallPrice[];
+  stripePrices: StripePaywallItem[];
+}
+
+function convertProduct(prod: PaywallProduct, stripeCollection: Map<string, StripePaywallItem>): ProductItem {
+  const ftcPrices: PaywallPrice[] = prod.introductory
+    ? [
+      {
+        ...prod.introductory,
+        offers: []
+      },
+      ...prod.prices
+    ]
+    : prod.prices;
+
+  const stripeItems: StripePaywallItem[] = [];
+
+  ftcPrices.forEach(ftcPrice => {
+    const sp = stripeCollection.get(ftcPrice.stripePriceId);
+    if (sp) {
+      stripeItems.push(sp);
+    }
+  });
+
+  return {
+    product: prod,
+    ftcPrices,
+    stripePrices: stripeItems,
+  }
+}
+
+export function collectProductItems(pw: Paywall): ProductItem[] {
+  const indexedStripePrices = pw.stripe.reduce((prev, curr) => {
+    prev.set(curr.price.id, curr);
+    return prev;
+  }, new Map<string, StripePaywallItem>());
+
+  return pw.products.map<ProductItem>(prod => convertProduct(prod, indexedStripePrices))
+}
