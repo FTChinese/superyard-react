@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 import { useSetRecoilState } from 'recoil';
-import ProgressButton from '../../components/buttons/ProgressButton';
 import { paywallRebuiltState } from '../../components/hooks/recoil-state';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
@@ -11,6 +10,8 @@ import { rebuildPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { JSONBlock } from '../../components/text/JSONBlock';
+import { LoadButton } from '../../components/buttons/LoadButton';
+import { CircleLoader } from '../../components/progress/CircleLoader';
 
 export function RebuildButton() {
 
@@ -45,10 +46,14 @@ export function RebuildButton() {
 
   return (
     <>
-      <ProgressButton
+      <LoadButton
+        text='Rebuild Paywall'
         disabled={submitting}
-        text={submitting ? 'Rebuilding...' : 'Rebuild Paywall'}
-        isSubmitting={submitting}
+        startIcon={
+          <CircleLoader
+            progress={submitting}
+          />
+        }
         onClick={handleRebuild}
       />
       <Modal
