@@ -50,9 +50,14 @@ export type StripeCoupon = {
 };
 
 export function foramtCouponAmount(c: StripeCoupon): string {
-  return new MoneyFormat(
+  return '-' + new MoneyFormat(
     c.currency,
     c.amountOff / 100
   )
     .format()
+}
+
+export type StripePaywallItem = {
+  price: StripePrice;
+  coupons: StripeCoupon[];
 }
