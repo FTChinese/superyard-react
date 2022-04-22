@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { useSetRecoilState } from 'recoil';
-import { paywallRebuiltState } from '../../components/hooks/recoil-state';
+import { usePaywall } from '../../components/hooks/recoil-state';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
-import { RebuiltResult } from '../../data/paywall';
-import { rebuildPaywall } from '../../repository/paywall';
+import { loadPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../repository/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { JSONBlock } from '../../components/text/JSONBlock';
@@ -16,11 +14,10 @@ import { CircleLoader } from '../../components/progress/CircleLoader';
 export function RebuildButton() {
 
   const { live } = useLiveMode();
-  const setPaywall = useSetRecoilState(paywallRebuiltState);
+  const { paywall, setPaywall } = usePaywall();
   const { passport } = useAuth();
   const [ submitting, setSubmitting ] = useState(false);
   const [ show, setShow ] = useState(false);
-  const [ result, setResult ] = useState<RebuiltResult>();
 
   const handleRebuild = () => {
     if (!passport) {
@@ -31,12 +28,11 @@ export function RebuildButton() {
     setSubmitting(true);
 
     console.log('Start rebuiding paywall...');
-    rebuildPaywall({ live, token: passport.token })
+    loadPaywall({ live, token: passport.token })
       .then(result => {
         setSubmitting(false);
+        setPaywall(result);
         setShow(true);
-        setResult(result);
-        setPaywall(result.paywall);
       })
       .catch((err: ResponseError) => {
         setSubmitting(false);
@@ -68,10 +64,8 @@ export function RebuildButton() {
           <ModeBadge live={live} />
         </Modal.Header>
         <Modal.Body>
-          <h5>Ftc Products and Prices</h5>
-          { result && <JSONBlock value={result.paywall} />}
-          <h6>Stripe Prices</h6>
-          { result && <JSONBlock value={result.stripePrices} />}
+          <h5>Latest Paywall Data</h5>
+          <JSONBlock value={paywall} />
         </Modal.Body>
       </Modal>
     </>

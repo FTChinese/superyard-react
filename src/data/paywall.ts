@@ -65,14 +65,6 @@ export type Paywall = PaywallDoc & {
 };
 
 /**
- * @deprecated
- */
-export type RebuiltResult = {
-  paywall: Paywall;
-  stripePrices: StripePrice[];
-}
-
-/**
  * @description Describes the structure of ui.
  */
 export type ProductItem = {

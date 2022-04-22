@@ -1,7 +1,7 @@
-import { atom } from 'recoil';
+import { atom, useRecoilState } from 'recoil';
 import { Paywall } from '../../data/paywall';
 
-export const paywallRebuiltState = atom<Paywall>({
+const paywallState = atom<Paywall>({
   key: 'paywallRebuilt',
   default: {
     id: 0,
@@ -17,6 +17,16 @@ export const paywallRebuiltState = atom<Paywall>({
     },
     liveMode: false,
     products: [],
+    stripe: [],
   },
 });
+
+export function usePaywall() {
+  const [paywall, setPaywall] = useRecoilState(paywallState);
+
+  return {
+    paywall,
+    setPaywall,
+  }
+}
 
