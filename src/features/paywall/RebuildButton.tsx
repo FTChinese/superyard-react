@@ -28,7 +28,11 @@ export function RebuildButton() {
     setSubmitting(true);
 
     console.log('Start rebuiding paywall...');
-    loadPaywall({ live, token: passport.token })
+    loadPaywall({
+        live,
+        token: passport.token,
+        refresh:  true
+      })
       .then(result => {
         setSubmitting(false);
         setPaywall(result);
