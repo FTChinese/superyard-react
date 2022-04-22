@@ -14,7 +14,7 @@ export function LoadButton(
   return (
     <Button
       disabled={props.disabled}
-      variant={props.variant || 'link'}
+      variant={props.variant || 'primary'}
       size="sm"
       onClick={props.onClick}
     >
