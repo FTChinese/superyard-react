@@ -68,7 +68,6 @@ export function RebuildButton() {
           <ModeBadge live={live} />
         </Modal.Header>
         <Modal.Body>
-          <h5>Latest Paywall Data</h5>
           <JSONBlock value={paywall} />
         </Modal.Body>
       </Modal>
