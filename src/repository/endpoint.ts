@@ -44,5 +44,7 @@ export const endpoint = {
 
   stripeCouponOf: function(id: string): string {
     return `${stripeBase}/coupons/${id}`;
-  }
+  },
+
+  legalBase: '/api/legal',
 };
