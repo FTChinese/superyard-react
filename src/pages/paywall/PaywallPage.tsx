@@ -27,7 +27,7 @@ export function PaywallPage() {
 
   const { live } = useLiveMode();
   const { passport } = useAuth();
-  const [ loading, setLoading ] = useState(loadingStarted);
+  const [ loading, setLoading ] = useState(loadingStarted());
   const { paywall, setPaywall } = usePaywall();
 
   if (!passport) {
