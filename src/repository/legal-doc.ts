@@ -3,11 +3,18 @@ import { authHeader } from '../data/cms-account';
 import { LegalDoc, LegalDocParams, LegalList } from '../data/legal';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
-import { urlBuilder } from './url_builder';
+import { URLBuilder } from '../http/url_builder';
+import { PagedNavParams, serializePagingQuery } from '../data/paged-list';
 
-export function listLegalDoc(token: string): Promise<LegalList> {
+export function listLegalDoc(page: PagedNavParams, token: string): Promise<LegalList> {
+  const url = new URLBuilder(endpoint.legalBase)
+    .setSearch(
+      serializePagingQuery(page)
+    )
+    .toString();
+
   return axios.get<LegalList>(
-      endpoint.legalBase,
+      url,
       {
         headers: authHeader(token)
       }
@@ -29,7 +36,7 @@ export function createLegalDoc(body: LegalDocParams, token: string): Promise<Leg
 }
 
 export function loadLegalDoc(id: string, token: string): Promise<LegalDoc> {
-  const url = urlBuilder(endpoint.legalBase)
+  const url = new URLBuilder(endpoint.legalBase)
     .addPath(id)
     .toString();
 
@@ -43,12 +50,16 @@ export function loadLegalDoc(id: string, token: string): Promise<LegalDoc> {
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updateLegalDoc(id: string, body: LegalDocParams, token: string): Promise<LegalDoc> {
-  const url = urlBuilder(endpoint.legalBase)
+export function updateLegalDoc(
+  id: string,
+  body: LegalDocParams,
+  token: string
+): Promise<LegalDoc> {
+  const url = new URLBuilder(endpoint.legalBase)
     .addPath(id)
     .toString();
 
-  return axios.post<LegalDoc>(
+  return axios.patch<LegalDoc>(
       endpoint.legalBase,
       body,
       {
