@@ -16,6 +16,8 @@ import { PaywallLayout, PaywallPage } from './pages/paywall/PaywallPage';
 import { ProductDetailPage } from './pages/paywall/ProductDetailPage';
 import { ProductListPage } from './pages/paywall/ProductListPage';
 import { StripePricePage } from './pages/paywall/StripePricepage';
+import { LegalListPage } from './pages/legal/LegalListPage';
+import { LegalDetailPage } from './pages/legal/LegalDetailPage';
 
 function Skeleton() {
   return (
@@ -58,7 +60,6 @@ function App() {
               <RequireAuth>
                 <ContentLayout />
               </RequireAuth>
-
             }
           >
             <Route path={sitePath.paywall} element={<PaywallLayout />} >
@@ -68,6 +69,20 @@ function App() {
               <Route path={`${sitePath.stripePrices}/:priceId`} element={<StripePricePage />}/>
             </Route>
           </Route>
+
+          <Route
+            element={
+              <RequireAuth>
+                <ContentLayout />
+              </RequireAuth>
+            }
+          >
+            <Route path={sitePath.legal}>
+              <Route path="" element={<LegalListPage />} />
+              <Route path={`${sitePath.legal}/:title`} element={<LegalDetailPage />} />
+            </Route>
+          </Route>
+
         </Route>
       </Routes>
     </>
