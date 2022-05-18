@@ -133,10 +133,6 @@ a:hover {
   background-color: var(--color-wheat);
 }
 
-.btn {
-  border-radius: 0;
-}
-
 .btn-primary {
   background-color: var(--color-teal);
   color: #fff;
