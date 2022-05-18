@@ -10,12 +10,14 @@ export type LegalDocParams = {
 
 export type LegalDoc = LegalDocParams & {
   id: string;
+  active: boolean;
   createdUtc?: string;
   updatedUtc?: string;
 };
 
 export type LegalTeaser = {
   id: string;
+  active: boolean;
   title: string;
   summary?: string;
 };
