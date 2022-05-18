@@ -10,72 +10,6 @@ export interface ILink {
 
 const navItems: ILink[] = [
   {
-    name: 'Admin',
-    href: `${prefixNg}/${sitePath.admin}`,
-    ext: true,
-    children: [
-      {
-        name: 'VIP',
-        href: `${prefixNg}/${sitePath.admin}/vip`,
-        ext: true,
-      }
-    ]
-  },
-  {
-    name: 'Push Notification',
-    href: `${prefixNg}/${sitePath.apn}`,
-    ext: true,
-  },
-  {
-    name: 'API Access',
-    href: `${prefixNg}/${sitePath.oauth}`,
-    ext: true,
-    children: [
-      {
-        name: 'Personal Keys',
-        href: `${prefixNg}/${sitePath.oauth}/keys`,
-        ext: true,
-      }
-    ]
-  },
-  {
-    name: 'Wiki',
-    href: `${prefixNg}/${sitePath.wiki}`,
-    ext: true,
-  },
-  {
-    name: 'Android Release',
-    href: `${prefixNg}/${sitePath.android}`,
-    ext: true,
-  },
-  {
-    name: 'Readers',
-    href: `${prefixNg}/${sitePath.readers}`,
-    ext: true,
-    children: [
-      {
-        name: 'Orders',
-        href: `${prefixNg}/${sitePath.readers}/orders`,
-        ext: true,
-      },
-      {
-        name: 'Confirmation Failure',
-        href: `${prefixNg}/${sitePath.readers}/wh-unconfirmed`,
-        ext: true,
-      },
-      {
-        name: 'Test Account',
-        href: `${prefixNg}/${sitePath.readers}/sandbox`,
-        ext: true,
-      },
-    ]
-  },
-  {
-    name: 'B2B Subscription',
-    href: `${prefixNg}/${sitePath.b2b}`,
-    ext: true,
-  },
-  {
     name: 'Paywall',
     href: sitemap.paywall,
     ext: false,
@@ -96,7 +30,12 @@ const navItems: ILink[] = [
     name: 'Legal Docs',
     href: sitemap.legalDocs,
     ext: false,
-  }
+  },
+  {
+    name: 'Go to legacy edition',
+    href: `${prefixNg}/${sitePath.admin}`,
+    ext: true,
+  },
 ];
 
 function Anchor(
