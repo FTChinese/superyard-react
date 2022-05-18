@@ -76,36 +76,34 @@ export function ProductForm(
         })}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <Dropdown
-              name="tier"
-              label="Tier *"
-              opts={tierOpts}
-              disabled={!!props.product?.tier}
-            />
-            <TextInput
-              label="Heading *"
-              name="heading"
-              type="text"
-            />
-            <Textarea
-              label="Description *"
-              name="description"
-              rows={10}
-              desc="{{}} and content inside it are placeholders. Do not touch them unless you really mean to remove them."
-            />
-            <Textarea
-              label="Small Print"
-              name="smallPrint"
-              rows={5}
-              desc="Optional legal terms and conditions"
-            />
-            <FormikSubmitButton
-              text="Save"
-            />
-          </Form>
-        )}
+        <Form>
+          <Dropdown
+            name="tier"
+            label="Tier *"
+            opts={tierOpts}
+            disabled={!!props.product?.tier}
+          />
+          <TextInput
+            label="Heading *"
+            name="heading"
+            type="text"
+          />
+          <Textarea
+            label="Description *"
+            name="description"
+            rows={10}
+            desc="{{}} and content inside it are placeholders. Do not touch them unless you really mean to remove them."
+          />
+          <Textarea
+            label="Small Print"
+            name="smallPrint"
+            rows={5}
+            desc="Optional legal terms and conditions"
+          />
+          <FormikSubmitButton
+            text="Save"
+          />
+        </Form>
       </Formik>
     </>
   );
