@@ -3,7 +3,7 @@ import { BannerParams, Paywall, PaywallDoc, PaywallPrice, Product, UpdateProduct
 import { Discount, DiscountParams, Price, NewPriceParams, UpdatePriceParams } from '../data/ftc-price';
 import { CouponParams, StripeCoupon, StripePrice } from '../data/stripe-price';
 import { endpoint } from './endpoint';
-import { buildReqConfig, ReqConfig } from './ReqConfig';
+import { buildReqConfig, ReqConfig } from '../http/ReqConfig';
 import { ResponseError } from './response-error';
 
 export function loadPaywall(config: ReqConfig): Promise<Paywall> {
