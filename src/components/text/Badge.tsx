@@ -24,6 +24,17 @@ export function ActiveBadge(
   return <Badge bg="secondary">Inactive</Badge>;
 }
 
+export function PublishBadge(
+  props: {
+    active: boolean;
+  }
+) {
+  if (props.active) {
+    return <Badge bg="info">Published</Badge>
+  }
+  return <Badge bg="secondary">Draft</Badge>;
+}
+
 export function TimezoneGuide() {
 
   return (
