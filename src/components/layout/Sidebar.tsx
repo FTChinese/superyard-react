@@ -92,6 +92,11 @@ const navItems: ILink[] = [
       }
     ]
   },
+  {
+    name: 'Legal Docs',
+    href: sitemap.legalDocs,
+    ext: false,
+  }
 ];
 
 function Anchor(

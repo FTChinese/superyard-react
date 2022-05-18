@@ -19,6 +19,7 @@ export const sitePath = {
   paywall: 'paywall',
   products: 'products',
   stripePrices: 'stripe/prices',
+  legal: 'legal',
 };
 
 export const sitemap = {
@@ -31,6 +32,7 @@ export const sitemap = {
   stripePriceOf: function(id: string): string {
     return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`
   },
+  legalDocs: `/${sitePath.legal}`
 };
 
 export function passwordResetUrl(baseUrl: string): string {
