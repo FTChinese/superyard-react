@@ -16,6 +16,8 @@ import { PublishBadge } from '../../components/text/Badge';
 import { Pagination } from '../../components/Pagination';
 import {serializePagingQuery, parsePagingQuery, PagedNavParams} from '../../data/paged-list';
 import { toast } from 'react-toastify';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export function LegalListPage() {
   const { passport } = useAuth();
@@ -60,8 +62,8 @@ export function LegalListPage() {
     <ProgressOrError
       state={loading}
     >
-      <div className="row justify-content-center">
-        <div className="col-md-10 col-lg-8">
+      <Row className="justify-content-center">
+        <Col md={10} lg={8}>
 
           <PageHeader
             onClick={() => setShowDialog(true)}
@@ -104,8 +106,8 @@ export function LegalListPage() {
               }}
             />
           </FullscreenDialog>
-        </div>
-      </div>
+        </Col>
+      </Row>
     </ProgressOrError>
   );
 }
@@ -167,7 +169,7 @@ function useTeaserListState() {
 
     listLegalDoc(paging, token)
       .then(docs => {
-        setLoading(loadingStopped())
+        setLoading(loadingStopped());
         setDocList(docs);
       })
       .catch((err: ResponseError) => {
