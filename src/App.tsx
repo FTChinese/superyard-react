@@ -79,7 +79,7 @@ function App() {
           >
             <Route path={sitePath.legal}>
               <Route path="" element={<LegalListPage />} />
-              <Route path={`${sitePath.legal}/:title`} element={<LegalDetailPage />} />
+              <Route path=":id" element={<LegalDetailPage />} />
             </Route>
           </Route>
 
