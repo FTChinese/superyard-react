@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { authHeader } from '../data/cms-account';
-import { LegalDoc, LegalDocParams, LegalList } from '../data/legal';
+import { LegalDoc, LegalDocParams, LegalList, LegalPublishParams } from '../data/legal';
 import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 import { URLBuilder } from '../http/url_builder';
@@ -60,7 +60,29 @@ export function updateLegalDoc(
     .toString();
 
   return axios.patch<LegalDoc>(
-      endpoint.legalBase,
+      url,
+      body,
+      {
+        headers: authHeader(token),
+      }
+    )
+    .then(resp => resp.data)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
+
+export function publishLegalDoc(
+  id: string,
+  body: LegalPublishParams,
+  token: string,
+): Promise<LegalDoc> {
+  const url = new URLBuilder(endpoint.legalBase)
+    .addPath(id)
+    .addPath('publish')
+    .toString();
+
+  return axios.post<LegalDoc>(
+      url,
       body,
       {
         headers: authHeader(token),
