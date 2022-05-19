@@ -1,5 +1,9 @@
 import { PagedList } from './paged-list';
 
+export type LegalPublishParams = {
+  publish: boolean;
+};
+
 export type LegalDocParams = {
   title: string;
   summary?: string;
