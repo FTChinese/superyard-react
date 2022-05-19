@@ -103,14 +103,21 @@ function DocDetails(
         {props.doc.title}
       </h2>
 
-      <div className="mb-3 mt-3 border-bottom">
-        <PublishBadge active={props.doc.active} />
-        <div>Published by {props.doc.author}, {props.doc.createdUtc}</div>
+      <div className="mb-3 mt-3 border-bottom text-black60">
+        <div>
+          <PublishBadge active={props.doc.active} />
+          {
+            props.doc.active && <a href={`https://next.ftacademy.cn/terms/${props.doc.id}`} target="_blank" className="ms-3">Clike here to preview</a>
+          }
+        </div>
+        <div>Published by <em>{props.doc.author}</em>, {props.doc.createdUtc}</div>
         <div>Lasted updated {props.doc.updatedUtc}</div>
       </div>
 
       <div>
-        {props.doc.body}
+
+        {props.doc.body.split('\n').map((line, i) => <p key={i}>{line}</p>)}
+
       </div>
     </section>
   )
