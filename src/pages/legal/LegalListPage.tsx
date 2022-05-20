@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import Card from 'react-bootstrap/Card';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
-import { Flex } from '../../components/layout/Flex';
 import { loadingErrored, loadingStarted, loadingStopped, ProgressOrError } from '../../components/progress/ProgressOrError';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { LegalList, LegalTeaser } from '../../data/legal';
@@ -12,12 +10,9 @@ import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
 import { LegalDocForm, LegalFormVal, newLegalDocParams } from '../../features/legal/LegalDocForm';
 import { FormikHelpers } from 'formik/dist/types';
 import { CMSPassport } from '../../data/cms-account';
-import { PublishBadge } from '../../components/text/Badge';
-import { Pagination } from '../../components/Pagination';
 import {serializePagingQuery, parsePagingQuery, PagedNavParams} from '../../data/paged-list';
 import { toast } from 'react-toastify';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import { LegalListScreen } from '../../features/legal/LegalListScreen';
 
 export function LegalListPage() {
   const { passport } = useAuth();
@@ -62,97 +57,35 @@ export function LegalListPage() {
     <ProgressOrError
       state={loading}
     >
-      <Row className="justify-content-center">
-        <Col md={10} lg={8}>
+      <>
+        <LegalListScreen
+          docList={docList}
+          onClickNew={() => setShowDialog(true)}
+          onNavigate={(paged) => {
+            setSearchParams(
+              serializePagingQuery(paged)
+            );
+          }}
+        />
 
-          <PageHeader
-            onClick={() => setShowDialog(true)}
+        <FullscreenDialog
+          show={showDialog}
+          title="New Legal Document"
+          onHide={() => setShowDialog(false)}
+        >
+          <LegalDocForm
+            onSubmit={(value, helpers) => {
+              onCreateDoc(
+                value,
+                helpers,
+                passport,
+              )
+            }}
           />
-
-          {
-            docList && docList.data.map(item =>
-              <TeaserItem
-                teaser={item}
-                key={item.id}
-              />
-            )
-          }
-
-          {
-            docList && <Pagination
-              totalItem={docList.total}
-              currentPage={docList.page}
-              itemsPerPage={docList.limit}
-              onNavigate={(paged) => {
-                setSearchParams(
-                  serializePagingQuery(paged)
-                );
-              }}
-            />
-          }
-
-          <FullscreenDialog
-            show={showDialog}
-            title="New Legal Document"
-            onHide={() => setShowDialog(false)}
-          >
-            <LegalDocForm
-              onSubmit={(value, helpers) => {
-                onCreateDoc(
-                  value,
-                  helpers,
-                  passport,
-                )
-              }}
-            />
-          </FullscreenDialog>
-        </Col>
-      </Row>
+        </FullscreenDialog>
+      </>
     </ProgressOrError>
   );
-}
-
-function PageHeader(
-  props: {
-    onClick: () => void;
-  }
-) {
-  return (
-    <Flex>
-      <>
-        <h2 className="mb-3">Legal Documents</h2>
-        <button
-          className="btn btn-primary"
-          onClick={ props.onClick }
-        >
-          New
-        </button>
-      </>
-    </Flex>
-  );
-}
-
-function TeaserItem(
-  props: {
-    teaser: LegalTeaser,
-  }
-) {
-
-  return (
-    <Card className="mb-3">
-      <Card.Header>
-        <PublishBadge active={props.teaser.active} />
-      </Card.Header>
-      <Card.Body>
-        <Link to={props.teaser.id}>
-          {props.teaser.title}
-        </Link>
-        <p>
-          {props.teaser.summary}
-        </p>
-      </Card.Body>
-    </Card>
-  )
 }
 
 function useTeaserListState() {
@@ -187,10 +120,10 @@ function useTeaserListState() {
 
     const params = newLegalDocParams(values, passport.userName);
 
-    createLegalDoc(
-        params,
-        passport.token,
-      )
+    createLegalDoc({
+        body: params,
+        token: passport.token,
+      })
       .then(doc => {
         helpers.setSubmitting(false);
 

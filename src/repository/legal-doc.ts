@@ -5,6 +5,7 @@ import { endpoint } from './endpoint';
 import { ResponseError } from './response-error';
 import { URLBuilder } from '../http/url_builder';
 import { PagedNavParams, serializePagingQuery } from '../data/paged-list';
+import { UpsertArgs } from './args';
 
 export function listLegalDoc(page: PagedNavParams, token: string): Promise<LegalList> {
   const url = new URLBuilder(endpoint.legalBase)
@@ -23,12 +24,12 @@ export function listLegalDoc(page: PagedNavParams, token: string): Promise<Legal
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createLegalDoc(body: LegalDocParams, token: string): Promise<LegalDoc> {
+export function createLegalDoc(args: UpsertArgs<LegalDocParams>): Promise<LegalDoc> {
   return axios.post<LegalDoc>(
       endpoint.legalBase,
-      body,
+      args.body,
       {
-        headers: authHeader(token),
+        headers: authHeader(args.token),
       }
     )
     .then(resp => resp.data)
@@ -52,8 +53,7 @@ export function loadLegalDoc(id: string, token: string): Promise<LegalDoc> {
 
 export function updateLegalDoc(
   id: string,
-  body: LegalDocParams,
-  token: string
+  args: UpsertArgs<LegalDocParams>
 ): Promise<LegalDoc> {
   const url = new URLBuilder(endpoint.legalBase)
     .addPath(id)
@@ -61,9 +61,9 @@ export function updateLegalDoc(
 
   return axios.patch<LegalDoc>(
       url,
-      body,
+      args.body,
       {
-        headers: authHeader(token),
+        headers: authHeader(args.token),
       }
     )
     .then(resp => resp.data)
@@ -89,8 +89,7 @@ export function refreshLegalPage(id: string, token: string): Promise<boolean> {
 
 export function publishLegalDoc(
   id: string,
-  body: LegalPublishParams,
-  token: string,
+  args: UpsertArgs<LegalPublishParams>
 ): Promise<LegalDoc> {
   const url = new URLBuilder(endpoint.legalBase)
     .addPath(id)
@@ -99,9 +98,9 @@ export function publishLegalDoc(
 
   return axios.post<LegalDoc>(
       url,
-      body,
+      args.body,
       {
-        headers: authHeader(token),
+        headers: authHeader(args.token),
       }
     )
     .then(resp => resp.data)
