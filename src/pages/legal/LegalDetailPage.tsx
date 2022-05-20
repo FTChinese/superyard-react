@@ -20,7 +20,6 @@ import { ResponseError } from '../../repository/response-error';
 export function LegalDetailPage() {
   const { id } = useParams<'id'>();
   const { passport } = useAuth();
-  const [ showEdit, setShowEdit ] = useState(false);
   const {
     loading,
     onInit,
@@ -29,6 +28,8 @@ export function LegalDetailPage() {
     publishing,
     onPublish,
     serverErr,
+    showEdit,
+    setShowEdit
   } = useDetailState();
 
   if (!id) {
@@ -115,9 +116,7 @@ function DocDetails(
       </div>
 
       <div>
-
         {props.doc.body.split('\n').map((line, i) => <p key={i}>{line}</p>)}
-
       </div>
     </section>
   )
@@ -161,6 +160,7 @@ function useDetailState() {
   const [ publishing, setPublishing ] = useState(false);
   const [ doc, setDoc ] = useState<LegalDoc>();
   const [ serverErr, setServerErr ] = useState('');
+  const [ showEdit, setShowEdit ] = useState(false);
 
   function onInit(
     id: string,
@@ -204,6 +204,7 @@ function useDetailState() {
       .then(d => {
         helpers.setSubmitting(false);
         setDoc(d);
+        setShowEdit(false);
       })
       .catch((err: ResponseError) => {
         helpers.setSubmitting(false);
@@ -245,5 +246,7 @@ function useDetailState() {
     publishing,
     onPublish,
     serverErr,
+    showEdit,
+    setShowEdit
   };
 }
