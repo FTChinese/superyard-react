@@ -1,12 +1,14 @@
 import Button from 'react-bootstrap/Button';
 import { PagedNavParams } from '../data/paged-list';
 
+export type OnNavigatePage = (params: PagedNavParams) => void;
+
 export function Pagination(
   props: {
     totalItem: number;
     currentPage: number;
     itemsPerPage: number;
-    onNavigate: (params: PagedNavParams) => void;
+    onNavigate: OnNavigatePage;
   }
 ) {
   const totalPages = Math.ceil(props.totalItem/props.itemsPerPage);
