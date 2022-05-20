@@ -27,6 +27,11 @@ const navItems: ILink[] = [
     ]
   },
   {
+    name: 'Android Release',
+    href: sitemap.android,
+    ext: false,
+  },
+  {
     name: 'Legal Docs',
     href: sitemap.legalDocs,
     ext: false,
