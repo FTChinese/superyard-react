@@ -108,7 +108,13 @@ function DocDetails(
         <div>
           <PublishBadge active={props.doc.active} />
           {
-            props.doc.active && <a href={`https://next.ftacademy.cn/terms/${props.doc.id}`} target="_blank" className="ms-3">Clike here to preview</a>
+            props.doc.active && <a
+              href={`https://next.ftacademy.cn/terms/${props.doc.id}?refresh=true`}
+              target="_blank"
+              className="ms-3"
+            >
+              Refresh and Preview this article
+            </a>
           }
         </div>
         <div>Published by <em>{props.doc.author}</em>, {props.doc.createdUtc}</div>

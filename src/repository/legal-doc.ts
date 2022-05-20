@@ -70,6 +70,22 @@ export function updateLegalDoc(
     .catch(error => Promise.reject(ResponseError.newInstance(error)));
 }
 
+export function refreshLegalPage(id: string, token: string): Promise<boolean> {
+  const url = new URLBuilder(endpoint.legalBase).
+    addPath(id).
+    addPath('refresh').
+    toString();
+
+  return axios.get<boolean>(
+      url,
+      {
+        headers: authHeader(token)
+      }
+    )
+    .then(resp => resp.status === 204)
+    .catch(error => Promise.reject(ResponseError.newInstance(error)));
+}
+
 
 export function publishLegalDoc(
   id: string,
