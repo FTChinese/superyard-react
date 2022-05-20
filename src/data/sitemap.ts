@@ -13,7 +13,7 @@ export const sitePath = {
   readers: 'readers',
   subs: 'subs',
   b2b: 'b2b',
-  android: 'android',
+  android: 'android-releases',
   settings: 'settings',
 
   paywall: 'paywall',
@@ -32,7 +32,8 @@ export const sitemap = {
   stripePriceOf: function(id: string): string {
     return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`
   },
-  legalDocs: `/${sitePath.legal}`
+  legalDocs: `/${sitePath.legal}`,
+  android: `/${sitePath.android}`,
 };
 
 export function passwordResetUrl(baseUrl: string): string {

@@ -18,6 +18,8 @@ import { ProductListPage } from './pages/paywall/ProductListPage';
 import { StripePricePage } from './pages/paywall/StripePricepage';
 import { LegalListPage } from './pages/legal/LegalListPage';
 import { LegalDetailPage } from './pages/legal/LegalDetailPage';
+import { ReleaseListPage } from './pages/android/ReleaseListPage';
+import { ReleaseEditPage } from './pages/android/ReleaseEditPage';
 
 function Skeleton() {
   return (
@@ -67,6 +69,19 @@ function App() {
               <Route path={sitePath.products} element={<ProductListPage />} />
               <Route path={`${sitePath.products}/:productId`} element={<ProductDetailPage />} />
               <Route path={`${sitePath.stripePrices}/:priceId`} element={<StripePricePage />}/>
+            </Route>
+          </Route>
+
+          <Route
+            element={
+              <RequireAuth>
+                <ContentLayout />
+              </RequireAuth>
+            }
+          >
+            <Route path={sitePath.android}>
+              <Route path="" element={<ReleaseListPage />} />
+              <Route path=":versionName" element={<ReleaseEditPage />} />
             </Route>
           </Route>
 

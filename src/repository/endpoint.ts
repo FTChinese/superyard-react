@@ -47,4 +47,5 @@ export const endpoint = {
   },
 
   legalBase: '/api/legal',
+  androidBase: '/api/android/releases',
 };
