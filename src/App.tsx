@@ -20,14 +20,18 @@ import { LegalListPage } from './pages/legal/LegalListPage';
 import { LegalDetailPage } from './pages/legal/LegalDetailPage';
 import { ReleaseListPage } from './pages/android/ReleaseListPage';
 import { ReleaseEditPage } from './pages/android/ReleaseEditPage';
+import { GlobalLoader } from './components/progress/GlobalLoader';
+import { useProgress } from './components/hooks/progressState';
 
 function Skeleton() {
+  const { progress } = useProgress();
   return (
     <>
       <Toolbar />
 
       <div className="page-content pt-3">
         <Outlet />
+        <GlobalLoader progress={progress} />
       </div>
 
       <ToastContainer
