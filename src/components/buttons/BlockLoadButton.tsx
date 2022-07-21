@@ -3,19 +3,17 @@ import { ButtonVariant } from 'react-bootstrap/types';
 import { CircleLoader } from '../progress/CircleLoader';
 
 /**
+ * @deprecated
  * @description Used when we need to submit data
  * without a form.
  */
-export function BlockLoadButton(
-  props: {
-    disabled: boolean;
-    text: string;
-    progress: boolean;
-    variant?: ButtonVariant;
-    onClick?: () => void
-  }
-) {
-
+export function BlockLoadButton(props: {
+  disabled: boolean;
+  text: string;
+  progress: boolean;
+  variant?: ButtonVariant;
+  onClick?: () => void;
+}) {
   const btn = (
     <Button
       disabled={props.disabled}
@@ -24,19 +22,10 @@ export function BlockLoadButton(
       size="sm"
       type="button"
     >
-      <CircleLoader
-        progress={props.progress}
-      />
-      {
-        !props.progress &&
-         <span>{props.text}</span>
-      }
+      <CircleLoader progress={props.progress} />
+      {!props.progress && <span>{props.text}</span>}
     </Button>
   );
 
-  return (
-    <div className="d-grid">
-      {btn}
-    </div>
-  );
+  return <div className="d-grid">{btn}</div>;
 }
