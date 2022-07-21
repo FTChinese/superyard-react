@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
-import { loadingErrored, ProgressOrError, loadingStarted, loadingStopped } from '../../components/progress/ProgressOrError';
+import {
+  loadingErrored,
+  ProgressOrError,
+  loadingStarted,
+  loadingStopped,
+} from '../../components/progress/ProgressOrError';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
@@ -9,26 +14,25 @@ import { OnProductUpserted } from '../../features/product/callbacks';
 import { ProductFormDialog } from '../../features/product/ProductFormDialog';
 import { ProductList } from '../../features/product/ProductList';
 import { listProduct } from '../../repository/paywall';
-import { ResponseError } from '../../repository/response-error';
+import { ResponseError } from '../../http/response-error';
 
 export function ProductListPage() {
-
   const { live } = useLiveMode();
   const { passport } = useAuth();
 
-  const [ loading, setLoading ] = useState(loadingStarted());
-  const [ products, setProducts ] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(loadingStarted());
+  const [products, setProducts] = useState<Product[]>([]);
 
   if (!passport) {
-    return <Unauthorized/>;
+    return <Unauthorized />;
   }
 
   useEffect(() => {
     setLoading(loadingStarted());
     setProducts([]);
 
-    listProduct({ live, token: passport.token})
-      .then(products => {
+    listProduct({ live, token: passport.token })
+      .then((products) => {
         setLoading(loadingStopped());
         setProducts(products);
       })
@@ -38,20 +42,21 @@ export function ProductListPage() {
   }, [live]);
 
   const handleActivate = (product: Product) => {
-
-    setProducts(products.map(p => {
-      if (p.id === product.id) {
-        return product;
-      }
-      if (p.tier === product.tier && p.active) {
-        return {
-          ...p,
-          active: false,
+    setProducts(
+      products.map((p) => {
+        if (p.id === product.id) {
+          return product;
         }
-      }
+        if (p.tier === product.tier && p.active) {
+          return {
+            ...p,
+            active: false,
+          };
+        }
 
-      return p;
-    }));
+        return p;
+      })
+    );
   };
 
   const handleCreate = (product: Product) => {
@@ -61,10 +66,7 @@ export function ProductListPage() {
   return (
     <ProgressOrError state={loading}>
       <div>
-        <PageHead
-          passport={passport}
-          onCreated={handleCreate}
-        />
+        <PageHead passport={passport} onCreated={handleCreate} />
         <ProductList
           products={products}
           passport={passport}
@@ -75,25 +77,24 @@ export function ProductListPage() {
   );
 }
 
-function PageHead(
-  props: {
-    passport: CMSPassport;
-    onCreated: OnProductUpserted;
-  }
-) {
-
-  const [ show, setShow ] = useState(false);
+function PageHead(props: {
+  passport: CMSPassport;
+  onCreated: OnProductUpserted;
+}) {
+  const [show, setShow] = useState(false);
 
   const handleCreated = (product: Product) => {
     setShow(false);
-    props.onCreated(product)
-  }
+    props.onCreated(product);
+  };
 
   return (
     <>
       <div className="d-flex justify-content-between align-items-center">
         <h2 className="mb-3">Products</h2>
-        <button className="btn btn-primary" onClick={() => setShow(true) }>New</button>
+        <button className="btn btn-primary" onClick={() => setShow(true)}>
+          New
+        </button>
       </div>
       <ProductFormDialog
         passport={props.passport}

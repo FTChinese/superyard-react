@@ -8,48 +8,50 @@ import { useState } from 'react';
 import { PriceFormDialog } from './PriceFormDialog';
 import { CMSPassport } from '../../data/cms-account';
 import { PriceTable } from './PriceTable';
-import { OnPaywallPriceUpserted, OnPriceUpserted, OnProductUpserted } from './callbacks';
-import { activatePrice, archivePrice, attachIntroPrice } from '../../repository/paywall';
-import { ResponseError } from '../../repository/response-error';
+import {
+  OnPaywallPriceUpserted,
+  OnPriceUpserted,
+  OnProductUpserted,
+} from './callbacks';
+import {
+  activatePrice,
+  archivePrice,
+  attachIntroPrice,
+} from '../../repository/paywall';
+import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { ftcPriceFormat, Price } from '../../data/ftc-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 
-export function PriceListItem(
-  props: {
-    passport: CMSPassport;
-    paywallPrice: PaywallPrice;
-    // The result of editing price,
-    // or discount list add/removal.
-    onUpdated: OnPaywallPriceUpserted;
-    // The result of activating a recurringprice
-    onActivated: OnPriceUpserted;
-    // The result of deleting a price.
-    onArchived: OnPriceUpserted;
-    // The result of activating a one time price
-    // and attaching it to a product.
-    onIntroAttached: OnProductUpserted;
-  }
-) {
-
+export function PriceListItem(props: {
+  passport: CMSPassport;
+  paywallPrice: PaywallPrice;
+  // The result of editing price,
+  // or discount list add/removal.
+  onUpdated: OnPaywallPriceUpserted;
+  // The result of activating a recurringprice
+  onActivated: OnPriceUpserted;
+  // The result of deleting a price.
+  onArchived: OnPriceUpserted;
+  // The result of activating a one time price
+  // and attaching it to a product.
+  onIntroAttached: OnProductUpserted;
+}) {
   // Show discount list only for recurring.
   const isRecurring = props.paywallPrice.kind === 'recurring';
   const isActive = props.paywallPrice.active;
 
   const { live } = useLiveMode();
-  const [ show, setShow ] = useState(false);
-  const [ activating, setActivating ] = useState(false);
-  const [ archiving, setArchiving ] = useState(false);
+  const [show, setShow] = useState(false);
+  const [activating, setActivating] = useState(false);
+  const [archiving, setArchiving] = useState(false);
 
   // Activate recurring price.
   const activateRecurring = () => {
     setActivating(true);
 
-    activatePrice(
-        props.paywallPrice.id,
-        { live, token: props.passport.token }
-      )
-      .then(price => {
+    activatePrice(props.paywallPrice.id, { live, token: props.passport.token })
+      .then((price) => {
         setActivating(false);
         toast.success('Price activated');
         props.onActivated(price);
@@ -64,11 +66,11 @@ export function PriceListItem(
     setActivating(true);
 
     attachIntroPrice(
-        props.paywallPrice.productId,
-        { priceId: props.paywallPrice.id },
-        { live, token: props.passport.token }
-      )
-      .then(prod => {
+      props.paywallPrice.productId,
+      { priceId: props.paywallPrice.id },
+      { live, token: props.passport.token }
+    )
+      .then((prod) => {
         setActivating(false);
 
         toast.success('Price set as introductory!');
@@ -93,18 +95,15 @@ export function PriceListItem(
     setShow(false);
     props.onUpdated({
       ...price,
-      offers: props.paywallPrice.offers
-    })
+      offers: props.paywallPrice.offers,
+    });
   };
 
   const handleArchive = () => {
     setArchiving(true);
 
-    archivePrice(
-        props.paywallPrice.id,
-        { live, token: props.passport.token }
-      )
-      .then(price => {
+    archivePrice(props.paywallPrice.id, { live, token: props.passport.token })
+      .then((price) => {
         setArchiving(false);
         props.onArchived(price);
       })
@@ -112,37 +111,27 @@ export function PriceListItem(
         setArchiving(false);
         toast.error(err.message);
       });
-  }
+  };
 
-  const activateBtn = isRecurring ?
-    (
-      <Button
-        variant="outline-primary"
-        size="sm"
-        disabled={activating}
-        onClick={activateRecurring}
-      >
-        {
-          activating
-            ? 'Activating...'
-            : 'Activate'
-        }
-      </Button>
-    ) :
-    (
-      <Button
-        variant="outline-primary"
-        size="sm"
-        disabled={activating}
-        onClick={activateOneTime}
-      >
-        {
-          activating
-            ? 'Activating...'
-            : 'Use as Intro'
-        }
-      </Button>
-    );
+  const activateBtn = isRecurring ? (
+    <Button
+      variant="outline-primary"
+      size="sm"
+      disabled={activating}
+      onClick={activateRecurring}
+    >
+      {activating ? 'Activating...' : 'Activate'}
+    </Button>
+  ) : (
+    <Button
+      variant="outline-primary"
+      size="sm"
+      disabled={activating}
+      onClick={activateOneTime}
+    >
+      {activating ? 'Activating...' : 'Use as Intro'}
+    </Button>
+  );
 
   const archiveBtn = (
     <Button
@@ -151,11 +140,7 @@ export function PriceListItem(
       disabled={archiving}
       onClick={handleArchive}
     >
-      {
-        archiving
-          ? 'Dropping '
-          : 'Archive'
-      }
+      {archiving ? 'Dropping ' : 'Archive'}
     </Button>
   );
 
@@ -165,49 +150,31 @@ export function PriceListItem(
         <Card.Header className="d-flex justify-content-between">
           <div>
             <span className="me-2">
-              {
-                ftcPriceFormat(props.paywallPrice).format()
-              }
+              {ftcPriceFormat(props.paywallPrice).format()}
             </span>
-            {
-              props.paywallPrice.active &&
-              <ActiveBadge active={true}/>
-            }
+            {props.paywallPrice.active && <ActiveBadge active={true} />}
           </div>
 
-          <ButtonGroup
-            size="sm"
-          >
-            {
-              !isActive && archiveBtn
-            }
-            {
-              !isActive && activateBtn
-            }
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => setShow(true)}
-            >
+          <ButtonGroup size="sm">
+            {!isActive && archiveBtn}
+            {!isActive && activateBtn}
+            <Button variant="primary" size="sm" onClick={() => setShow(true)}>
               Edit
             </Button>
           </ButtonGroup>
         </Card.Header>
         <Card.Body>
-          <PriceTable
-            price={props.paywallPrice}
-          />
+          <PriceTable price={props.paywallPrice} />
         </Card.Body>
       </Card>
 
-      {
-        isRecurring &&
+      {isRecurring && (
         <DiscountList
           passport={props.passport}
           price={props.paywallPrice}
           onPaywallPrice={props.onUpdated}
         />
-      }
+      )}
 
       <PriceFormDialog
         passport={props.passport}

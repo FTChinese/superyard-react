@@ -9,10 +9,15 @@ import { Product } from '../../data/paywall';
 import { Price } from '../../data/ftc-price';
 import { StripePrice } from '../../data/stripe-price';
 import { createPrice, updatePrice } from '../../repository/paywall';
-import { ResponseError } from '../../repository/response-error';
+import { ResponseError } from '../../http/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { OnPriceUpserted } from './callbacks';
-import { buildNewPriceParams, buildUpdatePriceParams, PriceForm, PriceFormVal } from './PriceForm';
+import {
+  buildNewPriceParams,
+  buildUpdatePriceParams,
+  PriceForm,
+  PriceFormVal,
+} from './PriceForm';
 import { StripePriceDetail } from '../stripe/StripePriceDetail';
 
 /**
@@ -23,17 +28,14 @@ import { StripePriceDetail } from '../stripe/StripePriceDetail';
  * inspected by loading the stripe price data,
  * presented on the right.
  */
-export function PriceFormDialog(
-  props: {
-    passport: CMSPassport;
-    show: boolean;
-    onHide: () => void;
-    onUpserted: OnPriceUpserted;
-    product?: Product; // Exists upon creation.
-    price?: Price; // Exists upon updating.
-  }
-) {
-
+export function PriceFormDialog(props: {
+  passport: CMSPassport;
+  show: boolean;
+  onHide: () => void;
+  onUpserted: OnPriceUpserted;
+  product?: Product; // Exists upon creation.
+  price?: Price; // Exists upon updating.
+}) {
   const tier = props.price?.tier || props.product?.tier;
 
   if (!tier) {
@@ -41,8 +43,8 @@ export function PriceFormDialog(
   }
 
   const { live } = useLiveMode();
-  const [ err, setErr ] = useState('');
-  const [ stripePrice, setStripePrice ] = useState<StripePrice>();
+  const [err, setErr] = useState('');
+  const [stripePrice, setStripePrice] = useState<StripePrice>();
 
   const handleSubmit = (
     values: PriceFormVal,
@@ -56,12 +58,11 @@ export function PriceFormDialog(
     if (props.price) {
       const body = buildUpdatePriceParams(values);
 
-      updatePrice(
-          props.price.id,
-          body,
-          { live: props.price.liveMode, token: props.passport.token }
-        )
-        .then(price => {
+      updatePrice(props.price.id, body, {
+        live: props.price.liveMode,
+        token: props.passport.token,
+      })
+        .then((price) => {
           helpers.setSubmitting(false);
           toast.success('Update saved!');
           props.onUpserted(price);
@@ -75,21 +76,14 @@ export function PriceFormDialog(
           }
           setErr(err.message);
         });
-    } else if(props.product) {
+    } else if (props.product) {
+      const body = buildNewPriceParams(values, {
+        productId: props.product.id,
+        tier: tier,
+      });
 
-      const body = buildNewPriceParams(
-        values,
-        {
-          productId: props.product.id,
-          tier: tier,
-        }
-      );
-
-      createPrice(
-          body,
-          { live, token: props.passport.token }
-        )
-        .then(price => {
+      createPrice(body, { live, token: props.passport.token })
+        .then((price) => {
           helpers.setSubmitting(false);
           toast.success('Price created!');
           props.onUpserted(price);
@@ -104,25 +98,17 @@ export function PriceFormDialog(
   };
 
   return (
-    <Modal
-      show={props.show}
-      fullscreen={true}
-      onHide={props.onHide}
-    >
+    <Modal show={props.show} fullscreen={true} onHide={props.onHide}>
       <Modal.Header closeButton>
         <Modal.Title className="me-3">
-          {props.price ? 'Update' : 'Create'} Price for a {tier.toUpperCase()} Product
+          {props.price ? 'Update' : 'Create'} Price for a {tier.toUpperCase()}{' '}
+          Product
         </Modal.Title>
         <ModeBadge live={live} />
       </Modal.Header>
       <Modal.Body>
         <FullscreenTwoCols
-          right={
-            stripePrice &&
-            <StripePriceDetail
-              price={stripePrice}
-            />
-          }
+          right={stripePrice && <StripePriceDetail price={stripePrice} />}
         >
           <PriceForm
             onSubmit={handleSubmit}
@@ -136,5 +122,3 @@ export function PriceFormDialog(
     </Modal>
   );
 }
-
-

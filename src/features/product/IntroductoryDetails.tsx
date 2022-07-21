@@ -5,35 +5,32 @@ import { ftcPriceFormat, Price } from '../../data/ftc-price';
 import { attachIntroPrice, dropIntroPrice } from '../../repository/paywall';
 import { CMSPassport } from '../../data/cms-account';
 import { useEffect, useState } from 'react';
-import { ResponseError } from '../../repository/response-error';
+import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { OnProductUpserted } from './callbacks';
 import { PriceTable } from './PriceTable';
 
-export function IntroductoryDetails(
-  props: {
-    passport: CMSPassport;
-    price: Price;
-    // If the price is updated, auto refresh so that data in product table and price table is synced.
-    updated: boolean;
-    onRefreshOrDrop: OnProductUpserted;
-  }
-) {
-
+export function IntroductoryDetails(props: {
+  passport: CMSPassport;
+  price: Price;
+  // If the price is updated, auto refresh so that data in product table and price table is synced.
+  updated: boolean;
+  onRefreshOrDrop: OnProductUpserted;
+}) {
   const { live } = useLiveMode();
-  const [ refreshing, setRefreshing ] = useState(false);
-  const [ dropping, setDropping ] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [dropping, setDropping] = useState(false);
 
   const handleRefresh = () => {
     setRefreshing(true);
 
     attachIntroPrice(
-        props.price.productId,
-        { priceId: props.price.id },
-        { live, token: props.passport.token }
-      )
-      .then(prod => {
+      props.price.productId,
+      { priceId: props.price.id },
+      { live, token: props.passport.token }
+    )
+      .then((prod) => {
         setRefreshing(false);
         props.onRefreshOrDrop(prod);
       })
@@ -46,18 +43,15 @@ export function IntroductoryDetails(
   const handleDrop = () => {
     setDropping(true);
 
-    dropIntroPrice(
-      props.price.productId,
-      { live, token: props.passport.token }
-    )
-    .then(prod => {
-      setDropping(false);
-      props.onRefreshOrDrop(prod);
-    })
-    .catch((err: ResponseError) => {
-      setDropping(false);
-      toast.error(err.message);
-    });
+    dropIntroPrice(props.price.productId, { live, token: props.passport.token })
+      .then((prod) => {
+        setDropping(false);
+        props.onRefreshOrDrop(prod);
+      })
+      .catch((err: ResponseError) => {
+        setDropping(false);
+        toast.error(err.message);
+      });
   };
 
   useEffect(() => {
@@ -71,9 +65,7 @@ export function IntroductoryDetails(
   return (
     <Card>
       <Card.Header className="d-flex justify-content-between">
-        <span>
-          {ftcPriceFormat(props.price).format()}
-        </span>
+        <span>{ftcPriceFormat(props.price).format()}</span>
         <ButtonGroup size="sm">
           <Button
             variant="outline-primary"
@@ -81,11 +73,7 @@ export function IntroductoryDetails(
             disabled={refreshing || dropping}
             onClick={handleRefresh}
           >
-            {
-              refreshing
-                ? 'Refreshing....'
-                : 'Refresh'
-            }
+            {refreshing ? 'Refreshing....' : 'Refresh'}
           </Button>
           <Button
             variant="danger"
@@ -93,17 +81,13 @@ export function IntroductoryDetails(
             disabled={dropping || refreshing}
             onClick={handleDrop}
           >
-            {
-              dropping ? 'Dropping...' : 'Drop'
-            }
+            {dropping ? 'Dropping...' : 'Drop'}
           </Button>
         </ButtonGroup>
       </Card.Header>
 
       <Card.Body>
-        <PriceTable
-          price={props.price}
-        />
+        <PriceTable price={props.price} />
       </Card.Body>
     </Card>
   );

@@ -10,17 +10,18 @@ import { JSONBlock } from '../../components/text/JSONBlock';
 import { CMSPassport } from '../../data/cms-account';
 import { Banner, PaywallDoc, Promo } from '../../data/paywall';
 import { dropPromo, saveBanner, savePromo } from '../../repository/paywall';
-import { ResponseError } from '../../repository/response-error';
-import { BannerFormVal, buildBannerParams, BannerForm, buildPromoParams } from './BannerForm';
+import { ResponseError } from '../../http/response-error';
+import {
+  BannerFormVal,
+  buildBannerParams,
+  BannerForm,
+  buildPromoParams,
+} from './BannerForm';
 
 /**
  * @description - BannerBox shows a banner's content shared by default banner and promo banner.
  */
-function BannerBox(
-  props: {
-    banner: Banner;
-  }
-) {
+function BannerBox(props: { banner: Banner }) {
   return (
     <div className="row flex-row-reverse">
       <div className="col-sm-4">
@@ -37,19 +38,13 @@ function BannerBox(
   );
 }
 
-export function BannerCard(
-  props: {
-    passport: CMSPassport;
-    banner: Banner;
-  }
-) {
-
+export function BannerCard(props: { passport: CMSPassport; banner: Banner }) {
   const { live } = useLiveMode();
-  const [ show, setShow ] = useState(false);
-  const [ err, setErr ] = useState('');
-  const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
+  const [show, setShow] = useState(false);
+  const [err, setErr] = useState('');
+  const [paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
 
-  const modalTitle = (props.banner.id === '') ? 'Create Banner' : 'Edit Banner';
+  const modalTitle = props.banner.id === '' ? 'Create Banner' : 'Edit Banner';
 
   const handleSubmit = (
     values: BannerFormVal,
@@ -61,14 +56,11 @@ export function BannerCard(
 
     const params = buildBannerParams(values);
 
-    saveBanner(
-        params,
-        { live, token: props.passport.token }
-      )
-      .then(pwd => {
+    saveBanner(params, { live, token: props.passport.token })
+      .then((pwd) => {
         helpers.setSubmitting(false);
         setPaywallDoc(pwd);
-        toast.info('Saved! Click Rebuild button to bust cach.')
+        toast.info('Saved! Click Rebuild button to bust cach.');
       })
       .catch((err: ResponseError) => {
         helpers.setSubmitting(false);
@@ -79,17 +71,14 @@ export function BannerCard(
         }
         setErr(err.message);
       });
-  }
+  };
 
   return (
     <>
       <Card className="card mb-3">
         <Card.Header className="d-flex justify-content-between align-items-center">
           <span>Default Banner</span>
-          <Button
-            size="sm"
-            onClick={() => setShow(true)}
-          >
+          <Button size="sm" onClick={() => setShow(true)}>
             Edit
           </Button>
         </Card.Header>
@@ -99,11 +88,7 @@ export function BannerCard(
         </Card.Body>
       </Card>
 
-      <Modal
-        show={show}
-        fullscreen={true}
-        onHide={() => setShow(false)}
-      >
+      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
           <Modal.Title className="me-3">{modalTitle}</Modal.Title>
           <ModeBadge live={live} />
@@ -119,10 +104,7 @@ export function BannerCard(
                 />
               </div>
               <div className="col">
-                {
-                  paywallDoc &&
-                  <JSONBlock value={paywallDoc} />
-                }
+                {paywallDoc && <JSONBlock value={paywallDoc} />}
               </div>
             </div>
           </div>
@@ -132,20 +114,14 @@ export function BannerCard(
   );
 }
 
-export function PromoCard(
-  props: {
-    passport: CMSPassport;
-    promo: Promo;
-  }
-) {
-
+export function PromoCard(props: { passport: CMSPassport; promo: Promo }) {
   const isEmpty = props.promo.id === '';
 
   const { live } = useLiveMode();
-  const [ show, setShow ] = useState(false);
-  const [ err, setErr ] = useState('');
-  const [ paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
-  const [ dropping, setDropping ] = useState(false);
+  const [show, setShow] = useState(false);
+  const [err, setErr] = useState('');
+  const [paywallDoc, setPaywallDoc] = useState<PaywallDoc>();
+  const [dropping, setDropping] = useState(false);
 
   const handleSubmit = (
     values: BannerFormVal,
@@ -157,14 +133,11 @@ export function PromoCard(
 
     const params = buildPromoParams(values);
 
-    savePromo(
-        params,
-        { live, token: props.passport.token }
-      )
-      .then(pwd => {
+    savePromo(params, { live, token: props.passport.token })
+      .then((pwd) => {
         helpers.setSubmitting(false);
         setPaywallDoc(pwd);
-        toast.info('Saved! Click Rebuild button to bust cach.')
+        toast.info('Saved! Click Rebuild button to bust cach.');
       })
       .catch((err: ResponseError) => {
         helpers.setSubmitting(false);
@@ -180,16 +153,16 @@ export function PromoCard(
   const handleDrop = () => {
     setDropping(true);
 
-    dropPromo({ live, token: props.passport.token})
-      .then(pwd => {
+    dropPromo({ live, token: props.passport.token })
+      .then((pwd) => {
         console.log(pwd);
         setDropping(false);
-        toast.success('Dropped. Please rebuild paywall.')
+        toast.success('Dropped. Please rebuild paywall.');
       })
       .catch((err: ResponseError) => {
         setDropping(false);
         toast.error(err.message);
-      })
+      });
   };
 
   const hideDialog = () => {
@@ -197,25 +170,21 @@ export function PromoCard(
     setShow(false);
   };
 
-  const body = (props.promo.id === '')
-    ? (<p>Not promotion set.</p>)
-    : (
+  const body =
+    props.promo.id === '' ? (
+      <p>Not promotion set.</p>
+    ) : (
       <>
         <BannerBox banner={props.promo} />
 
-        <Card.Title className="mt-3">
-          Terms and Conditions
-        </Card.Title>
-        {
-          props.promo.terms &&
-          <TextList text={props.promo.terms} />
-        }
+        <Card.Title className="mt-3">Terms and Conditions</Card.Title>
+        {props.promo.terms && <TextList text={props.promo.terms} />}
 
-        <Card.Subtitle className="mt-3">
-          Effective
-        </Card.Subtitle>
+        <Card.Subtitle className="mt-3">Effective</Card.Subtitle>
 
-        <div>From {props.promo.startUtc} to {props.promo.endUtc}</div>
+        <div>
+          From {props.promo.startUtc} to {props.promo.endUtc}
+        </div>
       </>
     );
 
@@ -226,34 +195,21 @@ export function PromoCard(
           <span>Promotion Banner</span>
 
           <ButtonGroup>
-            { !isEmpty &&
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={handleDrop}
-              >
-                { dropping ? 'Processing' : 'Drop'}
+            {!isEmpty && (
+              <Button variant="danger" size="sm" onClick={handleDrop}>
+                {dropping ? 'Processing' : 'Drop'}
               </Button>
-            }
-            <Button
-              size="sm"
-              onClick={() => setShow(true)}
-            >
-               New
+            )}
+            <Button size="sm" onClick={() => setShow(true)}>
+              New
             </Button>
           </ButtonGroup>
         </Card.Header>
 
-        <Card.Body className="card-body">
-          {body}
-        </Card.Body>
+        <Card.Body className="card-body">{body}</Card.Body>
       </Card>
 
-      <Modal
-        show={show}
-        fullscreen={true}
-        onHide={hideDialog}
-      >
+      <Modal show={show} fullscreen={true} onHide={hideDialog}>
         <Modal.Header closeButton>
           <Modal.Title className="me-3">Create Promotion Banner</Modal.Title>
           <ModeBadge live={live} />
@@ -270,9 +226,11 @@ export function PromoCard(
                 />
               </div>
               <div className="col">
-                {
-                  paywallDoc && <pre><code>{JSON.stringify(paywallDoc, undefined, 4)}</code></pre>
-                }
+                {paywallDoc && (
+                  <pre>
+                    <code>{JSON.stringify(paywallDoc, undefined, 4)}</code>
+                  </pre>
+                )}
               </div>
             </div>
           </div>

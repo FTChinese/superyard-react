@@ -5,28 +5,31 @@ import Alert from 'react-bootstrap/Alert';
 import { Link, useParams } from 'react-router-dom';
 import { TextInput } from '../components/controls/TextInput';
 import { verifyPasswordSchema } from '../data/form-value';
-import { PasswordResetFormVal, PasswordResetVerified } from '../data/password-reset';
+import {
+  PasswordResetFormVal,
+  PasswordResetVerified,
+} from '../data/password-reset';
 import { sitePath } from '../data/sitemap';
-import { ResponseError } from '../repository/response-error';
+import { ResponseError } from '../http/response-error';
 import { cancelSource } from '../repository/cancel';
 import { resetPassword, verifyPwToken } from '../repository/auth';
 import { FormikSubmitButton } from '../components/controls/FormikSubmitButton';
 
-function ResetPassword(
-  props: PasswordResetVerified
-) {
-  const [ done, setDone ] = useState(false);
-  const [ errMsg, setErrMsg ] = useState('');
+function ResetPassword(props: PasswordResetVerified) {
+  const [done, setDone] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   if (done) {
     return (
       <div>
         <div className="text-center">密码已更新</div>
         <div className="d-grid mt-3">
-          <Link to={sitePath.login} className="btn btn-primary">登录</Link>
+          <Link to={sitePath.login} className="btn btn-primary">
+            登录
+          </Link>
         </div>
       </div>
-    )
+    );
   }
 
   const handleSubmit = (
@@ -38,9 +41,9 @@ function ResetPassword(
 
     resetPassword({
       token: props.token,
-      password: values.password
+      password: values.password,
     })
-      .then(ok => {
+      .then((ok) => {
         helper.setSubmitting(!ok);
         setDone(ok);
       })
@@ -52,45 +55,30 @@ function ResetPassword(
         }
         setErrMsg(err.message);
       });
-  }
+  };
 
   return (
     <>
       <h4 className="text-center">更改 {props.email} 的密码</h4>
 
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
+      {errMsg && (
+        <Alert variant="danger" dismissible onClose={() => setErrMsg('')}>
           {errMsg}
         </Alert>
-      }
+      )}
       <Formik<PasswordResetFormVal>
         initialValues={{
           password: '',
-          confirmPassword: ''
+          confirmPassword: '',
         }}
         validationSchema={Yup.object(verifyPasswordSchema)}
         onSubmit={handleSubmit}
       >
-
         <Form>
-          <TextInput
-            label="密码"
-            name="password"
-            type="password"
-          />
-          <TextInput
-            label="确认密码"
-            name="confirmPassword"
-            type="password"
-          />
+          <TextInput label="密码" name="password" type="password" />
+          <TextInput label="确认密码" name="confirmPassword" type="password" />
 
-          <FormikSubmitButton
-            text="重置"
-          />
+          <FormikSubmitButton text="重置" />
         </Form>
       </Formik>
     </>
@@ -98,16 +86,16 @@ function ResetPassword(
 }
 
 function VerifyToken(props: {
-  token: string,
-  onVerified: (v: PasswordResetVerified) => void
+  token: string;
+  onVerified: (v: PasswordResetVerified) => void;
 }) {
-  const [ progress, setProgress ] = useState(true);
-  const [ notFound, setNotFound ] = useState(false);
-  const [ errMsg, setErrMsg ] = useState('');
+  const [progress, setProgress] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
     verifyPwToken(props.token)
-      .then(v => {
+      .then((v) => {
         props.onVerified(v);
       })
       .catch((err: ResponseError) => {
@@ -121,17 +109,13 @@ function VerifyToken(props: {
         setErrMsg(err.message);
       });
 
-    return function() {
+    return function () {
       cancelSource.cancel('Operation cancelled by the user.');
     };
   }, []);
 
   if (progress) {
-    return (
-      <div className="text-center">
-        正在验证...
-      </div>
-    );
+    return <div className="text-center">正在验证...</div>;
   }
 
   if (notFound) {
@@ -139,7 +123,9 @@ function VerifyToken(props: {
       <div className="text-center">
         <h5>无法重置密码</h5>
         <p>
-        您似乎使用了无效的重置密码链接，请重新<Link to={sitePath.forgotPassword}>获取重置密码邮件</Link>或直接<Link to={sitePath.login}>登录</Link>
+          您似乎使用了无效的重置密码链接，请重新
+          <Link to={sitePath.forgotPassword}>获取重置密码邮件</Link>或直接
+          <Link to={sitePath.login}>登录</Link>
         </p>
       </div>
     );
@@ -149,11 +135,7 @@ function VerifyToken(props: {
     return (
       <>
         <h5 className="text-center">验证过程出错了!</h5>
-        <Alert
-          variant="danger"
-        >
-          {errMsg}
-        </Alert>
+        <Alert variant="danger">{errMsg}</Alert>
       </>
     );
   }
@@ -161,29 +143,20 @@ function VerifyToken(props: {
   return <></>;
 }
 
-export function PasswordReset(
-  props: {
-    token: string;
-  }
-) {
-  const [ verified, setVerified ] = useState<PasswordResetVerified | undefined>(undefined);
+export function PasswordReset(props: { token: string }) {
+  const [verified, setVerified] = useState<PasswordResetVerified | undefined>(
+    undefined
+  );
 
   if (verified) {
     return <ResetPassword {...verified} />;
   }
 
-  return <VerifyToken
-    token={props.token}
-    onVerified={setVerified}/>;
+  return <VerifyToken token={props.token} onVerified={setVerified} />;
 }
 
 export function PasswordResetPage() {
-
   const { token } = useParams<'token'>();
 
-  return (
-    <PasswordReset
-      token={token!!}
-    />
-  );
+  return <PasswordReset token={token!!} />;
 }

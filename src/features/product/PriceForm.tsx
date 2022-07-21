@@ -3,7 +3,13 @@ import { useState, useEffect } from 'react';
 import * as Yup from 'yup';
 import Alert from 'react-bootstrap/Alert';
 import { toast } from 'react-toastify';
-import { Cycle, cycleOpts, PriceKind, priceKindOpts, Tier } from '../../data/enum';
+import {
+  Cycle,
+  cycleOpts,
+  PriceKind,
+  priceKindOpts,
+  Tier,
+} from '../../data/enum';
 import { NewPriceParams, UpdatePriceParams, Price } from '../../data/ftc-price';
 import { invalidMessages } from '../../data/form-value';
 import { Dropdown } from '../../components/controls/Dropdown';
@@ -11,12 +17,17 @@ import { TextInput } from '../../components/controls/TextInput';
 import { InputGroup } from '../../components/controls/InputGroup';
 import Button from 'react-bootstrap/Button';
 import { loadStripePrice } from '../../repository/paywall';
-import { ResponseError } from '../../repository/response-error';
+import { ResponseError } from '../../http/response-error';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
 import { isZeroYMD, ymdZero, YearMonthDay } from '../../data/ymd';
 import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { TimezoneGuide } from '../../components/text/Badge';
-import { DateTimeParts, parseISOToParts, defaultDateTimeParts, joinDateTimeParts } from '../../data/datetime-parts';
+import {
+  DateTimeParts,
+  parseISOToParts,
+  defaultDateTimeParts,
+  joinDateTimeParts,
+} from '../../data/datetime-parts';
 import { useAuth } from '../../components/hooks/useAuth';
 import { StripePrice } from '../../data/stripe-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
@@ -38,8 +49,8 @@ export type PriceFormVal = {
 export function buildNewPriceParams(
   v: PriceFormVal,
   meta: {
-    productId: string,
-    tier: Tier,
+    productId: string;
+    tier: Tier;
   }
 ): NewPriceParams {
   const isRecurring = v.kind === 'recurring';
@@ -53,12 +64,8 @@ export function buildNewPriceParams(
     periodCount: v.periodCount,
     productId: meta.productId,
     stripePriceId: v.stripePriceId,
-    startUtc: isRecurring
-      ? undefined
-      : (joinDateTimeParts(v.start) || undefined),
-    endUtc: isRecurring
-      ? undefined
-      : (joinDateTimeParts(v.end) || undefined),
+    startUtc: isRecurring ? undefined : joinDateTimeParts(v.start) || undefined,
+    endUtc: isRecurring ? undefined : joinDateTimeParts(v.end) || undefined,
     unitAmount: v.unitAmount,
   };
 }
@@ -69,28 +76,26 @@ export function buildUpdatePriceParams(v: PriceFormVal): UpdatePriceParams {
     nickname: v.nickname || undefined,
     periodCount: v.periodCount,
     title: v.title || undefined,
-  }
+  };
 }
 
-export function PriceForm(
-  props: {
-    onSubmit: (
-      values: PriceFormVal,
-      formikHelpers: FormikHelpers<PriceFormVal>
-    ) => void | Promise<any>;
-    onStripePrice: (price: StripePrice) => void;
-    errMsg: string;
-    // Passed either from product when creating a price,
-    // of existing price when updating.
-    tier: Tier;
-    price?: Price;
-  }
-) {
+export function PriceForm(props: {
+  onSubmit: (
+    values: PriceFormVal,
+    formikHelpers: FormikHelpers<PriceFormVal>
+  ) => void | Promise<any>;
+  onStripePrice: (price: StripePrice) => void;
+  errMsg: string;
+  // Passed either from product when creating a price,
+  // of existing price when updating.
+  tier: Tier;
+  price?: Price;
+}) {
   const zone = currentZone();
   const { passport } = useAuth();
   const { live } = useLiveMode();
-  const [ errMsg, setErrMsg ] = useState('');
-  const [ loading, setLoading ] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const isUpdate = !!props.price;
   const isPeriodSet = props.price ? !isZeroYMD(props.price.periodCount) : false;
@@ -112,11 +117,8 @@ export function PriceForm(
 
     setLoading(true);
 
-    loadStripePrice(
-        id,
-        { live, token: passport.token }
-      )
-      .then(rawPrice => {
+    loadStripePrice(id, { live, token: passport.token })
+      .then((rawPrice) => {
         setLoading(false);
         props.onStripePrice(rawPrice);
       })
@@ -124,19 +126,15 @@ export function PriceForm(
         setLoading(false);
         toast.error(err.message);
       });
-  }
+  };
 
   return (
     <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
+      {errMsg && (
+        <Alert variant="danger" dismissible onClose={() => setErrMsg('')}>
           {errMsg}
         </Alert>
-      }
+      )}
       <Formik<PriceFormVal>
         initialValues={{
           cycle: props.price?.cycle || ('' as Cycle),
@@ -154,34 +152,48 @@ export function PriceForm(
           unitAmount: props.price?.unitAmount || 0,
         }}
         validationSchema={Yup.object({
-          kind: Yup.string()
-            .required(invalidMessages.required),
-          cycle: Yup.string()
-            .when('kind', {
-              is: 'recurring',
-              then: Yup.string().required(invalidMessages.required)
-            }),
+          kind: Yup.string().required(invalidMessages.required),
+          cycle: Yup.string().when('kind', {
+            is: 'recurring',
+            then: Yup.string().required(invalidMessages.required),
+          }),
           periodCount: Yup.object({
-            years: Yup.number().test('periodCount', 'One of period count is required', function() {
-              return this.parent.years || this.parent.months || this.parent.days;
-            }),
-            months: Yup.number().test('periodCount', 'One of period count is required', function() {
-              return this.parent.years || this.parent.months || this.parent.days;
-            }),
-            days: Yup.number().test('periodCount', 'One of period count is required', function() {
-              return this.parent.years || this.parent.months || this.parent.days;
-            }),
+            years: Yup.number().test(
+              'periodCount',
+              'One of period count is required',
+              function () {
+                return (
+                  this.parent.years || this.parent.months || this.parent.days
+                );
+              }
+            ),
+            months: Yup.number().test(
+              'periodCount',
+              'One of period count is required',
+              function () {
+                return (
+                  this.parent.years || this.parent.months || this.parent.days
+                );
+              }
+            ),
+            days: Yup.number().test(
+              'periodCount',
+              'One of period count is required',
+              function () {
+                return (
+                  this.parent.years || this.parent.months || this.parent.days
+                );
+              }
+            ),
           }),
           unitAmount: Yup.number()
             .min(0, 'Price cannot be less than 0')
             .required(),
-          stripePriceId: Yup.string()
-            .trim()
-            .required(invalidMessages.required)
+          stripePriceId: Yup.string().trim().required(invalidMessages.required),
         })}
         onSubmit={props.onSubmit}
       >
-        { formik => (
+        {(formik) => (
           <Form>
             <Dropdown
               label="Kind *"
@@ -190,8 +202,7 @@ export function PriceForm(
               disabled={isUpdate}
               desc="Only one time price could be used as introductory"
             />
-            {
-              (formik.values.kind === 'recurring') &&
+            {formik.values.kind === 'recurring' && (
               <Dropdown
                 name="cycle"
                 label="Cycle *"
@@ -199,7 +210,7 @@ export function PriceForm(
                 disabled={isUpdate}
                 desc="Billiing interval. Only required when kind is recurring"
               />
-            }
+            )}
             <TextInput
               label="Price Unit Amount *"
               name="unitAmount"
@@ -215,9 +226,9 @@ export function PriceForm(
                 <Button
                   variant="primary"
                   onClick={() => handleLoadStripe(formik.values.stripePriceId)}
-                  disabled={loading || (!formik.values.stripePriceId)}
+                  disabled={loading || !formik.values.stripePriceId}
                 >
-                  { loading ? 'Loading' : 'Inspect' }
+                  {loading ? 'Loading' : 'Inspect'}
                 </Button>
               }
             />
@@ -239,8 +250,7 @@ export function PriceForm(
               type="text"
               desc="Optional. For your own reference."
             />
-            {
-              (formik.values.kind === 'one_time') &&
+            {formik.values.kind === 'one_time' && (
               <>
                 <DateTimeInput
                   title="Start Date Time"
@@ -254,17 +264,14 @@ export function PriceForm(
                   desc="Optional for one time price"
                   disabled={isUpdate}
                 />
-                <TimezoneGuide/>
+                <TimezoneGuide />
               </>
-            }
+            )}
 
-            <FormikSubmitButton
-              text="Save"
-            />
+            <FormikSubmitButton text="Save" />
           </Form>
         )}
       </Formik>
     </>
   );
 }
-

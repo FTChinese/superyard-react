@@ -4,13 +4,26 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../components/hooks/useAuth';
 import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
-import { loadingErrored, loadingStarted, loadingStopped, ProgressOrError } from '../../components/progress/ProgressOrError';
+import {
+  loadingErrored,
+  loadingStarted,
+  loadingStopped,
+  ProgressOrError,
+} from '../../components/progress/ProgressOrError';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { LegalDoc, LegalPublishParams } from '../../data/legal';
 import { LegalDetailScreen } from '../../features/legal/LegalDetailScreen';
-import { LegalDocForm, LegalFormVal, newLegalDocParams } from '../../features/legal/LegalDocForm';
-import { loadLegalDoc, publishLegalDoc, updateLegalDoc } from '../../repository/legal-doc';
-import { ResponseError } from '../../repository/response-error';
+import {
+  LegalDocForm,
+  LegalFormVal,
+  newLegalDocParams,
+} from '../../features/legal/LegalDocForm';
+import {
+  loadLegalDoc,
+  publishLegalDoc,
+  updateLegalDoc,
+} from '../../repository/legal-doc';
+import { ResponseError } from '../../http/response-error';
 
 export function LegalDetailPage() {
   const { id } = useParams<'id'>();
@@ -24,7 +37,7 @@ export function LegalDetailPage() {
     onPublish,
     serverErr,
     showEdit,
-    setShowEdit
+    setShowEdit,
   } = useDetailState();
 
   if (!id) {
@@ -32,14 +45,11 @@ export function LegalDetailPage() {
   }
 
   if (!passport) {
-    return <Unauthorized/>;
+    return <Unauthorized />;
   }
 
   useEffect(() => {
-    onInit(
-      id,
-      passport.token,
-    )
+    onInit(id, passport.token);
   }, [id]);
 
   useEffect(() => {
@@ -49,12 +59,9 @@ export function LegalDetailPage() {
   }, [serverErr]);
 
   return (
-    <ProgressOrError
-      state={loading}
-    >
+    <ProgressOrError state={loading}>
       <>
-        {
-          doc &&
+        {doc && (
           <LegalDetailScreen
             doc={doc}
             published={doc.active}
@@ -62,7 +69,7 @@ export function LegalDetailPage() {
             onPublish={() => onPublish(passport.token)}
             onEdit={() => setShowEdit(true)}
           />
-        }
+        )}
 
         <FullscreenDialog
           show={showEdit}
@@ -71,7 +78,7 @@ export function LegalDetailPage() {
         >
           <LegalDocForm
             onSubmit={(value, helpers) => {
-              onUpdateDoc(value, helpers, passport.token)
+              onUpdateDoc(value, helpers, passport.token);
             }}
             doc={doc}
           />
@@ -82,20 +89,17 @@ export function LegalDetailPage() {
 }
 
 function useDetailState() {
-  const [ loading, setLoading ] = useState(loadingStarted());
-  const [ publishing, setPublishing ] = useState(false);
-  const [ doc, setDoc ] = useState<LegalDoc>();
-  const [ serverErr, setServerErr ] = useState('');
-  const [ showEdit, setShowEdit ] = useState(false);
+  const [loading, setLoading] = useState(loadingStarted());
+  const [publishing, setPublishing] = useState(false);
+  const [doc, setDoc] = useState<LegalDoc>();
+  const [serverErr, setServerErr] = useState('');
+  const [showEdit, setShowEdit] = useState(false);
 
-  function onInit(
-    id: string,
-    token: string,
-  ) {
+  function onInit(id: string, token: string) {
     setLoading(loadingStarted());
 
     loadLegalDoc(id, token)
-      .then(doc => {
+      .then((doc) => {
         setLoading(loadingStopped());
         setDoc(doc);
       })
@@ -107,7 +111,7 @@ function useDetailState() {
   function onUpdateDoc(
     formValues: LegalFormVal,
     helpers: FormikHelpers<LegalFormVal>,
-    token: string,
+    token: string
   ) {
     if (!doc) {
       return;
@@ -117,19 +121,13 @@ function useDetailState() {
     setServerErr('');
 
     // Not author field won't be changed on server side.
-    const params = newLegalDocParams(
-      formValues,
-      ''
-    );
+    const params = newLegalDocParams(formValues, '');
 
-    updateLegalDoc(
-        doc.id,
-        {
-          body: params,
-          token: token,
-        }
-      )
-      .then(d => {
+    updateLegalDoc(doc.id, {
+      body: params,
+      token: token,
+    })
+      .then((d) => {
         helpers.setSubmitting(false);
         setDoc(d);
         setShowEdit(false);
@@ -145,21 +143,19 @@ function useDetailState() {
       });
   }
 
-  function onPublish(
-    token: string
-  ) {
+  function onPublish(token: string) {
     if (!doc) {
-      return
+      return;
     }
 
     setPublishing(true);
 
     const body: LegalPublishParams = {
-      publish: !doc.active
+      publish: !doc.active,
     };
 
-    publishLegalDoc(doc.id, {body, token})
-      .then(d => {
+    publishLegalDoc(doc.id, { body, token })
+      .then((d) => {
         setPublishing(false);
         setDoc(d);
       })
@@ -178,6 +174,6 @@ function useDetailState() {
     onPublish,
     serverErr,
     showEdit,
-    setShowEdit
+    setShowEdit,
   };
 }

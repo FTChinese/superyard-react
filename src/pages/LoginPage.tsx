@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { sitemap } from '../data/sitemap';
 import { login } from '../repository/auth';
-import { ResponseError } from '../repository/response-error';
+import { ResponseError } from '../http/response-error';
 import { useState } from 'react';
 import { FormikHelpers } from 'formik';
 import { LoginForm } from '../components/forms/LoginForm';
@@ -10,7 +10,7 @@ import { useAuth } from '../components/hooks/useAuth';
 
 function Login() {
   const { setLogin, passport } = useAuth();
-  const [ errMsg, setErrMsg ] = useState('');
+  const [errMsg, setErrMsg] = useState('');
 
   const handleSubmit = (
     values: CMSCredentials,
@@ -20,11 +20,9 @@ function Login() {
     helper.setSubmitting(true);
 
     login(values)
-      .then(passport => {
+      .then((passport) => {
         helper.setSubmitting(false);
-        setLogin(passport, () => {
-
-        });
+        setLogin(passport, () => {});
       })
       .catch((err: ResponseError) => {
         helper.setSubmitting(false);
@@ -34,18 +32,16 @@ function Login() {
         }
         setErrMsg(err.message);
       });
-  }
+  };
 
   return (
     <>
-      {passport && (
-        <Navigate to={sitemap.paywall} replace={true} />
-      )}
+      {passport && <Navigate to={sitemap.paywall} replace={true} />}
       <LoginForm
         onSubmit={handleSubmit}
         errMsg={errMsg}
         btnText="Login"
-        email=''
+        email=""
       />
 
       <div className="d-flex justify-content-between mt-3">
@@ -59,7 +55,7 @@ export function LoginPage() {
   return (
     <>
       <h4 className="text-center">Superyard Login</h4>
-      <Login/>
+      <Login />
     </>
   );
 }

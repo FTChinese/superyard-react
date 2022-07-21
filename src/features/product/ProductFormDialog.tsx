@@ -6,27 +6,29 @@ import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { createProduct, updateProduct } from '../../repository/paywall';
-import { ResponseError } from '../../repository/response-error';
+import { ResponseError } from '../../http/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { OnProductUpserted } from './callbacks';
-import { ProductFormVal, ProductForm, buildNewProductParams, buildUpdateProductParams } from './ProductForm';
+import {
+  ProductFormVal,
+  ProductForm,
+  buildNewProductParams,
+  buildUpdateProductParams,
+} from './ProductForm';
 
 /**
  * @description ProductFormDialog is used to prsent ProductForm when
  * creating a new product, or updating an existing one.
  */
-export function ProductFormDialog(
-  props: {
-    passport: CMSPassport;
-    show: boolean;
-    onHide: () => void;
-    onUpserted: OnProductUpserted;
-    product?: Product;
-  }
-) {
-
+export function ProductFormDialog(props: {
+  passport: CMSPassport;
+  show: boolean;
+  onHide: () => void;
+  onUpserted: OnProductUpserted;
+  product?: Product;
+}) {
   const { live } = useLiveMode();
-  const [ err, setErr ] = useState('');
+  const [err, setErr] = useState('');
 
   const handleSubmit = (
     values: ProductFormVal,
@@ -39,12 +41,11 @@ export function ProductFormDialog(
     if (props.product) {
       const params = buildUpdateProductParams(values);
 
-      updateProduct(
-          props.product.id,
-          params,
-          { live: props.product.liveMode, token: props.passport.token}
-        )
-        .then(prod => {
+      updateProduct(props.product.id, params, {
+        live: props.product.liveMode,
+        token: props.passport.token,
+      })
+        .then((prod) => {
           helpers.setSubmitting(false);
           toast.success('Update succeeded');
           props.onUpserted(prod);
@@ -57,11 +58,8 @@ export function ProductFormDialog(
       // Create
       const params = buildNewProductParams(values, props.passport.userName);
 
-      createProduct(
-          params,
-          { live, token: props.passport.token }
-        )
-        .then(prod => {
+      createProduct(params, { live, token: props.passport.token })
+        .then((prod) => {
           helpers.setSubmitting(false);
           console.log(prod);
           toast.success('Product created');
@@ -77,14 +75,10 @@ export function ProductFormDialog(
           setErr(err.message);
         });
     }
-  }
+  };
 
   return (
-    <Modal
-      show={props.show}
-      fullscreen={true}
-      onHide={props.onHide}
-    >
+    <Modal show={props.show} fullscreen={true} onHide={props.onHide}>
       <Modal.Header closeButton>
         <Modal.Title className="me-3">
           {props.product ? 'Update' : 'Create'} Product
