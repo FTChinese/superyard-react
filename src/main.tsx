@@ -1,17 +1,19 @@
 import React from 'react'
 import { RecoilRoot } from 'recoil';
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App'
-import { BrowserRouter, Routes } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 
-render(
+const container = document.getElementById('root');
+const root = createRoot(container!);
+
+root.render(
   <React.StrictMode>
     <BrowserRouter basename="/next">
       <RecoilRoot>
         <App />
       </RecoilRoot>
     </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
-)
+  </React.StrictMode>
+);
