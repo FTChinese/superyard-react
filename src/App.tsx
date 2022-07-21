@@ -21,7 +21,7 @@ import { LegalDetailPage } from './pages/legal/LegalDetailPage';
 import { ReleaseListPage } from './pages/android/ReleaseListPage';
 import { ReleaseEditPage } from './pages/android/ReleaseEditPage';
 import { GlobalLoader } from './components/progress/GlobalLoader';
-import { useProgress } from './components/hooks/progressState';
+import { useProgress } from './components/hooks/useProgress';
 
 function Skeleton() {
   const { progress } = useProgress();
