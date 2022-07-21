@@ -5,29 +5,22 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { Flex } from '../../components/layout/Flex';
 import {
-  loadingErrored,
   ProgressOrError,
-  loadingStarted,
-  loadingStopped,
 } from '../../components/progress/ProgressOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { isOneTime } from '../../data/enum';
-import { StripeCoupon, StripePrice } from '../../data/stripe-price';
+import { buildPromoParams } from '../../features/paywall/BannerForm';
 import { CouponFormDialog } from '../../features/stripe/CouponFormDialog';
 import { CouponItem } from '../../features/stripe/CouponItem';
 import { StripePriceDetail } from '../../features/stripe/StripePriceDetail';
-import { loadStripeCoupons, loadStripePrice } from '../../repository/paywall';
-import { ResponseError } from '../../http/response-error';
+import { StripePriceScreen } from '../../features/stripe/StripePriceScreen';
+import { useStripe } from '../../features/stripe/useStripe';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
   const { passport } = useAuth();
 
   const { live } = useLiveMode();
-
-  const [priceLoading, setPriceLoading] = useState(loadingStopped);
-  const [stripePrice, setStripePrice] = useState<StripePrice>();
 
   if (!priceId) {
     return <Missing message="Missing price id" />;
@@ -37,106 +30,63 @@ export function StripePricePage() {
     return <Unauthorized />;
   }
 
-  // Load stripe price
-  useEffect(() => {
-    setPriceLoading(loadingStarted());
-    setStripePrice(undefined);
-
-    loadStripePrice(priceId, {
-      live,
-      token: passport.token,
-    })
-      .then((sp) => {
-        setPriceLoading(loadingStopped());
-        setStripePrice(sp);
-      })
-      .catch((err: ResponseError) => {
-        setPriceLoading(loadingErrored(err.message));
-      });
-  }, [live]);
-
   return (
-    <>
-      <section className="mb-3">
-        <h4>Stripe Price Details</h4>
-
-        <ProgressOrError state={priceLoading}>
-          <>{stripePrice && <StripePriceDetail price={stripePrice} />}</>
-        </ProgressOrError>
-      </section>
-
-      {stripePrice && (
-        <CouponList passport={passport} live={live} price={stripePrice} />
-      )}
-    </>
+    <PricePageScreen
+      priceId={priceId}
+      passport={passport}
+      live={live}
+    />
   );
 }
 
-function CouponList(props: {
-  passport: CMSPassport;
-  live: boolean;
-  price: StripePrice;
-}) {
+function PricePageScreen(
+  props: {
+    priceId: string;
+    passport: CMSPassport;
+    live: boolean;
+  }
+) {
+
   const [show, setShow] = useState(false);
 
-  const [couponsLoading, setCouponsLoading] = useState(loadingStopped);
-  const [coupons, setCoupons] = useState<StripeCoupon[]>([]);
+  const {
+    priceLoading,
+    price,
+    loadPrice,
+    couponsLoading,
+    coupons,
+    upsertCoupon,
+  } = useStripe();
 
-  if (isOneTime(props.price.kind)) {
-    return <div>Introductory price cannot have any coupons</div>;
-  }
-
-  // Load coupons attached to this price.
+  // Load stripe price
   useEffect(() => {
-    setCouponsLoading(loadingStarted());
-
-    loadStripeCoupons(props.price.id, {
+    loadPrice(props.priceId, {
       live: props.live,
       token: props.passport.token,
-    })
-      .then((c) => {
-        setCouponsLoading(loadingStopped());
-        setCoupons(c);
-      })
-      .catch((err: ResponseError) => {
-        setCouponsLoading(loadingErrored(err.message));
-      });
+    });
   }, [props.live]);
 
-  const handleCoupon = (coupon: StripeCoupon) => {
-    setShow(false);
-
-    setCoupons([coupon, ...coupons]);
-  };
+  if (!price) {
+    return <div>Loading stripe price...</div>;
+  }
 
   return (
     <>
-      <section className="mb-3">
-        <Flex>
-          <>
-            <h4>Price Coupons</h4>
-            <Button variant="primary" onClick={() => setShow(true)}>
-              New
-            </Button>
-          </>
-        </Flex>
-
-        <ProgressOrError state={couponsLoading}>
-          <>
-            {coupons.map((c) => (
-              <CouponItem key={c.id} coupon={c} />
-            ))}
-          </>
-        </ProgressOrError>
-      </section>
+      <StripePriceScreen
+        price={price}
+        coupons={coupons}
+        onNewCoupon={() => setShow(true)}
+        onUpdateCoupon={(c) => { }}
+        onDeleteCoupon={(c) => { }}
+      />
 
       <CouponFormDialog
         passport={props.passport}
         live={props.live}
-        price={props.price}
+        price={price}
         show={show}
         onHide={() => setShow(false)}
-        onCreated={handleCoupon}
+        onCreated={upsertCoupon}
       />
     </>
   );
