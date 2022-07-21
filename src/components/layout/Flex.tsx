@@ -1,20 +1,27 @@
 export function Flex(
   props: {
-    children: JSX.Element;
+    start?: JSX.Element;
+    end?: JSX.Element;
+    children?: JSX.Element;
     justify?: 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly';
     align?: 'start' | 'end' | 'center' | 'baseline' | 'stretch';
-    border?: boolean;
+    className?: string;
   }
 ) {
 
-  const justify = props.justify || 'between';
-  const align = props.align || 'start';
+  const justify = ` justify-content-${props.justify || 'between'}`;
+  const align = ` align-items-${props.align || 'center'}`;
 
-  const className = `d-flex justify-content-${justify} align-items-${align}${props.border ? ' border-bottom' : ''}`;
+  let className = `d-flex${justify}${align}`;
+  if (props.className) {
+    className += ` ${props.className}`;
+  }
 
   return (
     <div className={className}>
+      {props.start}
       {props.children}
+      {props.end}
     </div>
   );
 }
