@@ -132,6 +132,11 @@ export class UrlBuilder {
     return this;
   }
 
+  setRefresh(refresh: boolean): UrlBuilder {
+    this.query.set('refresh', `${refresh}`);
+    return this;
+  }
+
   setSearchParams(params: URLSearchParams): UrlBuilder {
     this.query = params;
     return this;
