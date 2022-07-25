@@ -49,7 +49,7 @@ export type StripeCoupon = {
   status: DiscountStatus
 };
 
-export function foramtCouponAmount(c: StripeCoupon): string {
+export function formatCouponAmount(c: StripeCoupon): string {
   return '-' + new MoneyFormat(
     c.currency,
     c.amountOff / 100
