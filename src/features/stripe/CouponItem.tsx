@@ -51,7 +51,7 @@ export function CouponItem(
 
   return (
     <>
-      <Card>
+      <Card className='mb-3'>
         <Card.Header>
           <Flex
             start={<span>{props.coupon.name}</span>}
