@@ -7,18 +7,20 @@ import { ErrorAlert } from '../../components/text/ErrorAlert';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
 import { CMSPassport } from '../../data/cms-account';
 import {
+  formatCouponAmount,
   StripeCoupon,
   StripePrice,
   stripePriceFormat,
 } from '../../data/stripe-price';
-import { updateCoupon } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
+import { upsertStripeCoupon } from '../../repository/stripe';
 import { buildCouponParams, CouponForm, CouponFormVal } from './CouponForm';
 
-export function CouponFormDialog(props: {
+export function CouponUpsertDialog(props: {
   passport: CMSPassport;
   live: boolean;
   price: StripePrice;
+  coupon?: StripeCoupon; // Present upon editing.
   show: boolean;
   onHide: () => void;
   onCreated: (c: StripeCoupon) => void;
@@ -31,10 +33,14 @@ export function CouponFormDialog(props: {
   ) => {
     helpers.setSubmitting(true);
 
-    updateCoupon(values.couponId, buildCouponParams(props.price.id, values), {
-      live: props.live,
-      token: props.passport.token,
-    })
+    upsertStripeCoupon(
+        values.couponId,
+        buildCouponParams(props.price.id, values),
+        {
+          live: props.live,
+          token: props.passport.token,
+        }
+      )
       .then((c) => {
         props.onCreated(c);
       })
@@ -44,9 +50,17 @@ export function CouponFormDialog(props: {
   };
 
   return (
-    <Modal show={props.show} fullscreen={true} onHide={props.onHide}>
+    <Modal
+      show={props.show}
+      fullscreen={true}
+      onHide={props.onHide}
+    >
       <Modal.Header closeButton>
-        <Modal.Title className="me-3">Create Coupon</Modal.Title>
+        <Modal.Title className="me-3">
+          {
+            props.coupon ? 'Update Coupon' : 'Create Coupon'
+          }
+        </Modal.Title>
         <ModeBadge live={props.live} />
       </Modal.Header>
 
@@ -54,14 +68,32 @@ export function CouponFormDialog(props: {
         <FullscreenSingleCol>
           <>
             <div className="text-center">
-              <h6>Attach a coupon to this price</h6>
+              <h6>
+                {
+                  props.coupon ?
+                    'Modify an existing coupon under price' :
+                    'Attach a coupon to this price'
+                }
+              </h6>
               <PriceHighlight
-                parts={stripePriceFormat(props.price).formatToParts()}
+                parts={
+                  stripePriceFormat(props.price).formatToParts()
+                }
               />
+              {
+                props.coupon &&
+                <div>{formatCouponAmount(props.coupon)}</div>
+              }
             </div>
 
-            <ErrorAlert msg={err} onClose={() => setErr('')} />
-            <CouponForm onSubmit={handleSubmit} />
+            <ErrorAlert
+              msg={err}
+              onClose={() => setErr('')}
+            />
+            <CouponForm
+              onSubmit={handleSubmit}
+              coupon={props.coupon}
+            />
           </>
         </FullscreenSingleCol>
       </Modal.Body>
