@@ -1,5 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import { Flex } from '../../components/layout/Flex';
+import { isOneTime } from '../../data/enum';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { CouponAction, CouponItem } from './CouponItem';
 import { StripePriceDetail } from './StripePriceDetail';
@@ -23,31 +24,38 @@ export function StripePriceScreen(
         />
       </section>
 
-      <section className="mb-3">
-        <Flex
-          className="mb-2"
-          start={<h4>Price Coupons</h4>}
-          end={
-            <Button
-              variant="primary"
-              onClick={props.onNewCoupon}
-            >
-              New
-            </Button>
-          }
-        />
-
-        {
-          props.coupons.map((c) => (
-            <CouponItem
-              key={c.id}
-              coupon={c}
-              loading={props.handlingCoupon}
-              onAction={props.onModifyCoupon}
+      {
+        isOneTime(props.price.kind) ?
+          <div className='text-danger'>
+            Introductory price cannot have any coupons
+          </div> :
+          <section className="mb-3">
+            <Flex
+              className="mb-2"
+              start={<h4>Price Coupons</h4>}
+              end={
+                <Button
+                  variant="primary"
+                  onClick={props.onNewCoupon}
+                >
+                  New
+                </Button>
+              }
             />
-          ))
-        }
-      </section>
+
+            {
+              props.coupons.map((c) => (
+                <CouponItem
+                  key={c.id}
+                  coupon={c}
+                  loading={props.handlingCoupon}
+                  onAction={props.onModifyCoupon}
+                />
+              ))
+            }
+          </section>
+      }
+
     </>
   );
 }

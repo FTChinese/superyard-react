@@ -23,7 +23,6 @@ export function useStripe() {
         setPrice(sp);
         if (isOneTime(sp.kind)) {
           stopProgress();
-          toast.error('Introductory price cannot have any coupons');
           return;
         }
 
