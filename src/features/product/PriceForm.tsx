@@ -16,7 +16,6 @@ import { Dropdown } from '../../components/controls/Dropdown';
 import { TextInput } from '../../components/controls/TextInput';
 import { InputGroup } from '../../components/controls/InputGroup';
 import Button from 'react-bootstrap/Button';
-import { loadStripePrice } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
 import { YearMonthDayInput } from '../../components/controls/YearMonthDayInput';
 import { isZeroYMD, ymdZero, YearMonthDay } from '../../data/ymd';
@@ -33,6 +32,7 @@ import { StripePrice } from '../../data/stripe-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { currentZone } from '../../utils/time-format';
 import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
+import { loadStripePrice } from '../../repository/stripe';
 
 export type PriceFormVal = {
   cycle: Cycle;
