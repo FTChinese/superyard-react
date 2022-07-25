@@ -1,16 +1,16 @@
 import Button from 'react-bootstrap/Button';
 import { Flex } from '../../components/layout/Flex';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
-import { CouponItem } from './CouponItem';
+import { CouponAction, CouponItem } from './CouponItem';
 import { StripePriceDetail } from './StripePriceDetail';
 
 export function StripePriceScreen(
   props: {
     price: StripePrice;
     coupons: StripeCoupon[];
+    handlingCoupon: boolean;
     onNewCoupon: () => void;
-    onUpdateCoupon: (c: StripeCoupon) => void;
-    onDeleteCoupon: (c: StripeCoupon) => void;
+    onModifyCoupon: (c: StripeCoupon, action: CouponAction) => void;
   }
 ) {
   return (
@@ -42,6 +42,8 @@ export function StripePriceScreen(
             <CouponItem
               key={c.id}
               coupon={c}
+              loading={props.handlingCoupon}
+              onAction={props.onModifyCoupon}
             />
           ))
         }

@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { useProgress } from '../../components/hooks/useProgress';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { CouponFormDialog } from '../../features/stripe/CouponFormDialog';
+import { StripeCoupon } from '../../data/stripe-price';
+import { CouponUpsertDialog } from '../../features/stripe/CouponUpsertDialog';
+import { CouponAction } from '../../features/stripe/CouponItem';
 import { StripePriceScreen } from '../../features/stripe/StripePriceScreen';
 import { useStripe } from '../../features/stripe/useStripe';
+import { CancelCouponDialog } from '../../features/stripe/CancelCouponDialog';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
@@ -39,13 +43,18 @@ function PricePageScreen(
   }
 ) {
 
-  const [show, setShow] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editCoupon, setEditCoupon] = useState<StripeCoupon>();
+  const [alertDelete, setAlertDelete] = useState<StripeCoupon>();
+  const { progress } = useProgress();
 
   const {
     price,
     loadPrice,
     coupons,
-    upsertCoupon,
+    onCouponCreated,
+    onCouponUpdated,
+    activateCoupon,
   } = useStripe();
 
   // Load stripe price
@@ -60,24 +69,76 @@ function PricePageScreen(
     return <div>Loading stripe price...</div>;
   }
 
+  const modifyCoupon = (c: StripeCoupon, action: CouponAction) => {
+    switch (action) {
+      case CouponAction.Edit:
+        setEditCoupon(c);
+        setShowForm(true);
+        break;
+
+      case CouponAction.Drop:
+        setAlertDelete(c);
+        break;
+
+      case CouponAction.Activate:
+        activateCoupon(
+          c.id,
+          {
+            live: props.live,
+            token: props.passport.token,
+          }
+        );
+        break;
+    }
+  }
+
   return (
     <>
       <StripePriceScreen
         price={price}
         coupons={coupons}
-        onNewCoupon={() => setShow(true)}
-        onUpdateCoupon={(c) => { }}
-        onDeleteCoupon={(c) => { }}
+        handlingCoupon={progress}
+        onNewCoupon={() => setShowForm(true)}
+        onModifyCoupon={modifyCoupon}
       />
 
-      <CouponFormDialog
+      <CouponUpsertDialog
         passport={props.passport}
         live={props.live}
         price={price}
-        show={show}
-        onHide={() => setShow(false)}
-        onCreated={upsertCoupon}
+        coupon={editCoupon}
+        show={showForm}
+        onHide={() => {
+          setEditCoupon(undefined);
+          setShowForm(false);
+        }}
+        onCreated={(c) => {
+          if (editCoupon) {
+            onCouponUpdated(c);
+          } else {
+            onCouponCreated(c);
+          }
+
+          setEditCoupon(undefined);
+          setShowForm(false);
+        }}
       />
+
+      {
+        alertDelete &&
+        <CancelCouponDialog
+          passport={props.passport}
+          live={props.live}
+          coupon={alertDelete}
+          show={!!alertDelete}
+          onHide={() => setAlertDelete(undefined)}
+          onCancelled={(c) => {
+            onCouponUpdated(c);
+            setAlertDelete(undefined);
+          }}
+        />
+      }
+
     </>
   );
 }

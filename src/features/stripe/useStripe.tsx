@@ -5,7 +5,7 @@ import { isOneTime } from '../../data/enum';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { ReqConfig } from '../../http/ReqConfig';
 import { ResponseError } from '../../http/response-error';
-import { loadStripeCoupons, loadStripePrice } from '../../repository/stripe';
+import { activateStripeCoupon, loadStripeCoupons, loadStripePrice } from '../../repository/stripe';
 
 export function useStripe() {
   const { startProgress, stopProgress } = useProgress();
@@ -47,17 +47,43 @@ export function useStripe() {
       });
   }
 
-  const upsertCoupon = (coupon: StripeCoupon) => {
+  const activateCoupon = (couponId: string, config: ReqConfig) => {
+    startProgress();
+
+    activateStripeCoupon(couponId, config)
+      .then(c => {
+        stopProgress();
+        onCouponUpdated(c);
+      })
+      .catch((err: ResponseError) => {
+        stopProgress();
+        toast.error(err.message);
+      });
+  }
+
+  const onCouponCreated = (coupon: StripeCoupon) => {
     setCoupons([
       coupon,
-      ...coupons.filter(c => c.id !== coupon.id)
+      ...coupons,
     ]);
+  }
+
+  const onCouponUpdated = (coupon: StripeCoupon) => {
+    setCoupons(coupons.map(c => {
+      if (coupon.id === c.id) {
+        return coupon;
+      } else {
+        return c;
+      }
+    }));
   }
 
   return {
     price,
     loadPrice,
     coupons,
-    upsertCoupon,
+    onCouponCreated,
+    onCouponUpdated,
+    activateCoupon,
   };
 }
