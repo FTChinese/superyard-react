@@ -3,7 +3,7 @@ import { StripeBrand } from '../../components/graphics/icons';
 import { Table, TableBody, TableHead, TRow } from '../../components/list/Table';
 import { DateColumn, ISOTimeColumn } from '../../components/text/DateTimeBlock';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
-import { foramtCouponAmount, StripePaywallItem, stripePriceFormat } from '../../data/stripe-price';
+import { formatCouponAmount, StripePaywallItem, stripePriceFormat } from '../../data/stripe-price';
 import { formatYMD } from '../../data/ymd';
 
 export function StripePriceCard(
@@ -43,7 +43,7 @@ export function StripePriceCard(
     return {
       data: [
         c.id,
-        foramtCouponAmount(c),
+        formatCouponAmount(c),
         <ISOTimeColumn
           date={c.startUtc}
         />,
