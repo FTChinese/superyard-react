@@ -11,6 +11,8 @@ import { CouponAction } from '../../features/stripe/CouponItem';
 import { StripePriceScreen } from '../../features/stripe/StripePriceScreen';
 import { useStripe } from '../../features/stripe/useStripe';
 import { CancelCouponDialog } from '../../features/stripe/CancelCouponDialog';
+import { isOneTime } from '../../data/enum';
+import { toast } from 'react-toastify';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
@@ -98,7 +100,13 @@ function PricePageScreen(
         price={price}
         coupons={coupons}
         handlingCoupon={progress}
-        onNewCoupon={() => setShowForm(true)}
+        onNewCoupon={() => {
+          if (isOneTime(price.kind)) {
+            toast.error('Introductory price cannot have coupons');
+            return;
+          }
+          setShowForm(true);
+        }}
         onModifyCoupon={modifyCoupon}
       />
 
