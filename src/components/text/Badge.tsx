@@ -1,4 +1,5 @@
 import Badge from 'react-bootstrap/Badge';
+import { DiscountStatus } from '../../data/enum';
 
 export function ModeBadge(
   props: {
@@ -21,6 +22,18 @@ export function ActiveBadge(
     return <Badge bg="info">Active</Badge>
   }
   return <Badge bg="secondary">Inactive</Badge>;
+}
+
+export function CouponStatusBadge(
+  props: {
+    status: DiscountStatus
+  }
+) {
+  if (props.status === 'active') {
+    return <Badge bg="info">{props.status}</Badge>
+  }
+
+  return <Badge bg="danger">{props.status}</Badge>;
 }
 
 export function PublishBadge(
