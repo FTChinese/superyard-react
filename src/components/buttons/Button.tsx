@@ -2,7 +2,12 @@ import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/esm/types';
 import Spinner from 'react-bootstrap/Spinner';
 
-export function LeadIconText(props: { icon: JSX.Element; text: string }) {
+export function LeadIconText(
+  props: {
+    icon: JSX.Element;
+    text: string
+  }
+) {
   return (
     <span className="d-flex align-items-center">
       {props.icon}
@@ -11,7 +16,12 @@ export function LeadIconText(props: { icon: JSX.Element; text: string }) {
   );
 }
 
-export function TrailIconText(props: { icon: JSX.Element; text: string }) {
+export function TrailIconText(
+  props: {
+    icon: JSX.Element;
+    text: string
+  }
+) {
   return (
     <span className="d-flex align-items-center">
       <span className="pe-1">{props.text}</span>
@@ -20,7 +30,12 @@ export function TrailIconText(props: { icon: JSX.Element; text: string }) {
   );
 }
 
-export function SpinnerOrText(props: { text: string; progress: boolean }) {
+export function SpinnerOrText(
+  props: {
+    text: string;
+    progress: boolean
+  }
+) {
   if (props.progress) {
     return <Spinner as="span" animation="border" size="sm" />;
   } else {
