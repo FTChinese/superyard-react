@@ -60,6 +60,7 @@ export function CouponForm(
           name="couponId"
           type="text"
           desc="Copy & Paste a coupon id from Stripe dashboard"
+          readOnly={!!props.coupon}
         />
         <DateTimeInput
           title="Promotion Start"
