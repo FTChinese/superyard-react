@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { StripePrice, StripeCoupon, CouponParams } from '../data/stripe-price';
+import { UrlBuilder } from '../http/fetch';
 import { ReqConfig, buildReqConfig } from '../http/ReqConfig';
 import { ResponseError } from '../http/response-error';
-import { endpoint } from './endpoint';
+import { endpoint, pathStripeCoupons } from './endpoint';
 
 export function loadStripePrice(
   id: string,
@@ -24,7 +25,7 @@ export function loadStripeCoupons(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updateCoupon(
+export function upsertStripeCoupon(
   id: string,
   body: CouponParams,
   config: ReqConfig
@@ -39,7 +40,26 @@ export function updateCoupon(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function deleteCoupon(
+export function activateStripeCoupon(
+  id: string,
+  config: ReqConfig
+): Promise<StripeCoupon> {
+  const url = new UrlBuilder(pathStripeCoupons)
+    .appendPath(id)
+    .appendPath('activate')
+    .toString();
+
+  return axios
+    .patch<StripeCoupon>(
+      url,
+      undefined,
+      buildReqConfig(config)
+    )
+    .then((resp) => resp.data)
+    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+}
+
+export function deleteStripeCoupon(
   id: string,
   config: ReqConfig
 ): Promise<StripeCoupon> {
