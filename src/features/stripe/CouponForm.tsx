@@ -4,9 +4,9 @@ import { DateTimeInput } from '../../components/controls/DateTimeInput';
 import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 import { TextInput } from '../../components/controls/TextInput';
 import { TimezoneGuide } from '../../components/text/Badge';
-import { DateTimeParts, defaultDateTimeParts, joinDateTimeParts } from '../../data/datetime-parts';
+import { DateTimeParts, defaultDateTimeParts, joinDateTimeParts, parseISOToParts } from '../../data/datetime-parts';
 import { invalidMessages } from '../../data/form-value';
-import { CouponParams } from '../../data/stripe-price';
+import { CouponParams, StripeCoupon } from '../../data/stripe-price';
 import { currentZone } from '../../utils/time-format';
 
 export type CouponFormVal = {
@@ -30,6 +30,7 @@ export function CouponForm(
       values: CouponFormVal,
       formikHelpers: FormikHelpers<CouponFormVal>
     ) => void | Promise<any>;
+    coupon?: StripeCoupon;
   }
 ) {
 
@@ -38,9 +39,13 @@ export function CouponForm(
   return (
     <Formik<CouponFormVal>
       initialValues={{
-        couponId: '',
-        start: defaultDateTimeParts(zone),
-        end: defaultDateTimeParts(zone),
+        couponId: props.coupon?.id || '',
+        start: props.coupon?.startUtc
+          ? parseISOToParts(props.coupon.startUtc)
+          : defaultDateTimeParts(zone),
+        end: props.coupon?.endUtc
+          ? parseISOToParts(props.coupon.endUtc)
+          : defaultDateTimeParts(zone),
       }}
       validationSchema={Yup.object({
         couponId: Yup.string()
@@ -74,3 +79,5 @@ export function CouponForm(
     </Formik>
   );
 }
+
+
