@@ -27,6 +27,18 @@ const navItems: ILink[] = [
     ]
   },
   {
+    name: 'Readers',
+    href: sitemap.readers,
+    ext: false,
+    children: [
+      {
+        name: 'Test Account',
+        href: sitemap.sandbox,
+        ext: false,
+      }
+    ]
+  },
+  {
     name: 'Android Release',
     href: sitemap.android,
     ext: false,

@@ -26,9 +26,14 @@ export const sitemap = {
   home: '/',
   login: `/${sitePath.login}`,
   forgotPassword: `/${sitePath.forgotPassword}`,
+
   paywall: `/${sitePath.paywall}`,
   products: `/${sitePath.paywall}/products`,
   stripePrices: `/${sitePath.paywall}/${sitePath.stripePrices}`,
+
+  readers: `/${sitePath.readers}`,
+  sandbox: `/${sitePath.readers}/sandbox`,
+
   stripePriceOf: function(id: string): string {
     return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`
   },
