@@ -1,5 +1,8 @@
+import { PagedList } from '../http/paged-list';
 import { LoginMethod } from './enum';
 import { Membership } from './membership';
+
+export const testAccountSuffix = '.test@ftchinese.com';
 
 export type SignUpParams = {
   email: string;
@@ -12,6 +15,8 @@ export type TestAccount = {
   password: string;
   createdBy: string;
 };
+
+export type TestUserList = PagedList<TestAccount>;
 
 export type SandboxPwReq = {
   password: string;
