@@ -22,9 +22,6 @@ export function getPagingQuery(query: URLSearchParams): PagingQuery {
   }
 }
 
-/**
- * @deprecated
- */
 export function serializePagingQuery(params: PagingQuery): URLSearchParams {
   const search = new URLSearchParams();
   search.set('page', params.page.toFixed())
