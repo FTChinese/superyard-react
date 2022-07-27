@@ -18,7 +18,7 @@ export type TestAccount = {
 
 export type TestUserList = PagedList<TestAccount>;
 
-export type SandboxPwReq = {
+export type SandboxPwParams = {
   password: string;
 };
 
