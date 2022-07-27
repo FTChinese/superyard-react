@@ -11,6 +11,7 @@ export const sitePath = {
   oauth: 'oauth',
   wiki: 'wiki',
   readers: 'readers',
+  sandbox: 'sandbox',
   subs: 'subs',
   b2b: 'b2b',
   android: 'android-releases',
