@@ -22,6 +22,7 @@ import { ReleaseListPage } from './pages/android/ReleaseListPage';
 import { ReleaseEditPage } from './pages/android/ReleaseEditPage';
 import { GlobalLoader } from './components/progress/GlobalLoader';
 import { useProgress } from './components/hooks/useProgress';
+import { TestUserListPage } from './pages/readers/TestUserListPage';
 
 function Skeleton() {
   const { progress } = useProgress();
@@ -68,34 +69,46 @@ function App() {
               </RequireAuth>
             }
           >
-            <Route path={sitePath.paywall} element={<PaywallLayout />} >
-              <Route path="" element={<PaywallPage />} />
-              <Route path={sitePath.products} element={<ProductListPage />} />
-              <Route path={`${sitePath.products}/:productId`} element={<ProductDetailPage />} />
-              <Route path={`${sitePath.stripePrices}/:priceId`} element={<StripePricePage />}/>
+            <Route
+              path={sitePath.paywall}
+              element={<PaywallLayout />}
+            >
+              <Route
+                path=""
+                element={<PaywallPage />}
+              />
+              <Route
+                path={sitePath.products}
+                element={<ProductListPage />}
+              />
+              <Route
+                path={`${sitePath.products}/:productId`}
+                element={<ProductDetailPage />}
+              />
+              <Route
+                path={`${sitePath.stripePrices}/:priceId`}
+                element={<StripePricePage />}
+              />
             </Route>
-          </Route>
 
-          <Route
-            element={
-              <RequireAuth>
-                <ContentLayout />
-              </RequireAuth>
-            }
-          >
+            <Route path={sitePath.readers}>
+              <Route
+                path={sitePath.sandbox}
+                element={<TestUserListPage />}
+              />
+            </Route>
+
             <Route path={sitePath.android}>
-              <Route path="" element={<ReleaseListPage />} />
-              <Route path=":versionName" element={<ReleaseEditPage />} />
+              <Route
+                path=""
+                element={<ReleaseListPage />}
+              />
+              <Route
+                path=":versionName"
+                element={<ReleaseEditPage />}
+              />
             </Route>
-          </Route>
 
-          <Route
-            element={
-              <RequireAuth>
-                <ContentLayout />
-              </RequireAuth>
-            }
-          >
             <Route path={sitePath.legal}>
               <Route path="" element={<LegalListPage />} />
               <Route path=":id" element={<LegalDetailPage />} />
