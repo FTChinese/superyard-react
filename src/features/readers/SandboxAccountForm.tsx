@@ -11,7 +11,7 @@ export function SandboxAccountForm(
   props: {
     onSubmit: (
       values: SignUpParams,
-      formokHelpers: FormikHelpers<SignUpParams>
+      formikHelpers: FormikHelpers<SignUpParams>
     ) => void | Promise<any>;
   }
 ) {
