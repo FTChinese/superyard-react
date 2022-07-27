@@ -26,11 +26,28 @@ import {
 } from '../../http/paged-list';
 import { toast } from 'react-toastify';
 import { LegalListScreen } from '../../features/legal/LegalListScreen';
+import { useProgress } from '../../components/hooks/useProgress';
 
 export function LegalListPage() {
   const { passport } = useAuth();
+
+  if (!passport) {
+    return <Unauthorized />;
+  }
+
+  return (
+    <ListPageScreen
+      passport={passport}
+    />
+  );
+}
+
+function ListPageScreen(
+  props: {
+    passport: CMSPassport
+  }
+) {
   const {
-    loading,
     docList,
     formErr,
     startLoading,
@@ -41,12 +58,8 @@ export function LegalListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const paging = getPagingQuery(searchParams);
 
-  if (!passport) {
-    return <Unauthorized />;
-  }
-
   useEffect(() => {
-    startLoading(paging, passport.token);
+    startLoading(paging, props.passport.token);
 
     window.scrollTo(0, 0);
   }, [paging.page, paging.itemsCount]);
@@ -58,48 +71,47 @@ export function LegalListPage() {
   }, [formErr]);
 
   return (
-    <ProgressOrError state={loading}>
-      <>
-        <LegalListScreen
-          docList={docList}
-          onClickNew={() => setShowDialog(true)}
-          onNavigate={(paged) => {
-            setSearchParams(serializePagingQuery(paged));
+    <>
+      <LegalListScreen
+        docList={docList}
+        onClickNew={() => setShowDialog(true)}
+        onNavigate={(paged) => {
+          setSearchParams(serializePagingQuery(paged));
+        }}
+      />
+
+      <FullscreenDialog
+        show={showDialog}
+        title="New Legal Document"
+        onHide={() => setShowDialog(false)}
+      >
+        <LegalDocForm
+          onSubmit={(value, helpers) => {
+            onCreateDoc(value, helpers, props.passport);
           }}
         />
-
-        <FullscreenDialog
-          show={showDialog}
-          title="New Legal Document"
-          onHide={() => setShowDialog(false)}
-        >
-          <LegalDocForm
-            onSubmit={(value, helpers) => {
-              onCreateDoc(value, helpers, passport);
-            }}
-          />
-        </FullscreenDialog>
-      </>
-    </ProgressOrError>
+      </FullscreenDialog>
+    </>
   );
 }
 
 function useTeaserListState() {
-  const [loading, setLoading] = useState(loadingStarted());
+  const { startProgress, stopProgress } = useProgress();
   const [docList, setDocList] = useState<LegalList>();
   const [showDialog, setShowDialog] = useState(false);
   const [formErr, setFormErr] = useState('');
 
   function startLoading(paging: PagingQuery, token: string) {
-    setLoading(loadingStarted());
+    startProgress();
 
     listLegalDoc(paging, token)
       .then((docs) => {
-        setLoading(loadingStopped());
+        stopProgress();
         setDocList(docs);
       })
       .catch((err: ResponseError) => {
-        setLoading(loadingErrored(err.message));
+        stopProgress();
+        toast.error(err.message);
       });
   }
 
@@ -157,7 +169,6 @@ function useTeaserListState() {
   }
 
   return {
-    loading,
     docList,
     formErr,
     setFormErr,
