@@ -23,6 +23,7 @@ import { ReleaseEditPage } from './pages/android/ReleaseEditPage';
 import { GlobalLoader } from './components/progress/GlobalLoader';
 import { useProgress } from './components/hooks/useProgress';
 import { TestUserListPage } from './pages/readers/TestUserListPage';
+import { TestUserDetailPage } from './pages/readers/TestUserDetailPage';
 
 function Skeleton() {
   const { progress } = useProgress();
@@ -95,6 +96,10 @@ function App() {
               <Route
                 path={sitePath.sandbox}
                 element={<TestUserListPage />}
+              />
+              <Route
+                path={`${sitePath.sandbox}/:id`}
+                element={<TestUserDetailPage />}
               />
             </Route>
 
