@@ -1,6 +1,22 @@
 import { LoginMethod } from './enum';
 import { Membership } from './membership';
 
+export type SignUpParams = {
+  email: string;
+  password: string;
+};
+
+export type TestAccount = {
+  id: string;
+  email: string;
+  password: string;
+  createdBy: string;
+};
+
+export type SandboxPwReq = {
+  password: string;
+};
+
 export type Wechat = {
   nickname: string | null;
   avatarUrl: string | null;

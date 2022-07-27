@@ -1,9 +1,12 @@
 const authBase = '/api/auth';
 const pwResetBase = `${authBase}/password-reset`;
 const paywallBase = '/api/paywall';
+
 export const pathStripeBase = '/api/stripe';
 export const pathStripePrice = pathStripeBase + '/prices';
 export const pathStripeCoupons = pathStripeBase + '/coupons';
+
+export const pathSandboxBase = '/api/sandbox';
 
 export const endpoint = {
   login: `${authBase}/login`,
