@@ -6,8 +6,7 @@ import {
   loadingErrored,
 } from '../../components/progress/ProgressOrError';
 import { ReleaseList, ReleaseParams } from '../../data/android';
-import { CMSPassport } from '../../data/cms-account';
-import { PagedNavParams } from '../../data/paged-list';
+import { PagingQuery } from '../../http/paged-list';
 import { listReleases, createRelease } from '../../repository/android';
 import { UpsertArgs } from '../../repository/args';
 import { ResponseError } from '../../http/response-error';
@@ -18,7 +17,7 @@ export function useReleaseListState() {
   const [formErr, setFormErr] = useState('');
   const [releaseList, setReleaseList] = useState<ReleaseList>();
 
-  function initLoading(paging: PagedNavParams, token: string) {
+  function initLoading(paging: PagingQuery, token: string) {
     listReleases(paging, token)
       .then((list) => {
         setLoading(loadingStopped());

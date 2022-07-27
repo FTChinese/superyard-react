@@ -1,3 +1,4 @@
+import { PagingQuery } from './paged-list';
 import { ApiErrorPayload, ResponseError } from './response-error';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD';
@@ -127,6 +128,11 @@ export class UrlBuilder {
     return this;
   }
 
+  setNumber(key: string, value: number): UrlBuilder {
+    this.query.set(key, value.toFixed());
+    return this;
+  }
+
   setLive(live: boolean): UrlBuilder {
     this.query.set('live', `${live}`);
     return this;
@@ -139,6 +145,12 @@ export class UrlBuilder {
 
   setSearchParams(params: URLSearchParams): UrlBuilder {
     this.query = params;
+    return this;
+  }
+
+  setPage(p: PagingQuery): UrlBuilder {
+    this.query.set('page', p.page.toFixed());
+    this.query.set('per_page', p.itemsCount.toFixed());
     return this;
   }
 

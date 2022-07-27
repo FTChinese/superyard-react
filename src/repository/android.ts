@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { Release, ReleaseList, ReleaseParams } from '../data/android';
 import { authHeader } from '../data/cms-account';
-import { PagedNavParams, serializePagingQuery } from '../data/paged-list';
+import { PagingQuery, serializePagingQuery } from '../http/paged-list';
 import { URLBuilder } from '../http/url_builder';
 import { UpsertArgs } from './args';
 import { endpoint } from './endpoint';
 import { ResponseError } from '../http/response-error';
 
 export function listReleases(
-  page: PagedNavParams,
+  page: PagingQuery,
   token: string
 ): Promise<ReleaseList> {
   const url = new URLBuilder(endpoint.androidBase)

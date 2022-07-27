@@ -21,9 +21,9 @@ import { FormikHelpers } from 'formik/dist/types';
 import { CMSPassport } from '../../data/cms-account';
 import {
   serializePagingQuery,
-  parsePagingQuery,
-  PagedNavParams,
-} from '../../data/paged-list';
+  getPagingQuery,
+  PagingQuery,
+} from '../../http/paged-list';
 import { toast } from 'react-toastify';
 import { LegalListScreen } from '../../features/legal/LegalListScreen';
 
@@ -39,7 +39,7 @@ export function LegalListPage() {
     setShowDialog,
   } = useTeaserListState();
   const [searchParams, setSearchParams] = useSearchParams();
-  const paging = parsePagingQuery(searchParams);
+  const paging = getPagingQuery(searchParams);
 
   if (!passport) {
     return <Unauthorized />;
@@ -49,7 +49,7 @@ export function LegalListPage() {
     startLoading(paging, passport.token);
 
     window.scrollTo(0, 0);
-  }, [paging.prevNext, paging.itemsPerPage]);
+  }, [paging.page, paging.itemsCount]);
 
   useEffect(() => {
     if (formErr) {
@@ -90,7 +90,7 @@ function useTeaserListState() {
   const [showDialog, setShowDialog] = useState(false);
   const [formErr, setFormErr] = useState('');
 
-  function startLoading(paging: PagedNavParams, token: string) {
+  function startLoading(paging: PagingQuery, token: string) {
     setLoading(loadingStarted());
 
     listLegalDoc(paging, token)

@@ -1,4 +1,4 @@
-import { PagedList } from './paged-list';
+import { PagedList } from '../http/paged-list';
 
 export type LegalPublishParams = {
   publish: boolean;

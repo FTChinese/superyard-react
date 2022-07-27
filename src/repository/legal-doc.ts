@@ -9,11 +9,11 @@ import {
 import { endpoint } from './endpoint';
 import { ResponseError } from '../http/response-error';
 import { URLBuilder } from '../http/url_builder';
-import { PagedNavParams, serializePagingQuery } from '../data/paged-list';
+import { PagingQuery, serializePagingQuery } from '../http/paged-list';
 import { UpsertArgs } from './args';
 
 export function listLegalDoc(
-  page: PagedNavParams,
+  page: PagingQuery,
   token: string
 ): Promise<LegalList> {
   const url = new URLBuilder(endpoint.legalBase)

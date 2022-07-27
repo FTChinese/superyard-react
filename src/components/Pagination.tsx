@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
-import { PagedNavParams } from '../data/paged-list';
+import { PagingQuery } from '../http/paged-list';
 
-export type OnNavigatePage = (params: PagedNavParams) => void;
+export type OnNavigatePage = (params: PagingQuery) => void;
 
 export function Pagination(
   props: {
@@ -19,10 +19,10 @@ export function Pagination(
         variant="link"
         onClick={() => {
           props.onNavigate({
-            prevNext: props.currentPage > 1
+            page: props.currentPage > 1
               ? props.currentPage - 1
               : 1,
-              itemsPerPage: props.itemsPerPage,
+              itemsCount: props.itemsPerPage,
           })
         }}
         disabled={props.currentPage === 1}
@@ -37,10 +37,10 @@ export function Pagination(
         disabled={props.currentPage === totalPages}
         onClick={() => {
           props.onNavigate({
-            prevNext: props.currentPage < totalPages
+            page: props.currentPage < totalPages
               ? props.currentPage + 1
               : totalPages,
-              itemsPerPage: props.itemsPerPage,
+              itemsCount: props.itemsPerPage,
           })
         }}
       >

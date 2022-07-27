@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ProgressOrError } from '../../components/progress/ProgressOrError';
 import { Unauthorized } from '../../components/routes/Unauthorized';
-import { parsePagingQuery, serializePagingQuery } from '../../data/paged-list';
+import { getPagingQuery, serializePagingQuery } from '../../http/paged-list';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
@@ -14,7 +14,7 @@ import { useReleaseListState } from '../../features/android/useReleaseListState'
 export function ReleaseListPage() {
   const { passport } = useAuth();
   const [ searchParams, setSearchParams ] = useSearchParams();
-  const paging = parsePagingQuery(searchParams);
+  const paging = getPagingQuery(searchParams);
   const {
     initLoading,
     loading,
@@ -39,8 +39,8 @@ export function ReleaseListPage() {
       window.scrollTo(0, 0);
     },
     [
-      paging.prevNext,
-      paging.itemsPerPage,
+      paging.page,
+      paging.itemsCount,
     ]
   );
 
