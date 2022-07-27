@@ -1,5 +1,4 @@
-import { id } from 'date-fns/locale';
-import { SandboxPwReq, SignUpParams, TestAccount } from '../data/reader-account';
+import { SandboxPwReq, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
 import { pathSandboxBase } from './endpoint';
@@ -18,7 +17,7 @@ export function createSandboxUser(
 export function listSandboxUsers(
   token: string,
   paging: PagingQuery
-): Promise<TestAccount[]> {
+): Promise<TestUserList> {
   const url = new UrlBuilder(pathSandboxBase)
     .setPage(paging)
     .toString();
@@ -26,7 +25,7 @@ export function listSandboxUsers(
   return new Fetch()
     .get(url)
     .setBearerAuth(token)
-    .endJson<TestAccount[]>();
+    .endJson<TestUserList>();
 }
 
 export function loadSandboxUser(
