@@ -1,4 +1,4 @@
-import { SandboxPwReq, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
+import { SandboxPwParams, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
 import { pathSandboxBase } from './endpoint';
@@ -62,7 +62,7 @@ export function deleteSandboxUser(
 export function changeSandboxPassword(
   token: string,
   id: string,
-  params: SandboxPwReq,
+  params: SandboxPwParams,
 ): Promise<TestAccount> {
   const url = new UrlBuilder(pathSandboxBase)
     .appendPath(id)
