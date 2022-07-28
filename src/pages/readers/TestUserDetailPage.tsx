@@ -3,19 +3,21 @@ import Button from 'react-bootstrap/Button';
 import Stack from 'react-bootstrap/Stack';
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { IconButton } from '../../components/buttons/Button';
+import { LinkButton } from '../../components/buttons/Button';
 import { Pencil } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useProgress } from '../../components/hooks/useProgress';
 import { LoadingOrErr } from '../../components/progress/LoadingOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { ReaderAccount, TestAccount } from '../../data/reader-account';
+import { TestAccount } from '../../data/reader-account';
 import { sitemap } from '../../data/sitemap';
 import { SandboxDeleteDialog } from '../../features/readers/SandboxDeleteDialog';
 import { SandboxPasswordDialog } from '../../features/readers/SandboxPasswordDialog';
 import { ResponseError } from '../../http/response-error';
-import { loadFtcAccount, loadSandboxUser } from '../../repository/reader';
+import { loadSandboxUser } from '../../repository/reader';
+import { ReaderDetailScreen } from '../../features/readers/ReaderDetailScreen';
+import { useReaderState } from '../../features/readers/useReaderState';
 
 export function TestUserDetailPage() {
   const { id } = useParams<'id'>();
@@ -31,14 +33,14 @@ export function TestUserDetailPage() {
 
 
   return (
-    <UserDetailPageScreen
+    <SandboxUserPageScreen
       ftcId={id}
       passport={passport}
     />
   )
 }
 
-function UserDetailPageScreen(
+function SandboxUserPageScreen(
   props: {
     ftcId: string;
     passport: CMSPassport;
@@ -47,25 +49,46 @@ function UserDetailPageScreen(
 
   const navigate = useNavigate();
   const {
+    progress
+  } = useProgress();
+
+  const {
     sandboxAccount,
-    progress,
-    errMsg,
-    startLoading,
-    setSandboxAccount
+    errMsg: sandboxErr,
+    loadSandboxAccount,
+    setSandboxAccount,
   } = useSandboxDetailState();
 
+  const {
+    errMsg: readerErr,
+    readerAccount,
+    loadReader,
+    onMemberModified
+  } = useReaderState();
+
+  // Show change password dialog.
   const [showPw, setShowPw] = useState(false);
+  // Show delete account dialog
   const [showDel, setShowDel] = useState(false);
 
   useEffect(() => {
-    startLoading(props.passport.token, props.ftcId);
+    loadSandboxAccount(props.passport.token, props.ftcId)
+      .then(ok => {
+        if (!ok) {
+          return;
+        }
+        loadReader(props.passport.token, props.ftcId);
+      });
   }, []);
 
-    useEffect(() => {
-    if (errMsg) {
-      toast.error(errMsg);
+  useEffect(() => {
+    if (sandboxErr) {
+      toast.error(sandboxErr);
     }
-    }, [errMsg]);
+    if (readerErr) {
+      toast.error(readerErr);
+    }
+  }, [sandboxErr, readerErr]);
 
   if (!sandboxAccount) {
     return <LoadingOrErr loading={progress} />
@@ -73,10 +96,16 @@ function UserDetailPageScreen(
 
   return (
     <>
-      <UserDetailScreen
-        user={sandboxAccount}
-        onDelete={() => setShowDel(true) }
-        onChangePassword={() => setShowPw(true) }
+      <SandboxUserDetails
+        sandbox={sandboxAccount}
+        onDelete={() => setShowDel(true)}
+        onChangePass={() => setShowPw(true)}
+      />
+
+      <ReaderDetailScreen
+        passport={props.passport}
+        reader={readerAccount}
+        onMemberModified={onMemberModified}
       />
 
       <SandboxPasswordDialog
@@ -100,84 +129,68 @@ function UserDetailPageScreen(
   )
 }
 
-function UserDetailScreen(
+function SandboxUserDetails(
   props: {
-    user: TestAccount;
+    sandbox: TestAccount;
     onDelete: () => void;
-    onChangePassword: () => void;
+    onChangePass: () => void;
   }
 ) {
   return (
-    <div>
+    <section>
       <Stack direction='horizontal'>
-        <h2 className="mb-3">{props.user.email}</h2>
+        <h2 className="mb-3">{props.sandbox.email}</h2>
         <Button
           onClick={props.onDelete}
           className="ms-auto"
           variant='danger'
-        >
-          Delete
-        </Button>
+        >Delete</Button>
       </Stack>
 
-      <section>
-        <h3>Password</h3>
+      <h5>Password</h5>
 
-        <div className='d-flex align-items-center'>
-          <code className='me-2'>{props.user.password}</code>
-          <IconButton
-            icon={<Pencil />}
-            onClick={props.onChangePassword}
-          />
-        </div>
-      </section>
-    </div>
+      <Stack direction='horizontal' className='align-items-center mb-3'>
+        <code className='me-2'>
+          {props.sandbox.password}
+        </code>
+        <LinkButton
+          onClick={props.onChangePass}
+        >
+          <Pencil />
+        </LinkButton>
+      </Stack>
+    </section>
   )
 }
 
 function useSandboxDetailState() {
-  const { startProgress, stopProgress, progress } = useProgress();
+  const { startProgress, stopProgress } = useProgress();
   const [sandboxAccount, setSandboxAccount] = useState<TestAccount>();
-  const [readerAccount, setReaderAccount] = useState<ReaderAccount>();
   const [errMsg, setErrMsg] = useState('');
 
-  const startLoading = (token: string, ftcId: string) => {
+  const loadSandboxAccount = (token: string, ftcId: string): Promise<boolean> => {
     startProgress();
 
-    loadSandboxUser(token, ftcId)
+    return loadSandboxUser(token, ftcId)
       .then(a => {
         setSandboxAccount(a);
 
-        loadAccount(token, ftcId);
+        return Promise.resolve(true);
       })
       .catch((err: ResponseError) => {
         setErrMsg(err.message);
+        return Promise.resolve(false);
       })
       .finally(() => {
         stopProgress();
       });
-  }
+  };
 
-  const loadAccount = (token: string, ftcId: string) => {
-    startProgress();
-
-    loadFtcAccount(token, ftcId)
-      .then(a => {
-        setReaderAccount(a)
-      })
-      .catch((err: ResponseError) => {
-        setErrMsg(err.message);
-      })
-      .finally(() => {
-        stopProgress();
-      });
-  }
 
   return {
     sandboxAccount,
-    progress,
     errMsg,
-    startLoading,
+    loadSandboxAccount,
     setSandboxAccount,
   }
 }
