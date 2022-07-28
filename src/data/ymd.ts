@@ -1,5 +1,6 @@
 import { formatDuration } from 'date-fns';
-import { Cycle } from './enum';
+import { Cycle, Tier } from './enum';
+import { localizedEdition } from './localization';
 
 enum TemporalUnit {
   Year,
@@ -52,7 +53,7 @@ export function ymdZero(): YearMonthDay {
   };
 }
 
-export function ymdToCycle(ymd: YearMonthDay): Cycle {
+export function cycleOfYMD(ymd: YearMonthDay): Cycle {
   if (ymd.years > 0) {
     return 'year';
   }
@@ -68,12 +69,54 @@ export function ymdToCycle(ymd: YearMonthDay): Cycle {
   return 'month';
 }
 
-export function formatYMD(ymd: YearMonthDay): string {
+export function formatEdition(t: Tier, ymd: YearMonthDay): string {
+  return localizedEdition({
+    tier: t,
+    cycle: cycleOfYMD(ymd)
+  });
+}
+
+export function readableYMD(ymd: YearMonthDay): string {
   return formatDuration({
     years: ymd.years,
     months: ymd.months,
     days: ymd.days,
   });
+}
+
+export function formatYMD(ymd: YearMonthDay, recurring: boolean): string {
+  const periods: TemporalDuration[] = [
+    {
+      count: ymd.years,
+      unit: TemporalUnit.Year,
+    },
+    {
+      count: ymd.months,
+      unit: TemporalUnit.Month,
+    },
+    {
+      count: ymd.days,
+      unit: TemporalUnit.Day
+    },
+  ].filter(item => item.count > 0);
+
+  switch (periods.length) {
+    case 0:
+      return '';
+
+    case 1:
+      return formatDurationCN(periods[0], recurring);
+
+    default:
+      // If there are more than one units, you should
+      // product a string linke 1年1个月; otherwise a
+      // recurring price might get a string like 年月
+      return periods.reduce((prev, curr) => {
+        prev += formatDurationCN(curr, false);
+
+        return prev;
+      }, '')
+  }
 }
 
 export class CycleFormat {
