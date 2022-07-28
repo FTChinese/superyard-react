@@ -1,4 +1,4 @@
-import { CreateMemberParams, Membership, UpdateMemberParams } from '../data/membership';
+import { CreateMemberParams, Membership, MemberParams } from '../data/membership';
 import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
@@ -120,7 +120,7 @@ export function createOneOffMember(
 export function updateOneOffMember(
   token: string,
   compoundId: string,
-  params: UpdateMemberParams,
+  params: MemberParams,
 ): Promise<Membership> {
   const url = new UrlBuilder(pathMemberBase)
     .appendPath(compoundId)
