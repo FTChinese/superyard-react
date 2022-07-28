@@ -23,14 +23,7 @@ export function SandboxAccountForm(
       }}
       validationSchema={Yup.object({
         email: Yup.string()
-          .required(invalidMessages.required)
-          .test(
-            'email',
-            'Must not contain @ symbol',
-            (value, context) => {
-              return !!value && value.includes('@');
-            }
-          ),
+          .required(invalidMessages.required),
         password: Yup.string().required(invalidMessages.required)
       })}
       onSubmit={props.onSubmit}
