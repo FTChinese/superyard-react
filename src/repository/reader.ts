@@ -1,7 +1,7 @@
-import { SandboxPwParams, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
+import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
-import { pathSandboxBase } from './endpoint';
+import { pathFtcReader, pathSandboxBase } from './endpoint';
 
 export function createSandboxUser(
   token: string,
@@ -74,4 +74,33 @@ export function changeSandboxPassword(
     .setBearerAuth(token)
     .sendJson(params)
     .endJson<TestAccount>();
+}
+
+export function loadFtcAccount(
+  token: string, // CMS user's jwt token, not this ftc user.
+  ftcId: string,
+): Promise<ReaderAccount> {
+  const url = new UrlBuilder(pathFtcReader)
+    .appendPath(ftcId)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson<ReaderAccount>();
+}
+
+export function loadFtcProfile(
+  token: string,
+  ftcId: string,
+): Promise<ReaderFtcProfile> {
+  const url = new UrlBuilder(pathFtcReader)
+    .appendPath(ftcId)
+    .appendPath('profile')
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson<ReaderFtcProfile>();
 }
