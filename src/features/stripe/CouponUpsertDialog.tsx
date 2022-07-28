@@ -8,9 +8,9 @@ import { PriceHighlight } from '../../components/text/PriceHighlight';
 import { CMSPassport } from '../../data/cms-account';
 import {
   formatCouponAmount,
+  newStripePriceParts,
   StripeCoupon,
   StripePrice,
-  stripePriceFormat,
 } from '../../data/stripe-price';
 import { ResponseError } from '../../http/response-error';
 import { upsertStripeCoupon } from '../../repository/stripe';
@@ -77,7 +77,7 @@ export function CouponUpsertDialog(props: {
               </h6>
               <PriceHighlight
                 parts={
-                  stripePriceFormat(props.price).formatToParts()
+                  newStripePriceParts(props.price)
                 }
               />
               {
