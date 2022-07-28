@@ -1,4 +1,5 @@
-import { PriceParts } from '../../data/price-format';
+import { PriceParts } from '../../data/localization';
+
 
 export function PriceHighlight(
   props: {
