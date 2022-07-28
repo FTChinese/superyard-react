@@ -8,6 +8,11 @@ export const pathStripeCoupons = pathStripeBase + '/coupons';
 
 export const pathSandboxBase = '/api/sandbox';
 
+export const pathReaderBase = '/api/readers';
+
+export const pathFtcReader = `${pathReaderBase}/ftc`;
+export const pathWxReader = `${pathReaderBase}/wx`;
+
 export const endpoint = {
   login: `${authBase}/login`,
   resetPassword: `${pwResetBase}`,
