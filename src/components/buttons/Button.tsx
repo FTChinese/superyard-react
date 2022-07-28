@@ -62,15 +62,44 @@ export function OButton(props: {
   );
 }
 
-export function BlockLoadButton(props: {
-  text: string;
-  onClick: () => void;
-  progress: boolean;
-  disabled?: boolean;
-  size?: 'sm' | 'lg';
-  variant?: ButtonVariant;
-  className?: string;
-}) {
+export function LoadButton(
+  props: {
+    text: string;
+    progress: boolean;
+    onClick: () => void;
+    disabled?: boolean;
+    size?: 'sm' | 'lg';
+    variant?: ButtonVariant;
+    className?: string;
+  }
+) {
+  return (
+    <Button
+      disabled={props.disabled}
+      variant={props.variant || 'primary'}
+      size={props.size || 'sm'}
+      onClick={props.onClick}
+      type="button"
+    >
+      <SpinnerOrText
+        progress={props.progress}
+        text={props.text}
+      />
+    </Button>
+  );
+}
+
+export function BlockLoadButton(
+  props: {
+    text: string;
+    onClick: () => void;
+    progress: boolean;
+    disabled?: boolean;
+    size?: 'sm' | 'lg';
+    variant?: ButtonVariant;
+    className?: string;
+  }
+) {
   let className = 'd-grid';
   if (props.className) {
     className += ` ${props.className}`;
@@ -85,104 +114,54 @@ export function BlockLoadButton(props: {
         onClick={props.onClick}
         type="button"
       >
-        {props.progress ? (
-          <Spinner as="span" animation="border" size="sm" />
-        ) : (
-          <span>{props.text}</span>
-        )}
+        <SpinnerOrText
+          progress={props.progress}
+          text={props.text}
+        />
       </Button>
     </div>
   );
 }
 
-export function TrailIconButton(props: {
-  text: string;
-  icon: JSX.Element;
-  onClick: () => void;
-  disabled?: boolean;
-  size?: 'sm' | 'lg';
-  variant?: ButtonVariant;
-}) {
+export function LinkButton(
+  props: {
+    children: JSX.Element | string;
+    onClick: () => void;
+    disabled?: boolean;
+    className?: string;
+  }
+) {
   return (
     <Button
       disabled={props.disabled}
-      variant={props.variant || 'link'}
-      size={props.size || 'sm'}
-      onClick={props.onClick}
-      className="d-flex align-items-center"
-    >
-      <span className="pe-1">{props.text}</span>
-      {props.icon}
-    </Button>
-  );
-}
-
-export function LeadIconButton(props: {
-  text: string;
-  icon: JSX.Element;
-  onClick: () => void;
-  disabled?: boolean;
-  size?: 'sm' | 'lg';
-  variant?: ButtonVariant;
-}) {
-  return (
-    <Button
-      disabled={props.disabled}
-      variant={props.variant || 'link'}
-      size={props.size || 'sm'}
-      onClick={props.onClick}
-      className="d-flex align-items-center"
-    >
-      {props.icon}
-      <span className="pe-1">{props.text}</span>
-    </Button>
-  );
-}
-
-export function IconButton(props: {
-  icon: JSX.Element;
-  onClick: () => void;
-  disabled?: boolean;
-  size?: 'sm' | 'lg';
-  variant?: ButtonVariant;
-}) {
-  return (
-    <Button
-      disabled={props.disabled}
-      variant={props.variant || 'link'}
-      size={props.size || 'sm'}
-      onClick={props.onClick}
-    >
-      {props.icon}
-    </Button>
-  );
-}
-
-export function TextButton(props: {
-  text: string;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  return (
-    <Button
-      disabled={props.disabled}
-      variant="link"
+      variant={'link'}
       size="sm"
       onClick={props.onClick}
+      className={props.className}
     >
-      {props.text}
+      {props.children}
     </Button>
   );
 }
 
-export function DisplayGrid(props: {
-  children: JSX.Element;
-  className?: string;
-}) {
-  let className = 'd-grid';
-  if (props.className) {
-    className += ` ${props.className}`;
+export function SmallButton(
+  props: {
+    children: JSX.Element | string;
+    onClick: () => void;
+    disabled?: boolean;
+    variant?: ButtonVariant;
+    className?: string;
   }
-
-  return <div className={className}>{props.children}</div>;
+) {
+  return (
+    <Button
+      disabled={props.disabled}
+      variant={props.variant || 'primary'}
+      size="sm"
+      onClick={props.onClick}
+      className={props.className}
+    >
+      {props.children}
+    </Button>
+  );
 }
