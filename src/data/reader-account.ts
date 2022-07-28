@@ -43,6 +43,18 @@ export type ReaderAccount = ReaderBaseAccount & {
   membership: Membership;
 };
 
+export function getCompoundId(a: ReaderAccount): string {
+  if (a.id) {
+    return a.id;
+  }
+
+  if (a.unionId) {
+    return a.unionId
+  }
+
+  return ''
+}
+
 export type ReaderFtcProfile = {
   id: string;
   gender: 'M' | 'F';
