@@ -27,3 +27,14 @@ export function authHeader(token: string): { [key: string]: string } {
     'Authorization': `Bearer ${token}`,
   };
 }
+
+export type UpdatePasswordReq = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export type UpdatePasswordFormVal = {
+  currentPassword: string;
+  password: string
+  confirmPassword: string;
+};

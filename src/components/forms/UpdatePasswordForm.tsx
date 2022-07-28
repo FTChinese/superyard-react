@@ -2,10 +2,10 @@ import { FormikHelpers, Formik, Form } from 'formik';
 import { useState, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import { verifyPasswordSchema } from '../../data/form-value';
-import { UpdatePasswordFormVal } from '../../data/update-account';
 import { TextInput } from '../controls/TextInput';
 import * as Yup from 'yup';
 import { FormikSubmitButton } from '../controls/FormikSubmitButton';
+import { UpdatePasswordFormVal } from '../../data/cms-account';
 
 export function UpdatePasswordForm(
   props: {
