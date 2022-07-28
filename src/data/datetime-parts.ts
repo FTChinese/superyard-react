@@ -1,5 +1,5 @@
-import { format, parseISO } from 'date-fns';
-import { padSeconds, timeLayout } from '../utils/time-format';
+import { parseISO } from 'date-fns';
+import { formatDate, formatTime, formatZone, padSeconds } from '../utils/time-format';
 
 export type DateTimeParts = {
   date: string;
@@ -11,15 +11,15 @@ export function defaultDateTimeParts(zone: string = ''): DateTimeParts {
   return {
     date: '',
     time: '00:00:00',
-    zone: zone ? zone : format(new Date(), timeLayout.isoZone),
+    zone: zone ? zone : formatZone(new Date()),
   };
 }
 
 export function newDateTimeParts(date: Date): DateTimeParts {
   return {
-    date: format(date, timeLayout.isoDate),
-    time: format(date, timeLayout.isoTime),
-    zone: format(date, timeLayout.isoZone),
+    date: formatDate(date),
+    time: formatTime(date),
+    zone: formatZone(date),
   };
 }
 
