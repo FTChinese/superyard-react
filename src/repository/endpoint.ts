@@ -13,6 +13,8 @@ export const pathReaderBase = '/api/readers';
 export const pathFtcReader = `${pathReaderBase}/ftc`;
 export const pathWxReader = `${pathReaderBase}/wx`;
 
+export const pathMemberBase = '/api/memberships';
+
 export const endpoint = {
   login: `${authBase}/login`,
   resetPassword: `${pwResetBase}`,

@@ -1,7 +1,8 @@
+import { CreateMemberParams, Membership, UpdateMemberParams } from '../data/membership';
 import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
-import { pathFtcReader, pathSandboxBase } from './endpoint';
+import { pathFtcReader, pathMemberBase, pathSandboxBase } from './endpoint';
 
 export function createSandboxUser(
   token: string,
@@ -103,4 +104,48 @@ export function loadFtcProfile(
     .get(url)
     .setBearerAuth(token)
     .endJson<ReaderFtcProfile>();
+}
+
+export function createOneOffMember(
+  token: string,
+  params: CreateMemberParams,
+): Promise<Membership> {
+  return new Fetch()
+    .post(pathMemberBase)
+    .setBearerAuth(token)
+    .sendJson(params)
+    .endJson<Membership>();
+}
+
+export function updateOneOffMember(
+  token: string,
+  compoundId: string,
+  params: UpdateMemberParams,
+): Promise<Membership> {
+  const url = new UrlBuilder(pathMemberBase)
+    .appendPath(compoundId)
+    .toString();
+
+  return new Fetch()
+    .patch(url)
+    .setBearerAuth(token)
+    .sendJson(params)
+    .endJson<Membership>();
+}
+
+export function deleteMember(
+  token: string,
+  compoundId: string,
+): Promise<boolean> {
+  const url = new UrlBuilder(pathMemberBase)
+    .appendPath(compoundId)
+    .toString();
+
+  return new Fetch()
+    .delete(url)
+    .setBearerAuth(token)
+    .end()
+    .then(resp => {
+      return resp.status === 204;
+    });
 }
