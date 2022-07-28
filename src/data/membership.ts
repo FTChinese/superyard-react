@@ -139,6 +139,18 @@ export type AutoRenewMoment = {
   cycle: Cycle;
 };
 
+export type UpdateMemberParams = {
+  priceId: string;
+  expireDate: string; // ISO year-month-date format.
+  payMethod: PaymentKind; // Only alipay/wxpay.
+}
+
+export type CreateMemberParams = {
+  // One of ftcId or unionId must exists.
+  ftcId?: string;
+  unionId?: string;
+} & UpdateMemberParams
+
 export interface Invoice extends Edition {
   id: string;
   compoundId: string;
