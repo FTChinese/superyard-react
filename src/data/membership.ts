@@ -2,6 +2,7 @@ import { getDate, getMonth, getYear, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
 import { Cycle, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
+import { formatDate } from '../utils/time-format';
 
 export type Membership =  {
   ftcId?: string;
@@ -21,6 +22,23 @@ export type Membership =  {
   vip: boolean;
 }
 
+export function isZeroMember(m: Membership): boolean {
+  return !m.tier && !m.vip;
+}
+
+export function zeroMember(): Membership {
+  return {
+    autoRenew: false,
+    standardAddOn: 0,
+    premiumAddOn: 0,
+    vip: false,
+  };
+}
+
+export function isOneOff(m: Membership): boolean {
+  return m.payMethod === 'alipay' || m.payMethod === 'wechat';
+}
+
 export class MemberParsed {
 
   readonly ftcId?: string;
@@ -29,6 +47,7 @@ export class MemberParsed {
   readonly cycle?: Cycle;
   readonly expireDate?: Date;
   readonly payMethod?: PaymentKind;
+  readonly ftcPriceId?: string;
   readonly stripeSubsId?: string;
   readonly autoRenew: boolean = false;
   readonly status?: SubStatus;
@@ -48,6 +67,7 @@ export class MemberParsed {
         this.expireDate = parseISO(m.expireDate);
       }
       this.payMethod = m.payMethod;
+      this.ftcPriceId = m.ftcPlanId;
       this.stripeSubsId = m.stripeSubsId;
       this.autoRenew = m.autoRenew;
       this.status = m.status;
@@ -90,6 +110,14 @@ export class MemberParsed {
     }
 
     return undefined;
+  }
+
+  formatExpireDate(): string {
+    if (!this.expireDate) {
+      return '';
+    }
+
+    return formatDate(this.expireDate);
   }
 
   isZero(): boolean {
@@ -139,7 +167,7 @@ export type AutoRenewMoment = {
   cycle: Cycle;
 };
 
-export type UpdateMemberParams = {
+export type MemberParams = {
   priceId: string;
   expireDate: string; // ISO year-month-date format.
   payMethod: PaymentKind; // Only alipay/wxpay.
@@ -149,7 +177,7 @@ export type CreateMemberParams = {
   // One of ftcId or unionId must exists.
   ftcId?: string;
   unionId?: string;
-} & UpdateMemberParams
+} & MemberParams
 
 export interface Invoice extends Edition {
   id: string;
