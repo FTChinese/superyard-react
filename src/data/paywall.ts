@@ -1,7 +1,7 @@
-import { Tier } from './enum';
+import { SelectOption, Tier } from './enum';
 import { ValidPeriod } from './period';
-import { Discount, Price } from './ftc-price';
-import { StripePaywallItem, StripePrice } from './stripe-price';
+import { Discount, Price, priceSelectOption } from './ftc-price';
+import { StripePaywallItem } from './stripe-price';
 
 export type BannerParams = {
   heading: string;
@@ -63,6 +63,11 @@ export type Paywall = PaywallDoc & {
   products: PaywallProduct[];
   stripe: StripePaywallItem[];
 };
+
+export function priceSelectOpts(products: PaywallProduct[]): SelectOption<string>[] {
+  return products
+    .flatMap(prod => prod.prices.map(p => priceSelectOption(p)))
+}
 
 /**
  * @description Describes the structure of ui.
