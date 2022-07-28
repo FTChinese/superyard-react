@@ -1,5 +1,5 @@
-import { format, parseISO } from 'date-fns';
-import { timeLayout } from '../../utils/time-format';
+import { parseISO } from 'date-fns';
+import { formatDate, formatTime, formatZone } from '../../utils/time-format';
 
 export function ISOTimeColumn(
   props: {
@@ -23,9 +23,9 @@ export function DateColumn(
   }
 ) {
 
-  const date = format(props.date, timeLayout.isoDate);
-  const time = format(props.date, timeLayout.isoTime);
-  const zone = format(props.date, timeLayout.isoZone);
+  const date = formatDate(props.date);
+  const time = formatTime(props.date);
+  const zone = formatZone(props.date);
 
   return (
     <span className="d-flex flex-column">
