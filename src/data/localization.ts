@@ -1,4 +1,4 @@
-import { Cycle, PaymentMethod, Tier } from './enum';
+import { Cycle, PaymentKind, Tier } from './enum';
 import { Edition } from './edition';
 import { ymdToCycle, YearMonthDay } from './ymd';
 
@@ -20,7 +20,7 @@ export function localizedCycle(c: Cycle): string {
   return cycles[c];
 }
 
-const paymentMethods: Record<PaymentMethod, string> = {
+const paymentMethods: Record<PaymentKind, string> = {
   alipay: '支付宝',
   wechat: '微信',
   stripe: 'Stripe订阅',
@@ -28,7 +28,7 @@ const paymentMethods: Record<PaymentMethod, string> = {
   b2b: '企业订阅'
 };
 
-export function localizePaymentMethod(m: PaymentMethod | null): string {
+export function localizePaymentMethod(m: PaymentKind | null): string {
   if (!m) {
     return '未知来源';
   }
