@@ -20,8 +20,9 @@ import {
 } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
-import { ftcPriceFormat, Price } from '../../data/ftc-price';
+import { newFtcPriceParts, Price } from '../../data/ftc-price';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
+import { concatPriceParts } from '../../data/localization';
 
 export function PriceListItem(props: {
   passport: CMSPassport;
@@ -150,7 +151,7 @@ export function PriceListItem(props: {
         <Card.Header className="d-flex justify-content-between">
           <div>
             <span className="me-2">
-              {ftcPriceFormat(props.paywallPrice).format()}
+              {concatPriceParts(newFtcPriceParts(props.paywallPrice))}
             </span>
             {props.paywallPrice.active && <ActiveBadge active={true} />}
           </div>

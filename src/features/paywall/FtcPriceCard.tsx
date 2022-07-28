@@ -4,9 +4,9 @@ import { Table, TableBody, TableHead, TRow } from '../../components/list/Table';
 import { ISOTimeColumn } from '../../components/text/DateTimeBlock';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
 import { YMDColumn } from '../../components/text/YMDColumn';
-import { Discount, formatDiscountAmount, ftcPriceFormat } from '../../data/ftc-price';
+import { Discount, formatDiscountAmount, newFtcPriceParts } from '../../data/ftc-price';
 import { PaywallPrice } from '../../data/paywall';
-import { formatYMD } from '../../data/ymd';
+import { readableYMD } from '../../data/ymd';
 
 export function FtcPriceCard(
   props: {
@@ -24,7 +24,7 @@ export function FtcPriceCard(
     {
       head: 'Duration',
       data: [
-        formatYMD(props.price.periodCount),
+        readableYMD(props.price.periodCount),
       ]
     },
     {
@@ -48,7 +48,7 @@ export function FtcPriceCard(
       <Card.Body>
         <Card.Title className="text-center">
           <PriceHighlight
-            parts={ftcPriceFormat(props.price).formatToParts()}
+            parts={newFtcPriceParts(props.price)}
           />
         </Card.Title>
 

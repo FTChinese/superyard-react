@@ -3,8 +3,8 @@ import { StripeBrand } from '../../components/graphics/icons';
 import { Table, TableBody, TableHead, TRow } from '../../components/list/Table';
 import { DateColumn, ISOTimeColumn } from '../../components/text/DateTimeBlock';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
-import { formatCouponAmount, StripePaywallItem, stripePriceFormat } from '../../data/stripe-price';
-import { formatYMD } from '../../data/ymd';
+import { formatCouponAmount, newStripePriceParts, StripePaywallItem } from '../../data/stripe-price';
+import { readableYMD } from '../../data/ymd';
 
 export function StripePriceCard(
   props: {
@@ -22,7 +22,7 @@ export function StripePriceCard(
     {
       head: 'Duration',
       data: [
-        formatYMD(props.item.price.periodCount),
+        readableYMD(props.item.price.periodCount),
       ]
     },
   ];
@@ -68,7 +68,7 @@ export function StripePriceCard(
       <Card.Body>
         <Card.Title className="text-center">
           <PriceHighlight
-            parts={stripePriceFormat(props.item.price).formatToParts()}
+            parts={newStripePriceParts(props.item.price)}
           />
         </Card.Title>
 

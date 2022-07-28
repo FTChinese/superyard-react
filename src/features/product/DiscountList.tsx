@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import { FormikHelpers } from 'formik';
 import { toast } from 'react-toastify';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { Discount, ftcPriceFormat } from '../../data/ftc-price';
+import { Discount, newFtcPriceParts } from '../../data/ftc-price';
 import { ModeBadge } from '../../components/text/Badge';
 import {
   buildDiscountParams,
@@ -161,7 +161,7 @@ export function DiscountList(props: {
               <h5>
                 <span className="me-2">Discount for price</span>
                 <PriceHighlight
-                  parts={ftcPriceFormat(props.price).formatToParts()}
+                  parts={newFtcPriceParts(props.price)}
                 />
               </h5>
 

@@ -3,7 +3,7 @@ import { Price } from '../../data/ftc-price';
 import { sitemap } from '../../data/sitemap';
 import { ModeBadge } from '../../components/text/Badge';
 import { Table, TableBody, TRow } from '../../components/list/Table';
-import { formatYMD } from '../../data/ymd';
+import { readableYMD } from '../../data/ymd';
 
 export function PriceTable(
   props: {
@@ -33,7 +33,7 @@ export function PriceTable(
     {
       head: 'Duration',
       data: [
-        formatYMD(props.price.periodCount),
+        readableYMD(props.price.periodCount),
       ]
     },
     {
