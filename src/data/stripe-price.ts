@@ -1,7 +1,6 @@
 import { DiscountStatus, isRecurring, PriceKind, Tier } from './enum';
-import { MoneyFormat } from './money-parts';
-import { PriceFormat } from './price-format';
-import { YearMonthDay } from './ymd';
+import { formatMoney, newMoneyParts, PriceParts } from './localization';
+import { formatYMD, YearMonthDay } from './ymd';
 
 export type StripePrice = {
   id: string;
@@ -19,13 +18,17 @@ export type StripePrice = {
   created: number;
 };
 
-export function stripePriceFormat(sp: StripePrice): PriceFormat {
-  return new PriceFormat({
-    currency: sp.currency,
-    amount: sp.unitAmount / 100,
-    period: sp.periodCount,
-    recurring: isRecurring(sp.kind),
-  });
+export function newStripePriceParts(
+  sp: StripePrice, // Either trial or recurring price.
+): PriceParts {
+
+  return {
+    ...newMoneyParts(
+      sp.currency,
+      sp.unitAmount / 100,
+    ),
+    cycle: '/' + formatYMD(sp.periodCount, isRecurring(sp.kind)),
+  };
 }
 
 export type CouponParams = {
@@ -50,11 +53,7 @@ export type StripeCoupon = {
 };
 
 export function formatCouponAmount(c: StripeCoupon): string {
-  return '-' + new MoneyFormat(
-    c.currency,
-    c.amountOff / 100
-  )
-    .format()
+  return '-' + formatMoney(c.currency, c.amountOff);
 }
 
 export type StripePaywallItem = {
