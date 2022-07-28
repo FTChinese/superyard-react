@@ -1,8 +1,7 @@
-import { Cycle, DiscountStatus, OfferKind, PriceKind, Tier } from './enum';
-import { MoneyFormat } from './money-parts';
+import { Cycle, DiscountStatus, OfferKind, PriceKind, SelectOption, Tier } from './enum';
+import { newMoneyParts, PriceParts } from './localization';
 import { ValidPeriod } from './period';
-import { PriceFormat } from './price-format';
-import { YearMonthDay } from './ymd';
+import { formatEdition, formatYMD, YearMonthDay } from './ymd';
 
 export type UpdatePriceParams = {
   title?: string;
@@ -33,13 +32,22 @@ export type Price = {
   liveMode: boolean;
 } & NewPriceParams;
 
-export function ftcPriceFormat(p: Price): PriceFormat {
-  return new PriceFormat({
-    currency: p.currency,
-    amount: p.unitAmount,
-    period: p.periodCount,
-    recurring: false,
-  });
+export function priceSelectOption(p: Price): SelectOption<string> {
+  return {
+    disabled: false,
+    name: formatEdition(p.tier, p.periodCount),
+    value: p.id
+  }
+}
+
+export function newFtcPriceParts(price: Price): PriceParts {
+  return {
+    ...newMoneyParts(
+      price.currency,
+      price.unitAmount
+    ),
+    cycle: '/' + formatYMD(price.periodCount, false),
+  };
 }
 
 export type DiscountParams = Partial<ValidPeriod> & {
@@ -61,5 +69,5 @@ export type Discount = {
 
 
 export function formatDiscountAmount(d: Discount): string {
-  return '-' + new MoneyFormat('cny', d.priceOff).format();
+  return '-' + newMoneyParts('cny', d.priceOff);
 }
