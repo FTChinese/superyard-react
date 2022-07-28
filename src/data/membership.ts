@@ -1,62 +1,143 @@
-import { parseISO } from 'date-fns';
+import { getDate, getMonth, getYear, parseISO } from 'date-fns';
 import { isExpired } from '../utils/now';
-import { Cycle, OrderKind, PaymentMethod, SubStatus, Tier } from './enum';
+import { Cycle, OrderKind, PaymentKind, SubStatus, Tier } from './enum';
 import { Edition } from './edition';
 
 export type Membership =  {
-  ftcId: string | null;
-  unionId: string | null;
-  tier: Tier | null;
-  cycle: Cycle | null;
-  expireDate: string | null;
-  payMethod: PaymentMethod | null;
-  ftcPlanId: string | null;
-  stripeSubsId: string | null;
+  ftcId?: string;
+  unionId?: string;
+  tier?: Tier;
+  cycle?: Cycle;
+  expireDate?: string;
+  payMethod?: PaymentKind;
+  ftcPlanId?: string;
+  stripeSubsId?: string;
   autoRenew: boolean;
-  status: SubStatus | null;
-  appleSubsId: string | null;
-  b2bLicenceId: string | null;
+  status?: SubStatus;
+  appleSubsId?: string;
+  b2bLicenceId?: string;
   standardAddOn: number;
   premiumAddOn: number;
   vip: boolean;
 }
 
-export function isMemberExpired(m: Membership): boolean {
-  if (!m.expireDate) {
-    return true;
+export class MemberParsed {
+
+  readonly ftcId?: string;
+  readonly unionId?: string;
+  readonly tier?: Tier;
+  readonly cycle?: Cycle;
+  readonly expireDate?: Date;
+  readonly payMethod?: PaymentKind;
+  readonly stripeSubsId?: string;
+  readonly autoRenew: boolean = false;
+  readonly status?: SubStatus;
+  readonly appleSubsId?: string;
+  readonly b2bLicenceId?: string;
+  readonly standardAddOn: number = 0;
+  readonly premiumAddOn: number = 0;
+  readonly vip: boolean = false;
+
+  constructor(m?: Membership) {
+    if (m) {
+      this.ftcId = m.ftcId;
+      this.unionId = m.unionId;
+      this.tier = m.tier;
+      this.cycle = m.cycle;
+      if (m.expireDate) {
+        this.expireDate = parseISO(m.expireDate);
+      }
+      this.payMethod = m.payMethod;
+      this.stripeSubsId = m.stripeSubsId;
+      this.autoRenew = m.autoRenew;
+      this.status = m.status;
+      this.appleSubsId = m.appleSubsId;
+      this.b2bLicenceId = m.b2bLicenceId;
+      this.standardAddOn = m.standardAddOn;
+      this.premiumAddOn = m.premiumAddOn;
+      this.vip = m.vip;
+    }
   }
 
-  const expireOn = parseISO(m.expireDate);
+  isStripe(): boolean {
+    return this.payMethod === 'stripe' && !!this.stripeSubsId
+  }
 
-  return isExpired(expireOn) && !m.autoRenew;
+  autoRenewMoment(): AutoRenewMoment | null {
+    if (!this.expireDate) {
+      return null;
+    }
+
+    if (!this.cycle) {
+      return null;
+    }
+
+    return {
+      year: `${getYear(this.expireDate)}`,
+      month: `${getMonth(this.expireDate)}`,
+      date: `${getDate(this.expireDate)}`,
+      cycle: this.cycle,
+    };
+  }
+
+  normalizePayMethod(): PaymentKind | undefined {
+    if (this.payMethod) {
+      return this.payMethod;
+    }
+
+    if (this.tier) {
+      return 'alipay';
+    }
+
+    return undefined;
+  }
+
+  isZero(): boolean {
+    return this.tier == null && !this.vip;
+  }
+
+  isExpired(): boolean {
+    if (!this.expireDate) {
+      return true;
+    }
+
+    return isExpired(this.expireDate) && !this.autoRenew;
+  }
+
+  isOneOff(): boolean {
+    return this.payMethod === 'alipay' || this.payMethod === 'wechat';
+  }
+
+  isSubs(): boolean {
+    return this.payMethod === 'stripe' || this.payMethod === 'apple';
+  }
+
+  isStripeRenewOn(): boolean {
+    return this.payMethod === 'stripe' && this.autoRenew
+  }
+
+  isStripeCancelled(): boolean {
+    return this.payMethod === 'stripe' && !this.autoRenew && !this.isExpired();
+  }
+
+  /**
+   * @description Manipulate addon
+   */
+  hasAddOn(): boolean {
+    return this.standardAddOn > 0 || this.premiumAddOn > 0;
+  }
+
+  isConvertableToAddOn(): boolean {
+    return this.isOneOff() && !this.isExpired;
+  }
 }
 
-export function isMembershipZero(m: Membership): boolean {
-  return m.tier == null && !m.vip;
-}
-
-export function isOneTimePurchase(m: Membership): boolean {
-  return m.payMethod === 'alipay' || m.payMethod === 'wechat';
-}
-
-export function isRenewalSubs(m: Membership): boolean {
-  return m.payMethod === 'stripe' || m.payMethod === 'wechat';
-}
-
-export function isConvertableToAddOn(m: Membership): boolean {
-  return isOneTimePurchase(m) && !isMemberExpired(m);
-}
-
-/**
- * @todo Modify for API.
- */
-export interface MemberSnapshot {
-  id: string;
-  createdBy: string;
-  createdUtc: string;
-  orderId: string | null;
-  membership: Membership;
-}
+export type AutoRenewMoment = {
+  year: string;
+  month: string;
+  date: string;
+  cycle: Cycle;
+};
 
 export interface Invoice extends Edition {
   id: string;
