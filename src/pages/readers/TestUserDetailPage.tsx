@@ -10,12 +10,12 @@ import { useProgress } from '../../components/hooks/useProgress';
 import { LoadingOrErr } from '../../components/progress/LoadingOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { TestAccount } from '../../data/reader-account';
+import { ReaderAccount, TestAccount } from '../../data/reader-account';
 import { sitemap } from '../../data/sitemap';
 import { SandboxDeleteDialog } from '../../features/readers/SandboxDeleteDialog';
 import { SandboxPasswordDialog } from '../../features/readers/SandboxPasswordDialog';
 import { ResponseError } from '../../http/response-error';
-import { loadSandboxUser } from '../../repository/reader';
+import { loadFtcAccount, loadSandboxUser } from '../../repository/reader';
 
 export function TestUserDetailPage() {
   const { id } = useParams<'id'>();
@@ -138,6 +138,7 @@ function UserDetailScreen(
 function useSandboxDetailState() {
   const { startProgress, stopProgress, progress } = useProgress();
   const [sandboxAccount, setSandboxAccount] = useState<TestAccount>();
+  const [readerAccount, setReaderAccount] = useState<ReaderAccount>();
   const [errMsg, setErrMsg] = useState('');
 
   const startLoading = (token: string, ftcId: string) => {
@@ -146,6 +147,23 @@ function useSandboxDetailState() {
     loadSandboxUser(token, ftcId)
       .then(a => {
         setSandboxAccount(a);
+
+        loadAccount(token, ftcId);
+      })
+      .catch((err: ResponseError) => {
+        setErrMsg(err.message);
+      })
+      .finally(() => {
+        stopProgress();
+      });
+  }
+
+  const loadAccount = (token: string, ftcId: string) => {
+    startProgress();
+
+    loadFtcAccount(token, ftcId)
+      .then(a => {
+        setReaderAccount(a)
       })
       .catch((err: ResponseError) => {
         setErrMsg(err.message);
