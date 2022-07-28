@@ -30,17 +30,36 @@ export type ReaderBaseAccount = {
   mobile?: string;
   userName?: string;
   isVerified: boolean;
-}
+};
 
 export type Wechat = {
   nickname?: string;
   avatarUrl?: string;
-}
+};
 
 export type ReaderAccount = ReaderBaseAccount & {
   loginMethod: LoginMethod;
   wechat: Wechat;
   membership: Membership;
+};
+
+export type ReaderFtcProfile = {
+  id: string;
+  gender: 'M' | 'F';
+  familyName?: string;
+  givenName?: string;
+  birthday?: string;
+  address: ReaderAddress;
+};
+
+export type ReaderAddress = {
+  id: string;
+  country?: string;
+  province?: string;
+  city?: string;
+  district?: string;
+  street?: string;
+  postcode?: string;
 }
 
 export function isTestAccount(a: ReaderBaseAccount): boolean {
