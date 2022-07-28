@@ -9,19 +9,21 @@ export function extractISODate(isoStr: string): string {
   return isoStr;
 }
 
-export const timeLayout = {
-  fullCn: 'yyyy年M月d日H时m分s秒',
-  isoDate: 'yyyy-MM-dd',
-  isoTime: 'HH:mm:ss',
-  isoZone: 'xxx' // ISO8601 timezone without z
+const timeLayoutDateTimeCn = 'yyyy年M月d日H时m分s秒';
+const timeLayoutDate = 'yyyy-MM-dd';
+const timeLayoutTime = 'HH:mm:ss';
+const timeLayoutZone = 'xxx'; // ISO8601 timezone without z
+
+export function formatDate(date: Date): string {
+  return format(date, timeLayoutDate);
 }
 
-export function formatNow(layout: string): string {
-  return format(new Date(), layout);
+export function formatTime(date: Date): string {
+  return format(date, timeLayoutTime);
 }
 
-export function formatDate(date: Date, layout: string): string {
-  return format(date, layout);
+export function formatZone(date: Date): string {
+  return format(date, timeLayoutZone);
 }
 
 /**
