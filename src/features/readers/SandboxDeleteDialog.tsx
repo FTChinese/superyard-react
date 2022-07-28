@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { OButton, SpinnerOrText } from '../../components/buttons/Button';
+import { LoadButton } from '../../components/buttons/Button';
 import { CMSPassport } from '../../data/cms-account';
 import { TestAccount } from '../../data/reader-account';
 import { ResponseError } from '../../http/response-error';
@@ -35,7 +35,7 @@ export function SandboxDeleteDialog(
       })
       .finally(() => {
         setProgress(false);
-      })
+      });
   };
 
   return (
@@ -50,15 +50,11 @@ export function SandboxDeleteDialog(
         <p>Are you sure you want to delete this sandbox account?</p>
       </Modal.Body>
       <Modal.Footer>
-        <OButton
+        <LoadButton
+          text='Delete'
+          progress={progress}
           onClick={onDelete}
-          variant="danger"
-        >
-          <SpinnerOrText
-            text='Delete'
-            progress={progress}
-          />
-        </OButton>
+        />
       </Modal.Footer>
     </Modal>
   );
