@@ -4,18 +4,17 @@ import { Unauthorized } from '../../components/routes/Unauthorized';
 import { getPagingQuery, PagingQuery, serializePagingQuery } from '../../http/paged-list';
 import { CMSPassport } from '../../data/cms-account';
 import { CenterColumn } from '../../components/layout/Column';
-import { SignUpParams, TestAccount, TestUserList } from '../../data/reader-account';
+import { TestAccount, TestUserList } from '../../data/reader-account';
 import Button from 'react-bootstrap/Button';
 import { OnNavigatePage, Pagination } from '../../components/Pagination';
-import { Modal, Stack } from 'react-bootstrap';
+import { Stack } from 'react-bootstrap';
 import { useProgress } from '../../components/hooks/useProgress';
-import { createSandboxUser, listSandboxUsers } from '../../repository/reader';
+import { listSandboxUsers } from '../../repository/reader';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { LoadingOrErr } from '../../components/progress/LoadingOrError';
-import { SandboxAccountForm } from '../../features/readers/SandboxAccountForm';
-import { FormikHelpers } from 'formik';
+import { SandboxAccountDialog } from '../../features/readers/SandboxAccountDialog';
 
 export function TestUserListPage() {
   const { passport } = useAuth();
@@ -73,7 +72,7 @@ function ListPageScreen(
         onNavigate={(paged) => setSearchParams(serializePagingQuery(paged))}
       />
 
-      <CreateUserDialog
+      <SandboxAccountDialog
         passport={props.passport}
         show={show}
         onHide={() => setShow(false)}
@@ -115,50 +114,6 @@ function TestUserListScreen(
         onNavigate={props.onNavigate}
       />
     </div>
-  )
-}
-
-function CreateUserDialog(
-  props: {
-    passport: CMSPassport;
-    show: boolean;
-    onHide: () => void;
-    onCreated: (a: TestAccount) => void;
-  }
-) {
-
-  const onSubmit = (values: SignUpParams, helpers: FormikHelpers<SignUpParams>) => {
-    helpers.setSubmitting(true);
-
-    createSandboxUser(props.passport.token, values)
-      .then(a => {
-        props.onCreated(a);
-        props.onHide();
-      })
-      .catch((err: ResponseError) => {
-        toast.error(err.message);
-      })
-      .finally(() => {
-        helpers.setSubmitting(false)
-      })
-  }
-
-  return (
-    <Modal
-      show={props.show}
-      onHide={props.onHide}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>New Sandbox Account</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <p>Test account always ends with <strong>.test@ftchinese.com</strong>. Do not enter the host part. Simply specify the name prefix will work.</p>
-
-        <SandboxAccountForm
-          onSubmit={onSubmit}
-        />
-      </Modal.Body>
-    </Modal>
   )
 }
 
