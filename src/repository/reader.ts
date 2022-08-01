@@ -1,4 +1,4 @@
-import { CreateMemberParams, Membership, MemberParams } from '../data/membership';
+import { UpsertMemberParams, Membership, MemberFormVal } from '../data/membership';
 import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SearchResult, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
@@ -120,28 +120,12 @@ export function loadFtcProfile(
     .endJson<ReaderFtcProfile>();
 }
 
-export function createOneOffMember(
+export function upsertOneOffMember(
   token: string,
-  params: CreateMemberParams,
+  params: UpsertMemberParams,
 ): Promise<Membership> {
   return new Fetch()
     .post(pathMemberBase)
-    .setBearerAuth(token)
-    .sendJson(params)
-    .endJson<Membership>();
-}
-
-export function updateOneOffMember(
-  token: string,
-  compoundId: string,
-  params: MemberParams,
-): Promise<Membership> {
-  const url = new UrlBuilder(pathMemberBase)
-    .appendPath(compoundId)
-    .toString();
-
-  return new Fetch()
-    .patch(url)
     .setBearerAuth(token)
     .sendJson(params)
     .endJson<Membership>();
