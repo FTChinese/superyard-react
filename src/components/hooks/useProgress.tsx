@@ -19,6 +19,7 @@ export function useProgress() {
     progress,
     startProgress,
     stopProgress,
+    setProgress,
   }
 }
 
