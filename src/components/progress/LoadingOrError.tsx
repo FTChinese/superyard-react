@@ -1,4 +1,6 @@
-export function LoadingOrErr(
+import Spinner from 'react-bootstrap/Spinner';
+
+export function LoadingOrError(
   props: {
     loading?: boolean;
     error?: string;
@@ -6,7 +8,10 @@ export function LoadingOrErr(
 ) {
   if (props.loading) {
     <div className="d-flex justify-content-center align-items-center">
-      Loading...
+      <Spinner
+        as="span"
+        animation="border"
+      />
     </div>
   }
 
