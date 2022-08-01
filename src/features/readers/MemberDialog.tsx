@@ -3,10 +3,10 @@ import { toast } from 'react-toastify';
 import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
 import { SelectOption } from '../../data/enum';
-import { isZeroMember, MemberParams, Membership } from '../../data/membership';
-import { getCompoundId, ReaderAccount } from '../../data/reader-account';
+import { isZeroMember, MemberFormVal, Membership } from '../../data/membership';
+import { ReaderAccount } from '../../data/reader-account';
 import { ResponseError } from '../../http/response-error';
-import { createOneOffMember, updateOneOffMember } from '../../repository/reader';
+import { upsertOneOffMember } from '../../repository/reader';
 import { MemberForm } from './MemberForm';
 
 /**
@@ -26,37 +26,19 @@ export function MemberDialog(
 ) {
 
   const onSubmit = (
-    values: MemberParams,
-    helpers: FormikHelpers<MemberParams>
+    values: MemberFormVal,
+    helpers: FormikHelpers<MemberFormVal>
   ) => {
     helpers.setSubmitting(true);
 
-    if (isZeroMember(props.reader.membership)) {
-      createOneOffMember(props.jwtToken, {
-        ftcId: props.reader.id,
-        unionId: props.reader.unionId,
-        ...values
+    upsertOneOffMember(props.jwtToken, {
+      ftcId: props.reader.id,
+      unionId: props.reader.unionId,
+      ...values
+    })
+      .then(m => {
+        props.onUpserted(m);
       })
-        .then(m => props.onUpserted(m))
-        .catch((err: ResponseError) => {
-          if (err.statusCode == 422) {
-            helpers.setErrors(err.toFormFields);
-            return;
-          }
-          toast.error(err.message);
-        })
-        .finally(() => {
-          helpers.setSubmitting(false);
-        });
-      return;
-    }
-
-    updateOneOffMember(
-      props.jwtToken,
-      getCompoundId(props.reader),
-      values
-    )
-      .then(m => props.onUpserted(m))
       .catch((err: ResponseError) => {
         if (err.statusCode == 422) {
           helpers.setErrors(err.toFormFields);
@@ -67,6 +49,11 @@ export function MemberDialog(
       .finally(() => {
         helpers.setSubmitting(false);
       });
+
+    if (isZeroMember(props.reader.membership)) {
+
+      return;
+    }
   }
 
 
