@@ -16,16 +16,15 @@ import { SandboxDeleteDialog } from '../../features/readers/SandboxDeleteDialog'
 import { SandboxPasswordDialog } from '../../features/readers/SandboxPasswordDialog';
 import { ResponseError } from '../../http/response-error';
 import { loadSandboxUser } from '../../repository/reader';
-import { ReaderDetailScreen } from '../../features/readers/ReaderDetailScreen';
-import { useReaderState } from '../../features/readers/useReaderState';
 import { ReaderDetailPageScreen } from './ReaderDetailPageScreen';
+import { AccountKind } from '../../data/enum';
 
 export function TestUserDetailPage() {
   const { id } = useParams<'id'>();
   const { passport } = useAuth();
 
   if (!id) {
-    return <Missing message="Missing price id" />;
+    return <Missing message="Missing user id" />;
   }
 
   if (!passport) {
@@ -55,17 +54,10 @@ function SandboxUserPageScreen(
 
   const {
     sandboxAccount,
-    errMsg: sandboxErr,
+    errMsg,
     loadSandboxAccount,
     setSandboxAccount,
   } = useSandboxDetailState();
-
-  const {
-    errMsg: readerErr,
-    readerAccount,
-    loadReader,
-    onMemberModified
-  } = useReaderState();
 
   // Show change password dialog.
   const [showPw, setShowPw] = useState(false);
@@ -74,22 +66,13 @@ function SandboxUserPageScreen(
 
   useEffect(() => {
     loadSandboxAccount(props.passport.token, props.ftcId)
-      .then(ok => {
-        if (!ok) {
-          return;
-        }
-        loadReader(props.passport.token, props.ftcId);
-      });
   }, []);
 
   useEffect(() => {
-    if (sandboxErr) {
-      toast.error(sandboxErr);
+    if (errMsg) {
+      toast.error(errMsg);
     }
-    if (readerErr) {
-      toast.error(readerErr);
-    }
-  }, [sandboxErr, readerErr]);
+  }, [errMsg]);
 
   if (!sandboxAccount) {
     return <LoadingOrError loading={progress} />
@@ -122,7 +105,8 @@ function SandboxUserPageScreen(
       />
 
       <ReaderDetailPageScreen
-        ftcId={props.ftcId}
+        id={props.ftcId}
+        kind={AccountKind.Ftc}
         passport={props.passport}
       />
     </>
