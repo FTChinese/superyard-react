@@ -64,7 +64,10 @@ export type Paywall = PaywallDoc & {
   stripe: StripePaywallItem[];
 };
 
-export function priceSelectOpts(products: PaywallProduct[]): SelectOption<string>[] {
+/**
+ * @description Build a list of option items for <select> element when creating a membership.
+ */
+export function buildPriceOptions(products: PaywallProduct[]): SelectOption<string>[] {
   return products
     .flatMap(prod => prod.prices.map(p => priceSelectOption(p)))
 }
