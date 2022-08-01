@@ -7,7 +7,7 @@ import { LinkButton } from '../../components/buttons/Button';
 import { Pencil } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useProgress } from '../../components/hooks/useProgress';
-import { LoadingOrErr } from '../../components/progress/LoadingOrError';
+import { LoadingOrError } from '../../components/progress/LoadingOrError';
 import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { TestAccount } from '../../data/reader-account';
@@ -18,6 +18,7 @@ import { ResponseError } from '../../http/response-error';
 import { loadSandboxUser } from '../../repository/reader';
 import { ReaderDetailScreen } from '../../features/readers/ReaderDetailScreen';
 import { useReaderState } from '../../features/readers/useReaderState';
+import { ReaderDetailPageScreen } from './ReaderDetailPageScreen';
 
 export function TestUserDetailPage() {
   const { id } = useParams<'id'>();
@@ -91,7 +92,7 @@ function SandboxUserPageScreen(
   }, [sandboxErr, readerErr]);
 
   if (!sandboxAccount) {
-    return <LoadingOrErr loading={progress} />
+    return <LoadingOrError loading={progress} />
   }
 
   return (
@@ -100,12 +101,6 @@ function SandboxUserPageScreen(
         sandbox={sandboxAccount}
         onDelete={() => setShowDel(true)}
         onChangePass={() => setShowPw(true)}
-      />
-
-      <ReaderDetailScreen
-        passport={props.passport}
-        reader={readerAccount}
-        onMemberModified={onMemberModified}
       />
 
       <SandboxPasswordDialog
@@ -125,10 +120,18 @@ function SandboxUserPageScreen(
           navigate(sitemap.sandbox);
         }}
       />
+
+      <ReaderDetailPageScreen
+        ftcId={props.ftcId}
+        passport={props.passport}
+      />
     </>
   )
 }
 
+/**
+ * @description Displays a sandbox user's account and  password.
+ */
 function SandboxUserDetails(
   props: {
     sandbox: TestAccount;
@@ -160,7 +163,7 @@ function SandboxUserDetails(
         </LinkButton>
       </Stack>
     </section>
-  )
+  );
 }
 
 function useSandboxDetailState() {
