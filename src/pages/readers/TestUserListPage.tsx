@@ -132,7 +132,11 @@ function UserListItem(
 }
 
 function useSandboxListState() {
-  const { startProgress, stopProgress, progress } = useProgress();
+  const {
+    startProgress,
+    stopProgress,
+    progress
+  } = useProgress();
   const [userList, setUserList] = useState<TestUserList>();
   const [errMsg, setErrMsg] = useState('');
 
@@ -147,6 +151,9 @@ function useSandboxListState() {
       .catch((err: ResponseError) => {
         stopProgress();
         setErrMsg(err.message);
+      })
+      .finally(() => {
+        stopProgress();
       });
   }
 
