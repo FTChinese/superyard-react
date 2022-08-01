@@ -2,7 +2,7 @@ import { FormikHelpers } from 'formik';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 import { CMSPassport } from '../../data/cms-account';
-import { TestAccount, SignUpParams } from '../../data/reader-account';
+import { TestAccount, SignUpParams, newSandboxSignUp } from '../../data/reader-account';
 import { ResponseError } from '../../http/response-error';
 import { createSandboxUser } from '../../repository/reader';
 import { SandboxAccountForm } from './SandboxAccountForm';
@@ -19,7 +19,7 @@ export function SandboxAccountDialog(
   const onSubmit = (values: SignUpParams, helpers: FormikHelpers<SignUpParams>) => {
     helpers.setSubmitting(true);
 
-    createSandboxUser(props.passport.token, values)
+    createSandboxUser(props.passport.token, newSandboxSignUp(values))
       .then(a => {
         props.onCreated(a);
         props.onHide();
