@@ -8,8 +8,10 @@ import { getCompoundId, ReaderAccount } from '../../data/reader-account';
 import { ResponseError } from '../../http/response-error';
 import { createOneOffMember, updateOneOffMember } from '../../repository/reader';
 import { MemberForm } from './MemberForm';
-import { useMemberState } from './useMemberState';
 
+/**
+ * @description MemberDialog is used to show a popup to create/update membership.
+ */
 export function MemberDialog(
   props: {
     jwtToken: string;

@@ -3,10 +3,13 @@ import * as Yup from 'yup';
 import { Dropdown } from '../../components/controls/Dropdown';
 import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton';
 import { TextInput } from '../../components/controls/TextInput';
-import { cycleOpts, PaymentKind, payMethodOpts, SelectOption } from '../../data/enum';
+import { PaymentKind, payMethodOpts, SelectOption } from '../../data/enum';
 import { invalidMessages } from '../../data/form-value';
 import { MemberParams, Membership } from '../../data/membership';
 
+/**
+ * @description MemberForm is used to collect user input to create/update membership.
+ */
 export function MemberForm(
   props: {
     priceOptions: SelectOption<string>[];
