@@ -5,7 +5,7 @@ import { FormikSubmitButton } from '../../components/controls/FormikSubmitButton
 import { TextInput } from '../../components/controls/TextInput';
 import { PaymentKind, payMethodOpts, SelectOption } from '../../data/enum';
 import { invalidMessages } from '../../data/form-value';
-import { MemberParams, Membership } from '../../data/membership';
+import { MemberFormVal, Membership } from '../../data/membership';
 
 /**
  * @description MemberForm is used to collect user input to create/update membership.
@@ -15,14 +15,14 @@ export function MemberForm(
     priceOptions: SelectOption<string>[];
     current: Membership;
     onSubmit: (
-      values: MemberParams,
-      formikHelpers: FormikHelpers<MemberParams>
+      values: MemberFormVal,
+      formikHelpers: FormikHelpers<MemberFormVal>
     ) => void | Promise<any>,
   }
 ) {
 
   return (
-    <Formik<MemberParams>
+    <Formik<MemberFormVal>
       initialValues={{
         priceId: props.current.ftcPlanId || '' ,
         expireDate: props.current.expireDate || '',
