@@ -24,6 +24,7 @@ import { GlobalLoader } from './components/progress/GlobalLoader';
 import { useProgress } from './components/hooks/useProgress';
 import { TestUserListPage } from './pages/readers/TestUserListPage';
 import { TestUserDetailPage } from './pages/readers/TestUserDetailPage';
+import { SearchReaderPage } from './pages/readers/SearchReaderPage';
 
 function Skeleton() {
   const { progress } = useProgress();
@@ -93,6 +94,10 @@ function App() {
             </Route>
 
             <Route path={sitePath.readers}>
+              <Route
+                path=''
+                element={<SearchReaderPage/>}
+              />
               <Route
                 path={sitePath.sandbox}
                 element={<TestUserListPage />}
