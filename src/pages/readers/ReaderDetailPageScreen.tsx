@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { usePaywall } from '../../components/hooks/usePaywall';
 import { LoadingOrError } from '../../components/progress/LoadingOrError';
 import { CMSPassport } from '../../data/cms-account';
 import { zeroMember } from '../../data/membership';
+import { buildPriceOptions } from '../../data/paywall';
 import { getCompoundId } from '../../data/reader-account';
 import { DropMemberDialog } from '../../features/readers/DropMemberDialog';
 import { MemberDialog } from '../../features/readers/MemberDialog';
@@ -20,6 +22,12 @@ export function ReaderDetailPageScreen(
   const [showOneOff, setShowOneOff] = useState(false);
 
   const {
+    pwErr,
+    paywall,
+    loadPaywallIfEmpty,
+  } = usePaywall();
+
+  const {
     errMsg,
     progress,
     readerAccount,
@@ -34,15 +42,31 @@ export function ReaderDetailPageScreen(
   }, [errMsg]);
 
   useEffect(() => {
+    if (pwErr) {
+      toast.error(pwErr)
+    }
+  }, [pwErr]);
+
+  useEffect(() => {
     loadReader(props.passport.token, props.ftcId);
+
+    loadPaywallIfEmpty(props.passport.token, true);
   }, []);
 
-  if (!readerAccount) {
+  if (progress || errMsg) {
     return <LoadingOrError
       loading={progress}
       error={errMsg}
     />;
   }
+
+  if (!readerAccount) {
+    return null;
+  }
+
+  const priceList = paywall
+    ? buildPriceOptions(paywall.products)
+    : [];
 
   return (
     <>
@@ -55,7 +79,7 @@ export function ReaderDetailPageScreen(
 
       <MemberDialog
         jwtToken={props.passport.token}
-        priceList={[]}
+        priceList={priceList}
         reader={readerAccount}
         show={showOneOff}
         onHide={() => setShowOneOff(false)}
