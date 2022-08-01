@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { AccountKind } from '../../data/enum';
 import { Membership } from '../../data/membership';
 import { ReaderAccount } from '../../data/reader-account';
 import { ResponseError } from '../../http/response-error';
-import { loadFtcAccount } from '../../repository/reader';
+import { loadFtcAccount, loadWxAccount } from '../../repository/reader';
 
 export function useReaderState() {
   const [progress, setProgress] = useState(false);
@@ -10,7 +11,7 @@ export function useReaderState() {
 
   const [errMsg, setErrMsg] = useState('');
 
-  const loadReader = (token: string, ftcId: string) => {
+  const loadFtcUser = (token: string, ftcId: string) => {
     setProgress(true);
 
     loadFtcAccount(token, ftcId)
@@ -24,6 +25,38 @@ export function useReaderState() {
         setProgress(false);
       });
   };
+
+  const loadWxUser = (token: string, unionId: string) => {
+    setProgress(true);
+    loadWxAccount(token, unionId)
+      .then(a => {
+        setReaderAccount(a);
+      })
+      .catch((err: ResponseError) => {
+        setErrMsg(err.message);
+      })
+      .finally(() => {
+        setProgress(false);
+      });
+  }
+
+  const loadAccount = (
+    token: string,
+    props: {
+      userId: string,
+      kind: AccountKind
+    },
+  ) => {
+    switch (props.kind) {
+      case AccountKind.Ftc:
+        loadFtcUser(token, props.userId);
+        break;
+
+      case AccountKind.Wechat:
+        loadWxUser(token, props.userId);
+        break;
+    }
+  }
 
   const onMemberModified = (m: Membership) => {
     if (!readerAccount) {
@@ -40,7 +73,7 @@ export function useReaderState() {
     errMsg,
     progress,
     readerAccount,
-    loadReader,
+    loadAccount,
     onMemberModified,
   }
 }
