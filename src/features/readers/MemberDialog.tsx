@@ -15,6 +15,8 @@ import { MemberForm } from './MemberForm';
 export function MemberDialog(
   props: {
     jwtToken: string;
+    // A list of price extracted from paywall data.
+    // When submitting the form, only price id is submitted.
     priceList: SelectOption<string>[];
     reader: ReaderAccount;
     show: boolean;
