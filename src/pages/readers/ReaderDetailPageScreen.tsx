@@ -83,7 +83,10 @@ export function ReaderDetailPageScreen(
         reader={readerAccount}
         show={showOneOff}
         onHide={() => setShowOneOff(false)}
-        onUpserted={onMemberModified}
+        onUpserted={(m) => {
+          onMemberModified(m);
+          setShowOneOff(false);
+        }}
       />
 
       <DropMemberDialog
@@ -93,6 +96,7 @@ export function ReaderDetailPageScreen(
         onHide={() => setShowDrop(false)}
         onDropped={() => {
           onMemberModified(zeroMember());
+          setShowDrop(false);
         }}
       />
     </>
