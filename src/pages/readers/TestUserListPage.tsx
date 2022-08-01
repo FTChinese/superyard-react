@@ -13,7 +13,7 @@ import { listSandboxUsers } from '../../repository/reader';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
-import { LoadingOrErr } from '../../components/progress/LoadingOrError';
+import { LoadingOrError } from '../../components/progress/LoadingOrError';
 import { SandboxAccountDialog } from '../../features/readers/SandboxAccountDialog';
 
 export function TestUserListPage() {
@@ -61,7 +61,7 @@ function ListPageScreen(
   }, [errMsg]);
 
   if (!userList) {
-    return <LoadingOrErr loading={progress} />
+    return <LoadingOrError loading={progress} />
   }
 
   return (
