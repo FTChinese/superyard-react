@@ -1,4 +1,4 @@
-import { UpsertMemberParams, Membership, MemberFormVal } from '../data/membership';
+import { UpsertMemberParams, Membership } from '../data/membership';
 import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SearchResult, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
