@@ -2,19 +2,16 @@ import { useState } from 'react';
 import { SmallButton } from '../../components/buttons/Button';
 import { BottomBorderBox, PrimaryLine, SecondaryLine } from '../../components/list/TwoLineRow';
 import { BorderHeader } from '../../components/text/BorderHeader';
-import { isOneOff, isZeroMember, Membership } from '../../data/membership';
+import { isOneOff, isZeroMember } from '../../data/membership';
 import { ReaderAccount } from '../../data/reader-account';
-import { MemberDialog } from './MemberDialog';
 
 export function MemberMenu(
   props: {
     jwtToken: string;
     reader: ReaderAccount;
-    onUpserted: (m: Membership) => void;
+    onClickUpsert: () => void;
   }
 ) {
-
-  const [showOneOff, setShowOneOff] = useState(false);
 
   return (
     <div className='mt-4'>
@@ -26,25 +23,16 @@ export function MemberMenu(
       {
         isZeroMember(props.reader.membership) &&
         <RowCreateOneOff
-          onClick={() => setShowOneOff(true)}
+          onClick={props.onClickUpsert}
         />
       }
 
       {
         isOneOff(props.reader.membership) &&
         <RowUpdateOneOff
-          onClick={() => {}}
+          onClick={props.onClickUpsert}
         />
       }
-
-      <MemberDialog
-        jwtToken={props.jwtToken}
-        priceList={[]}
-        reader={props.reader}
-        show={showOneOff}
-        onHide={() => setShowOneOff(false)}
-        onUpserted={props.onUpserted}
-      />
     </div>
   )
 }
