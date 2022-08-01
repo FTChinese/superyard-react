@@ -1,20 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import { LiveModeToggler } from '../../features/paywall/LiveModeToggler';
 import { RebuildButton } from '../../features/paywall/RebuildButton';
-import { useEffect, useState } from 'react';
-import { loadPaywall } from '../../repository/paywall';
-import { ResponseError } from '../../http/response-error';
+import { useEffect } from 'react';
 import { Unauthorized } from '../../components/routes/Unauthorized';
 import { PaywallContent } from '../../features/paywall/PaywallContent';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
-import { usePaywall } from '../../components/hooks/recoil-state';
-import {
-  loadingErrored,
-  ProgressOrError,
-  loadingStarted,
-  loadingStopped,
-} from '../../components/progress/ProgressOrError';
+import { usePaywall } from '../../components/hooks/usePaywall';
+import { LoadingOrError } from '../../components/progress/LoadingOrError';
 
 export function PaywallLayout() {
   return (
@@ -31,8 +24,12 @@ export function PaywallLayout() {
 export function PaywallPage() {
   const { live } = useLiveMode();
   const { passport } = useAuth();
-  const [loading, setLoading] = useState(loadingStarted());
-  const { paywall, setPaywall } = usePaywall();
+  const {
+    pwErr,
+    progress,
+    forceLoadPaywall,
+    paywall
+  } = usePaywall();
 
   if (!passport) {
     return <Unauthorized />;
@@ -43,26 +40,18 @@ export function PaywallPage() {
       `Retrieving paywall data for ${live ? 'live' : 'sandbox'} mode`
     );
 
-    setLoading(loadingStarted());
-    console.log('UI reset');
-
-    loadPaywall({
-      live,
-      token: passport.token,
-    })
-      .then((pw) => {
-        setLoading(loadingStopped());
-        setPaywall(pw);
-        console.log(pw);
-      })
-      .catch((err: ResponseError) => {
-        setLoading(loadingErrored(err.message));
-      });
+    forceLoadPaywall(passport.token, live);
   }, [live]);
 
+  if (progress || pwErr) {
+    return <LoadingOrError loading={progress} error={pwErr} />
+  }
+
+  if (!paywall) {
+    return null;
+  }
+
   return (
-    <ProgressOrError state={loading}>
-      <PaywallContent paywall={paywall} passport={passport} />
-    </ProgressOrError>
+    <PaywallContent paywall={paywall} passport={passport} />
   );
 }

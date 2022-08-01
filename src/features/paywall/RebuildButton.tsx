@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { usePaywall } from '../../components/hooks/recoil-state';
+import { usePaywall } from '../../components/hooks/usePaywall';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { loadPaywall } from '../../repository/paywall';
