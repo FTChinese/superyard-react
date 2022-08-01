@@ -61,7 +61,7 @@ function buildMemberRows(m: Membership): TRow[] {
     },
     {
       head: 'FTC Price ID',
-      data: [m.ftcId || 'N/A']
+      data: [m.ftcPlanId || 'N/A']
     },
     {
       head: 'Stripe Subscripiton ID',
