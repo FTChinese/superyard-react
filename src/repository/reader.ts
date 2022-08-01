@@ -2,7 +2,7 @@ import { UpsertMemberParams, Membership } from '../data/membership';
 import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SearchResult, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
-import { pathFtcReader, pathMemberBase, pathSandboxBase, pathSearchReader } from './endpoint';
+import { pathFtcReader, pathMemberBase, pathSandboxBase, pathSearchReader, pathWxReader } from './endpoint';
 
 export function searchReader(
   token: string,
@@ -97,6 +97,20 @@ export function loadFtcAccount(
 ): Promise<ReaderAccount> {
   const url = new UrlBuilder(pathFtcReader)
     .appendPath(ftcId)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson<ReaderAccount>();
+}
+
+export function loadWxAccount(
+  token: string,
+  unionId: string
+): Promise<ReaderAccount> {
+  const url = new UrlBuilder(pathWxReader)
+    .appendPath(unionId)
     .toString();
 
   return new Fetch()

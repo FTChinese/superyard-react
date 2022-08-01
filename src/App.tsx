@@ -25,6 +25,8 @@ import { useProgress } from './components/hooks/useProgress';
 import { TestUserListPage } from './pages/readers/TestUserListPage';
 import { TestUserDetailPage } from './pages/readers/TestUserDetailPage';
 import { SearchReaderPage } from './pages/readers/SearchReaderPage';
+import { FtcDetailPage } from './pages/readers/FtcDetailPage';
+import { WxDetailPage } from './pages/readers/WxDetailPage';
 
 function Skeleton() {
   const { progress } = useProgress();
@@ -96,7 +98,15 @@ function App() {
             <Route path={sitePath.readers}>
               <Route
                 path=''
-                element={<SearchReaderPage/>}
+                element={<SearchReaderPage />}
+              />
+              <Route
+                path="ftc/:id"
+                element={<FtcDetailPage />}
+              />
+              <Route
+                path="wx/:id"
+                element={<WxDetailPage />}
               />
               <Route
                 path={sitePath.sandbox}
