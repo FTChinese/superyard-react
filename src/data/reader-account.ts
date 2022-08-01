@@ -79,6 +79,12 @@ export function isTestAccount(a: ReaderBaseAccount): boolean {
 }
 
 export type SearchResult = {
-  id: string | null;
+  ftcId?: string;
+  unionId?: string;
+  stripeId?: string;
+  email?: string;
+  userName?: string;
+  nickname?: string;
+  vip: boolean;
 }
 
