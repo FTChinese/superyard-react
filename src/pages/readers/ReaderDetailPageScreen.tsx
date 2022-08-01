@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { usePaywall } from '../../components/hooks/usePaywall';
 import { LoadingOrError } from '../../components/progress/LoadingOrError';
 import { CMSPassport } from '../../data/cms-account';
+import { AccountKind } from '../../data/enum';
 import { zeroMember } from '../../data/membership';
 import { buildPriceOptions } from '../../data/paywall';
 import { getCompoundId } from '../../data/reader-account';
@@ -13,7 +14,8 @@ import { useReaderState } from '../../features/readers/useReaderState';
 
 export function ReaderDetailPageScreen(
   props: {
-    ftcId: string;
+    id: string;
+    kind: AccountKind;
     passport: CMSPassport;
   }
 ) {
@@ -31,7 +33,7 @@ export function ReaderDetailPageScreen(
     errMsg,
     progress,
     readerAccount,
-    loadReader,
+    loadAccount,
     onMemberModified,
   } = useReaderState();
 
@@ -48,7 +50,13 @@ export function ReaderDetailPageScreen(
   }, [pwErr]);
 
   useEffect(() => {
-    loadReader(props.passport.token, props.ftcId);
+    loadAccount(
+      props.passport.token,
+      {
+        userId: props.id,
+        kind: props.kind
+      }
+    );
 
     loadPaywallIfEmpty(props.passport.token, true);
   }, []);
