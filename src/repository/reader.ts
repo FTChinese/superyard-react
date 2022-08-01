@@ -1,8 +1,22 @@
 import { CreateMemberParams, Membership, MemberParams } from '../data/membership';
-import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
+import { ReaderAccount, ReaderFtcProfile, SandboxPwParams, SearchResult, SignUpParams, TestAccount, TestUserList } from '../data/reader-account';
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
-import { pathFtcReader, pathMemberBase, pathSandboxBase } from './endpoint';
+import { pathFtcReader, pathMemberBase, pathSandboxBase, pathSearchReader } from './endpoint';
+
+export function searchReader(
+  token: string,
+  keyword: string,
+): Promise<SearchResult> {
+  const url = new UrlBuilder(pathSearchReader)
+    .appendQuery('q', keyword)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson();
+}
 
 export function createSandboxUser(
   token: string,
