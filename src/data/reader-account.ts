@@ -9,6 +9,13 @@ export type SignUpParams = {
   password: string;
 };
 
+export function newSandboxSignUp(p: SignUpParams): SignUpParams {
+  return {
+    email: `${p.email}${testAccountSuffix}`,
+    password: p.password,
+  };
+}
+
 export type TestAccount = {
   id: string;
   email: string;
