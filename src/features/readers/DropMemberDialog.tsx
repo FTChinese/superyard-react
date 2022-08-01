@@ -48,7 +48,9 @@ export function DropMemberDialog(
                   props.onDropped();
                 }
               });
-          }} />
+          }}
+          variant='danger'
+        />
       </Modal.Footer>
     </Modal>
   );
