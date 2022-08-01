@@ -6,7 +6,11 @@ export type Gender = 'M' | 'F';
 export type Platform = 'web' | 'ios' | 'android';
 export type SubStatus = 'active' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'past_due' | 'trialing' | 'unpaid';
 export type OrderKind = 'create' | 'renew' | 'upgrade' | 'downgrade' | 'add_on';
-export type AccountKind = 'ftc' | 'mobile' | 'wechat' | 'linked';
+export enum AccountKind {
+  Ftc,
+  Wechat,
+}
+
 export type PriceKind = 'recurring' | 'one_time';
 export type OfferKind = 'promotion' | 'retention' | 'win_back' | 'introductory';
 export type DiscountStatus = 'active' | 'paused' | 'cancelled';
