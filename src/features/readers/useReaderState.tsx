@@ -1,22 +1,17 @@
 import { useState } from 'react';
-import { useProgress } from '../../components/hooks/useProgress';
 import { Membership } from '../../data/membership';
 import { ReaderAccount } from '../../data/reader-account';
 import { ResponseError } from '../../http/response-error';
 import { loadFtcAccount } from '../../repository/reader';
 
 export function useReaderState() {
-  const {
-    startProgress,
-    stopProgress,
-  } = useProgress();
-
+  const [progress, setProgress] = useState(false);
   const [readerAccount, setReaderAccount] = useState<ReaderAccount>();
 
   const [errMsg, setErrMsg] = useState('');
 
   const loadReader = (token: string, ftcId: string) => {
-    startProgress();
+    setProgress(true);
 
     loadFtcAccount(token, ftcId)
       .then(a => {
@@ -26,7 +21,7 @@ export function useReaderState() {
         setErrMsg(err.message);
       })
       .finally(() => {
-        stopProgress();
+        setProgress(false);
       });
   };
 
@@ -43,6 +38,7 @@ export function useReaderState() {
 
   return {
     errMsg,
+    progress,
     readerAccount,
     loadReader,
     onMemberModified,
