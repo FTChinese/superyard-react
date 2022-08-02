@@ -30,7 +30,7 @@ export function usePaywall() {
   };
 
   const loadPaywallIfEmpty = (token: string, live: boolean) => {
-    if (paywall) {
+    if (paywall && paywall.liveMode === live) {
       return;
     }
 
