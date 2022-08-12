@@ -1,6 +1,6 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { getPagingQuery, PagingQuery, serializePagingQuery } from '../../http/paged-list';
 import { CMSPassport } from '../../data/cms-account';
 import { CenterColumn } from '../../components/layout/Column';
