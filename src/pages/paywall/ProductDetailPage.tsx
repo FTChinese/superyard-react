@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { PriceFormDialog } from '../../features/product/PriceFormDialog';
 import { PriceListItem } from '../../features/product/PriceListItem';

@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { LiveModeToggler } from '../../features/paywall/LiveModeToggler';
 import { RebuildButton } from '../../features/paywall/RebuildButton';
 import { useEffect } from 'react';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { PaywallContent } from '../../features/paywall/PaywallContent';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';

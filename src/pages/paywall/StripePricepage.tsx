@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { useProgress } from '../../components/hooks/useProgress';
-import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
+import { Missing, Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { StripeCoupon } from '../../data/stripe-price';
 import { CouponUpsertDialog } from '../../features/stripe/CouponUpsertDialog';

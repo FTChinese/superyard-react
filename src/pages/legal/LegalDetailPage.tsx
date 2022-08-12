@@ -10,7 +10,7 @@ import {
   loadingStopped,
   ProgressOrError,
 } from '../../components/progress/ProgressOrError';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { LegalDoc, LegalPublishParams } from '../../data/legal';
 import { LegalDetailScreen } from '../../features/legal/LegalDetailScreen';
 import {

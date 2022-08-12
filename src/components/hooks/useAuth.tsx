@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { atom, useRecoilState } from 'recoil';
 import { CMSPassport } from '../../data/cms-account';
-import { authSession } from '../../store/autSession';
+import { authSession } from '../../store/authSession';
 
 const passportState = atom<CMSPassport | undefined>({
   key: 'authState',
@@ -13,9 +13,9 @@ export function useAuth() {
   const [passport, setPassport] = useRecoilState(passportState);
   // Indicating whether data is being fetched
   // from localStorage.
-  const [ loadingAuth, setLoadingAuth ] = useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
-    // Gothas of useEffect dependency:
+  // Gothas of useEffect dependency:
   // https://www.benmvp.com/blog/object-array-dependencies-react-useEffect-hook/
   useEffect(() => {
     if (passport) {
@@ -31,7 +31,7 @@ export function useAuth() {
       return;
     }
 
-    setLogin(cached, () =>{
+    setLogin(cached, () => {
       setLoadingAuth(false);
       console.log('Passport loaded');
     });

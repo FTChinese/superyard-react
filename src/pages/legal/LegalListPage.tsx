@@ -7,7 +7,7 @@ import {
   loadingStopped,
   ProgressOrError,
 } from '../../components/progress/ProgressOrError';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { LegalList, LegalTeaser } from '../../data/legal';
 import { createLegalDoc, listLegalDoc } from '../../repository/legal-doc';
 import { ResponseError } from '../../http/response-error';

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../components/hooks/useAuth';
 import { ProgressOrError } from '../../components/progress/ProgressOrError';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { ReleaseEditScreen } from '../../features/android/ReleaseEditScreen';
 import { useReleaseEditState } from '../../features/android/useReleaseEditState';
 
@@ -23,7 +23,7 @@ export function ReleaseEditPage() {
   }
 
   if (!passport) {
-    return <Unauthorized/>;
+    return <Unauthorized />;
   }
 
   useEffect(() => {
@@ -41,18 +41,18 @@ export function ReleaseEditPage() {
       state={loading}
     >
       <>
-      {
-        release &&
-        <ReleaseEditScreen
-          release={release}
-          onSubmit={(values, helpers) => {
-            onUpdateRelease(helpers, {
-              body: values,
-              token: passport.token,
-            })
-          }}
-        />
-      }
+        {
+          release &&
+          <ReleaseEditScreen
+            release={release}
+            onSubmit={(values, helpers) => {
+              onUpdateRelease(helpers, {
+                body: values,
+                token: passport.token,
+              })
+            }}
+          />
+        }
       </>
     </ProgressOrError>
   )

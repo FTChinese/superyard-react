@@ -7,7 +7,7 @@ import {
   loadingStarted,
   loadingStopped,
 } from '../../components/progress/ProgressOrError';
-import { Unauthorized } from '../../components/routes/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { OnProductUpserted } from '../../features/product/callbacks';

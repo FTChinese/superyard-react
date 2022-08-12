@@ -8,7 +8,7 @@ import { Pencil } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useProgress } from '../../components/hooks/useProgress';
 import { LoadingOrError } from '../../components/progress/LoadingOrError';
-import { Missing, Unauthorized } from '../../components/routes/Unauthorized';
+import { Missing, Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { TestAccount } from '../../data/reader-account';
 import { sitemap } from '../../data/sitemap';
