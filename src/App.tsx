@@ -11,7 +11,7 @@ import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { LoginPage } from './pages/LoginPage';
 import { PasswordResetPage } from './pages/PasswordResetPage';
 import { ContentLayout } from './components/layout/ContentLayout';
-import { RequireAuth } from './components/routes/RequireAuth';
+import { AuthOnlyGuard } from './components/middleware/AuthOnlyGuard';
 import { PaywallLayout, PaywallPage } from './pages/paywall/PaywallPage';
 import { ProductDetailPage } from './pages/paywall/ProductDetailPage';
 import { ProductListPage } from './pages/paywall/ProductListPage';
@@ -27,29 +27,41 @@ import { TestUserDetailPage } from './pages/readers/TestUserDetailPage';
 import { SearchReaderPage } from './pages/readers/SearchReaderPage';
 import { FtcDetailPage } from './pages/readers/FtcDetailPage';
 import { WxDetailPage } from './pages/readers/WxDetailPage';
+import { HomePage } from './pages/HomePage';
+import { useAuth } from './components/hooks/useAuth';
+import { Loading } from './components/progress/Loading';
+import { NoAuthGuard } from './components/middleware/NoAuthGuard';
 
 function Skeleton() {
+  // When this app is accessed from url, e.g., manual refreshing,
+  // passport will
+  // be loaded from localstorage. This is ususally
+  // slower than building the global state.
+  // We should wait for the before rendering nested components.
+  const { loadingAuth } = useAuth();
   const { progress } = useProgress();
   return (
-    <>
-      <Toolbar />
+    <Loading loading={loadingAuth}>
+      <>
+        <Toolbar />
 
-      <div className="page-content pt-3">
-        <Outlet />
-        <GlobalLoader progress={progress} />
-      </div>
+        <div className="page-content pt-3">
+          <Outlet />
+          <GlobalLoader progress={progress} />
+        </div>
 
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        draggable
-        pauseOnHover
-      />
-    </>
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          draggable
+          pauseOnHover
+        />
+      </>
+    </Loading>
   );
 }
 
@@ -59,8 +71,17 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-        <Route path="/" element={<Skeleton />}>
-          <Route element={<CenterLayout />}>
+        <Route
+          path="/"
+          element={<Skeleton />}
+        >
+          <Route
+            element={
+              <NoAuthGuard>
+                <CenterLayout />
+              </NoAuthGuard>
+            }
+          >
             <Route path={sitePath.login} element={<LoginPage />} />
             <Route path={sitePath.forgotPassword} element={<ForgotPasswordPage />} />
             <Route path={`${sitePath.passwordReset}/:token`} element={<PasswordResetPage />} />
@@ -68,9 +89,9 @@ function App() {
 
           <Route
             element={
-              <RequireAuth>
+              <AuthOnlyGuard>
                 <ContentLayout />
-              </RequireAuth>
+              </AuthOnlyGuard>
             }
           >
             <Route
@@ -133,6 +154,11 @@ function App() {
               <Route path="" element={<LegalListPage />} />
               <Route path=":id" element={<LegalDetailPage />} />
             </Route>
+
+            <Route
+              index
+              element={<HomePage />}
+            />
           </Route>
 
         </Route>
