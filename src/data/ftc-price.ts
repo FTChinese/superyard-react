@@ -1,5 +1,5 @@
 import { Cycle, DiscountStatus, OfferKind, PriceKind, SelectOption, Tier } from './enum';
-import { newMoneyParts, PriceParts } from './localization';
+import { formatMoney, newMoneyParts, PriceParts } from './localization';
 import { ValidPeriod } from './period';
 import { formatEdition, formatYMD, YearMonthDay } from './ymd';
 
@@ -69,5 +69,5 @@ export type Discount = {
 
 
 export function formatDiscountAmount(d: Discount): string {
-  return '-' + newMoneyParts('cny', d.priceOff);
+  return '-' + formatMoney('cny', d.priceOff);
 }
