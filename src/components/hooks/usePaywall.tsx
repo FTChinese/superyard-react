@@ -3,6 +3,7 @@ import { atom, useRecoilState } from 'recoil';
 import { Paywall } from '../../data/paywall';
 import { ResponseError } from '../../http/response-error';
 import { loadPaywall } from '../../repository/paywall';
+import { useProgress } from './useProgress';
 
 const paywallState = atom<Paywall | undefined>({
   key: 'paywallRebuilt',
@@ -11,7 +12,7 @@ const paywallState = atom<Paywall | undefined>({
 
 export function usePaywall() {
   const [pwErr, setPwErr] = useState('');
-  const [progress, setProgress] = useState(false);
+  const {progress, setProgress} = useProgress();
   const [paywall, setPaywall] = useRecoilState(paywallState);
 
   const forceLoadPaywall = (token: string, live: boolean) => {
@@ -25,7 +26,7 @@ export function usePaywall() {
         setPwErr(err.message);
       })
       .finally(() => {
-        setProgress(false)
+        setProgress(false);
       });
   };
 

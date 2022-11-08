@@ -43,8 +43,8 @@ export function PaywallPage() {
     forceLoadPaywall(passport.token, live);
   }, [live]);
 
-  if (progress || pwErr) {
-    return <LoadingOrError loading={progress} error={pwErr} />
+  if (pwErr) {
+    return <LoadingOrError loading={false} error={pwErr} />
   }
 
   if (!paywall) {
