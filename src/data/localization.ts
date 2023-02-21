@@ -43,7 +43,7 @@ export function localizedEdition(e: Edition): string {
 export function formatMoney(currency: string, amount: number): string {
   return new Intl.NumberFormat(undefined, {
       style: 'currency',
-      currency: currency.toUpperCase(),
+      currency: currency.toUpperCase() || undefined, // In case someone forget to provide currency string.
       currencyDisplay: 'narrowSymbol',
     })
     .format(amount);
