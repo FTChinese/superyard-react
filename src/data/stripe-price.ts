@@ -53,7 +53,7 @@ export type StripeCoupon = {
 };
 
 export function formatCouponAmount(c: StripeCoupon): string {
-  return '-' + formatMoney(c.currency, c.amountOff);
+  return '-' + formatMoney(c.currency, c.amountOff / 100);
 }
 
 export type StripePaywallItem = {
