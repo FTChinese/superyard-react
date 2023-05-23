@@ -1,10 +1,16 @@
 import Spinner from 'react-bootstrap/Spinner';
 
+/**
+ * Display loading spinner or error message.
+ * @param props
+ * @returns
+ */
 export function Loading(
   props: {
     loading: boolean;
-    children: JSX.Element;
-    text?: string;
+    children?: JSX.Element;
+    text?: string; // The message displayed alongside loading spinner.
+    error?: string;
   }
 ) {
   if (props.loading) {
@@ -24,5 +30,11 @@ export function Loading(
     );
   }
 
-  return props.children;
+  if (props.error) {
+    <div className="text-danger text-center">
+      Error: {props.error}
+    </div>
+  }
+
+  return props.children ? props.children : null;
 }
