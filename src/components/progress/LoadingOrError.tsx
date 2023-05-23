@@ -1,5 +1,8 @@
 import Spinner from 'react-bootstrap/Spinner';
 
+/**
+ * @deprecated
+ */
 export function LoadingOrError(
   props: {
     loading?: boolean;
