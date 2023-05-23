@@ -28,7 +28,7 @@ export function loadingErrored(msg: string): LoadingState {
 
 
 /**
- * @deprecated
+ * @deprecated Use Loading
  */
 export function ProgressOrError(
   props: {
