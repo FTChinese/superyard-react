@@ -8,7 +8,13 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { usePaywall } from '../../components/hooks/usePaywall';
 import { LoadingOrError } from '../../components/progress/LoadingOrError';
+import { Loading } from '../../components/progress/Loading';
 
+/**
+ * PaywallLayout provides a shared banner with two buttons:
+ * - toggle live/sandbox mode
+ * - rebuild paywall data
+ */
 export function PaywallLayout() {
   return (
     <>
@@ -44,7 +50,7 @@ export function PaywallPage() {
   }, [live]);
 
   if (pwErr) {
-    return <LoadingOrError loading={false} error={pwErr} />
+    return <Loading loading={false} error={pwErr} />
   }
 
   if (!paywall) {
@@ -52,6 +58,8 @@ export function PaywallPage() {
   }
 
   return (
-    <PaywallContent paywall={paywall} passport={passport} />
+    <Loading loading={progress}>
+      <PaywallContent paywall={paywall} passport={passport} />
+    </Loading>
   );
 }
