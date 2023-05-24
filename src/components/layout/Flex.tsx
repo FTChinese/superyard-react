@@ -1,3 +1,6 @@
+/**
+ * Flex implements bootstrap's d-flex.
+ */
 export function Flex(
   props: {
     start?: JSX.Element;
