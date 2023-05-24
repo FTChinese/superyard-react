@@ -7,6 +7,9 @@ import { YMDColumn } from '../../components/text/YMDColumn';
 import { Discount, formatDiscountAmount, newFtcPriceParts } from '../../data/ftc-price';
 import { PaywallPrice } from '../../data/paywall';
 import { readableYMD } from '../../data/ymd';
+import { Link } from 'react-router-dom';
+import { Flex } from '../../components/layout/Flex';
+import { sitemap } from '../../data/sitemap';
 
 /**
  * FtcPriceCard is an overview of a ftc price visible on paywall.
@@ -30,6 +33,7 @@ export function FtcPriceCard(
         readableYMD(props.price.periodCount),
       ]
     },
+    // TODO: drop this.
     {
       head: 'Stripe Price ID',
       data: [
@@ -40,12 +44,23 @@ export function FtcPriceCard(
   return (
     <Card className="mb-3">
       <Card.Header>
-        <span className="me-3">
-          <AliPayBrand />
-        </span>
-        <span>
-          <WxPayBrand />
-        </span>
+        <Flex
+          start={
+            <div>
+              <span className="me-3">
+                <AliPayBrand />
+              </span>
+              <span>
+                <WxPayBrand />
+              </span>
+            </div>
+          }
+          end={
+            <Link to={sitemap.ftcPriceOf(props.price.id)}>
+              Edit
+            </Link>
+          }
+        />
       </Card.Header>
 
       <Card.Body>

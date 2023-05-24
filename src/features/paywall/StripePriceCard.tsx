@@ -5,6 +5,9 @@ import { DateColumn, ISOTimeColumn } from '../../components/text/DateTimeBlock';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
 import { formatCouponAmount, newStripePriceParts, StripePaywallItem } from '../../data/stripe-price';
 import { readableYMD } from '../../data/ymd';
+import { Flex } from '../../components/layout/Flex';
+import { Link } from 'react-router-dom';
+import { sitemap } from '../../data/sitemap';
 
 export function StripePriceCard(
   props: {
@@ -62,7 +65,11 @@ export function StripePriceCard(
   return (
     <Card className="mb-3">
       <Card.Header>
-        <StripeBrand/>
+        <Flex
+          start={<StripeBrand />}
+          end={<Link to={sitemap.stripePriceOf(props.item.price.id)}>Edit</Link>}
+        />
+
       </Card.Header>
 
       <Card.Body>
