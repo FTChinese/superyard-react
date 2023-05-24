@@ -20,6 +20,7 @@ export const sitePath = {
   paywall: 'paywall',
   products: 'products',
   stripePrices: 'stripe/prices',
+  ftcPrices: 'ftc/prices',
   legal: 'legal',
 };
 
@@ -36,7 +37,10 @@ export const sitemap = {
   sandbox: `/${sitePath.readers}/sandbox`,
 
   stripePriceOf: function(id: string): string {
-    return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`
+    return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`;
+  },
+  ftcPriceOf: function (id: string): string {
+    return `/${sitePath.paywall}/${sitePath.ftcPrices}/${id}`;
   },
   legalDocs: `/${sitePath.legal}`,
   android: `/${sitePath.android}`,
