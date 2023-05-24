@@ -30,12 +30,15 @@ export const sitemap = {
   forgotPassword: `/${sitePath.forgotPassword}`,
 
   paywall: `/${sitePath.paywall}`,
-  products: `/${sitePath.paywall}/products`,
-  stripePrices: `/${sitePath.paywall}/${sitePath.stripePrices}`,
+  products: `/${sitePath.paywall}/${sitePath.products}`,
+  productOf: function (id: string): string {
+    return `/${sitePath.paywall}/${sitePath.products}/${id}`
+  },
 
   readers: `/${sitePath.readers}`,
   sandbox: `/${sitePath.readers}/sandbox`,
 
+  stripePrices: `/${sitePath.paywall}/${sitePath.stripePrices}`,
   stripePriceOf: function(id: string): string {
     return `/${sitePath.paywall}/${sitePath.stripePrices}/${id}`;
   },
