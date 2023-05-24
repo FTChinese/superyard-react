@@ -5,6 +5,10 @@ import { StripePaywallItem } from '../../data/stripe-price';
 import { FtcPriceCard } from './FtcPriceCard';
 import { StripePriceCard } from './StripePriceCard';
 
+/**
+ * ProductCard show a list of prices under active under a product,
+ * together with the descriptive text.
+ */
 export function ProductCard(
   props: {
     product: Product;
