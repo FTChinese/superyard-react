@@ -8,6 +8,9 @@ import { Discount, formatDiscountAmount, newFtcPriceParts } from '../../data/ftc
 import { PaywallPrice } from '../../data/paywall';
 import { readableYMD } from '../../data/ymd';
 
+/**
+ * FtcPriceCard is an overview of a ftc price visible on paywall.
+ */
 export function FtcPriceCard(
   props: {
     price: PaywallPrice;
