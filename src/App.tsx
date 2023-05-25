@@ -31,6 +31,7 @@ import { HomePage } from './pages/HomePage';
 import { useAuth } from './components/hooks/useAuth';
 import { Loading } from './components/progress/Loading';
 import { NoAuthGuard } from './components/middleware/NoAuthGuard';
+import { FtcPricePage } from './pages/paywall/FtcPricepage';
 
 function Skeleton() {
   // When this app is accessed from url, e.g., manual refreshing,
@@ -109,6 +110,11 @@ function App() {
               <Route
                 path={`${sitePath.products}/:productId`}
                 element={<ProductDetailPage />}
+              />
+              <Route
+                path={`${sitePath.ftcPrices}/:priceId`
+                }
+                element={<FtcPricePage />}
               />
               <Route
                 path={`${sitePath.stripePrices}/:priceId`}
