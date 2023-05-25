@@ -15,7 +15,6 @@ import { AuthOnlyGuard } from './components/middleware/AuthOnlyGuard';
 import { PaywallLayout, PaywallPage } from './pages/paywall/PaywallPage';
 import { ProductDetailPage } from './pages/paywall/ProductDetailPage';
 import { ProductListPage } from './pages/paywall/ProductListPage';
-import { StripePricePage } from './pages/paywall/StripePricepage';
 import { LegalListPage } from './pages/legal/LegalListPage';
 import { LegalDetailPage } from './pages/legal/LegalDetailPage';
 import { ReleaseListPage } from './pages/android/ReleaseListPage';
@@ -32,6 +31,7 @@ import { useAuth } from './components/hooks/useAuth';
 import { Loading } from './components/progress/Loading';
 import { NoAuthGuard } from './components/middleware/NoAuthGuard';
 import { FtcPricePage } from './pages/paywall/FtcPricepage';
+import { StripePricePage } from './pages/paywall/StripePricepage';
 
 function Skeleton() {
   // When this app is accessed from url, e.g., manual refreshing,
