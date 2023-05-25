@@ -20,6 +20,7 @@ import {
 import { endpoint } from './endpoint';
 import { buildReqConfig, ReqConfig } from '../http/ReqConfig';
 import { ResponseError } from '../http/response-error';
+import { Fetch, UrlBuilder } from '../http/fetch';
 
 export function loadPaywall(config: ReqConfig): Promise<Paywall> {
   return axios
@@ -66,7 +67,7 @@ export function dropPromo(config: ReqConfig): Promise<PaywallDoc> {
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createProduct(
+export function createFtcProduct(
   body: NewProductParams,
   config: ReqConfig
 ): Promise<Product> {
@@ -80,21 +81,21 @@ export function createProduct(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function listProduct(config: ReqConfig): Promise<Product[]> {
+export function listFtcProducts(config: ReqConfig): Promise<Product[]> {
   return axios
     .get<Product[]>(endpoint.product, buildReqConfig(config))
     .then((resp) => resp.data)
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function loadProduct(id: string, config: ReqConfig): Promise<Product> {
+export function loadFtcProduct(id: string, config: ReqConfig): Promise<Product> {
   return axios
     .get<Product>(endpoint.productOf(id), buildReqConfig(config))
     .then((resp) => resp.data)
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function activateProduct(
+export function activateFtcProduct(
   id: string,
   config: ReqConfig
 ): Promise<Product> {
@@ -104,7 +105,7 @@ export function activateProduct(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updateProduct(
+export function updateFtcProduct(
   id: string,
   body: UpdateProductParams,
   config: ReqConfig
@@ -153,12 +154,24 @@ export function listPriceOfProduct(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createPrice(
+export function loadFtcPrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
+  const url = new UrlBuilder(endpoint.price)
+    .appendPath(id)
+    .setLive(config.live)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(config.token)
+    .endJson<PaywallPrice>();
+}
+
+export function createFtcPrice(
   body: NewPriceParams,
   config: ReqConfig
-): Promise<Price> {
+): Promise<PaywallPrice> {
   return axios
-    .post<Product, AxiosResponse<Price>, NewPriceParams>(
+    .post<Product, AxiosResponse<PaywallPrice>, NewPriceParams>(
       endpoint.price,
       body,
       buildReqConfig(config)
@@ -167,32 +180,32 @@ export function createPrice(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function updatePrice(
+export function updateFtcPrice(
   id: string,
   body: UpdatePriceParams,
   config: ReqConfig
-): Promise<Price> {
+): Promise<PaywallPrice> {
   return axios
-    .patch<Price>(endpoint.priceOf(id), body, buildReqConfig(config))
+    .patch<PaywallPrice>(endpoint.priceOf(id), body, buildReqConfig(config))
     .then((resp) => resp.data)
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function activatePrice(id: string, config: ReqConfig): Promise<Price> {
+export function activateFtcPrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
   return axios
-    .post<Price>(endpoint.priceOf(id), undefined, buildReqConfig(config))
+    .post<PaywallPrice>(endpoint.priceOf(id), undefined, buildReqConfig(config))
     .then((resp) => resp.data)
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function archivePrice(id: string, config: ReqConfig): Promise<Price> {
+export function archiveFtcPrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
   return axios
-    .delete<Price>(endpoint.priceOf(id), buildReqConfig(config))
+    .delete<PaywallPrice>(endpoint.priceOf(id), buildReqConfig(config))
     .then((resp) => resp.data)
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function refreshPriceOffers(
+export function refreshFtcPriceOffers(
   id: string,
   config: ReqConfig
 ): Promise<PaywallPrice> {
@@ -206,7 +219,7 @@ export function refreshPriceOffers(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function createOffer(
+export function createFtcOffer(
   body: DiscountParams,
   config: ReqConfig
 ): Promise<Discount> {
@@ -216,7 +229,7 @@ export function createOffer(
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
 }
 
-export function dropOffer(
+export function dropFtcOffer(
   id: string,
   config: ReqConfig
 ): Promise<PaywallPrice> {
