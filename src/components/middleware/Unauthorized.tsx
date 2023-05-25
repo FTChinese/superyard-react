@@ -6,14 +6,3 @@ export function Unauthorized() {
   );
 }
 
-export function Missing(
-  props: {
-    message: string
-  }
-) {
-  return (
-    <div className="text-danger">
-      Warning: {props.message}
-    </div>
-  );
-}
