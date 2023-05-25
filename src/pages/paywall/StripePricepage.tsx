@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { useProgress } from '../../components/hooks/useProgress';
-import { Missing, Unauthorized } from '../../components/middleware/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { StripeCoupon } from '../../data/stripe-price';
 import { CouponUpsertDialog } from '../../features/stripe/CouponUpsertDialog';
@@ -13,6 +13,7 @@ import { useStripe } from '../../features/stripe/useStripe';
 import { CancelCouponDialog } from '../../features/stripe/CancelCouponDialog';
 import { isOneTime } from '../../data/enum';
 import { toast } from 'react-toastify';
+import { ErrorText } from '../../components/text/ErrorText';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
@@ -21,7 +22,7 @@ export function StripePricePage() {
   const { live } = useLiveMode();
 
   if (!priceId) {
-    return <Missing message="Missing price id" />;
+    return <ErrorText message="Missing price id" />;
   }
 
   if (!passport) {

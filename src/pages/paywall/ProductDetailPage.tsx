@@ -2,239 +2,187 @@ import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
-import { PaywallPrice, Product } from '../../data/paywall';
-import { PriceFormDialog } from '../../features/product/PriceFormDialog';
-import { PriceListItem } from '../../features/product/PriceListItem';
-import {
-  OnPaywallPriceUpserted,
-  OnPriceUpserted,
-  OnProductUpserted,
-} from '../../features/product/callbacks';
+import { PriceFormDialog } from '../../features/ftcprice/PriceFormDialog';
 import { ProductDetails } from '../../features/product/ProductDetails';
-import { listPriceOfProduct, loadProduct } from '../../repository/paywall';
-import { ResponseError } from '../../http/response-error';
-import { IntroductoryDetails } from '../../features/product/IntroductoryDetails';
-import { isRecurring } from '../../data/enum';
-import { Price } from '../../data/ftc-price';
+import { Price, newFtcPriceParts } from '../../data/ftc-price';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
-import {
-  loadingErrored,
-  ProgressOrError,
-  loadingStarted,
-  loadingStopped,
-} from '../../components/progress/ProgressOrError';
 import { Loading } from '../../components/progress/Loading';
+import { TRow, Table, TableBody, TableHead } from '../../components/list/Table';
+import { sitemap } from '../../data/sitemap';
+import { Link } from 'react-router-dom';
+import { concatPriceParts } from '../../data/localization';
+import { readableYMD } from '../../data/ymd';
+import { ErrorText } from '../../components/text/ErrorText';
+import { CMSPassport } from '../../data/cms-account';
+import { useProduct } from '../../features/product/useProduct';
+import { ProductFormDialog } from '../../features/product/ProductFormDialog';
 
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
   const { passport } = useAuth();
+  const { live } = useLiveMode();
 
   if (!productId) {
-    return <div>Product id missing in url!</div>;
+    return <ErrorText message="Product id missing in url!" />;
   }
 
   if (!passport) {
     return <Unauthorized />;
   }
 
-  const { live } = useLiveMode();
+  return (
+    <>
+      <ProductPageScreen
+        productId={productId}
+        passport={passport}
+        live={live}
+      />
+    </>
+  );
+}
 
-  const [product, setProduct] = useState<Product>();
-  const [loadingProduct, setLoadingProduct] = useState(loadingStarted());
-
-  const [paywallPrices, setPaywallPrices] = useState<PaywallPrice[]>([]);
-  const [loadingPrice, setLoadingPrice] = useState(loadingStarted());
+function ProductPageScreen(
+  props: {
+    productId: string;
+    passport: CMSPassport;
+    live: boolean;
+  }
+) {
 
   // Show create new price dialog.
-  const [showNewPrice, setShowNewPrice] = useState(false);
+  const [showPriceForm, setShowPriceForm] = useState(false);
+  const [showProductForm, setShowProductForm] = useState(false);
 
-  const [refreshIntro, setRefreshIntro] = useState(false);
+  const {
+    product,
+    loadingProduct,
+    loadProduct,
+    setProduct,
+
+    activating,
+    activateProduct,
+
+    loadingPrice,
+    priceList,
+    loadPrices,
+
+    onPriceCreated,
+  } = useProduct();
 
   useEffect(() => {
-    setLoadingProduct(loadingStarted());
-    setProduct(undefined);
-
-    loadProduct(productId, { live, token: passport.token })
-      .then((product) => {
-        setLoadingProduct(loadingStopped);
-        setProduct(product);
-      })
-      .catch((err: ResponseError) => {
-        setLoadingProduct(loadingErrored(err.message));
-      });
-  }, [live]);
+    loadProduct(props.productId, {
+      live: props.live,
+      token: props.passport.token,
+    });
+  }, [props.live]);
 
   useEffect(() => {
-    setLoadingPrice(loadingStarted());
-    setPaywallPrices([]);
-
-    listPriceOfProduct(productId, { live, token: passport.token })
-      .then((prices) => {
-        setLoadingPrice(loadingStopped());
-        setPaywallPrices(prices);
-      })
-      .catch((err: ResponseError) => {
-        setLoadingPrice(loadingErrored(err.message));
-      });
-  }, [live]);
-
-  // When a price is created, update the price list.
-  const handlePriceCreated: OnPriceUpserted = (price: Price) => {
-    setShowNewPrice(false);
-    setPaywallPrices([
-      {
-        ...price,
-        offers: [],
-      },
-      ...paywallPrices,
-    ]);
-  };
-
-  // When a price is edited, or discount list added/removed.
-  const priceUpdated: OnPaywallPriceUpserted = (price: PaywallPrice) => {
-    setPaywallPrices(
-      paywallPrices.map((p) => {
-        if (p.id === price.id) {
-          return price;
-        }
-
-        return p;
-      })
-    );
-
-    // If the updated price is used as an introductory,
-    // tell the IntroductoryDetails
-    // componnet to auto-refresh.
-    setRefreshIntro(price.id === product?.introductory?.id);
-  };
-
-  // When a price is activated, update the item in
-  // the list to reflect the changes.
-  const priceActivated: OnPriceUpserted = (price: Price) => {
-    setPaywallPrices(
-      paywallPrices.map((item) => {
-        // The modified price.
-        if (item.id === price.id) {
-          return {
-            ...price,
-            offers: item.offers,
-          };
-        }
-        // Flag all others' active to false.
-        if (
-          item.cycle === price.cycle &&
-          item.kind === price.kind &&
-          item.active
-        ) {
-          return {
-            ...item,
-            active: false,
-          };
-        }
-
-        // Fallback.
-        return item;
-      })
-    );
-  };
-
-  // When a price is archived, removed it from the current list.
-  const priceArchived: OnPriceUpserted = (price: Price) => {
-    setPaywallPrices(paywallPrices.filter((item) => item.id !== price.id));
-  };
-
-  // When introdudctory price under this product
-  // is refreshed or dropped.
-  const handleIntro: OnProductUpserted = (prod: Product) => {
-    setProduct(prod);
-
-    // Price attached.
-    if (prod.introductory) {
-      return;
-    }
-
-    // Deactivate all one time prices.
-    setPaywallPrices(
-      paywallPrices.map((p) => {
-        if (isRecurring(p.kind)) {
-          return p;
-        }
-
-        return {
-          ...p,
-          active: false,
-        };
-      })
-    );
-  };
+    loadPrices(props.productId, {
+      live: props.live,
+      token: props.passport.token,
+    })
+  }, [props.live]);
 
   return (
     <>
       <section className="mb-3">
         <h4>Product Details</h4>
-        <ProgressOrError state={loadingProduct}>
+        <Loading loading={loadingProduct}>
           <>
-            {product && (
-              <ProductDetails
-                passport={passport}
-                product={product}
-                onUpdated={setProduct}
-              />
-            )}
+            {
+              product && (
+                <ProductDetails
+                  product={product}
+                  onEdit={() => {
+                    setShowProductForm(true)
+                  }}
+                  onActivate={() => {
+                    activateProduct(product.id, {
+                      live: props.live,
+                      token: props.passport.token,
+                    });
+                  }}
+                  activating={activating}
+                />
+              )
+            }
           </>
-        </ProgressOrError>
-      </section>
-
-      <section className="mb-3">
-        <h4>Introductory Price</h4>
-        <Loading loading={loadingProduct.progress}>
-          {product && product.introductory ? (
-            <IntroductoryDetails
-              passport={passport}
-              price={product.introductory}
-              updated={refreshIntro}
-              onRefreshOrDrop={handleIntro}
-            />
-          ) : (
-            <p>Not set</p>
-          )}
         </Loading>
       </section>
 
       <section>
         <h4 className="d-flex justify-content-between">
           <span>Price List</span>
-          {product && (
-            <Button onClick={() => setShowNewPrice(true)}>New Price</Button>
-          )}
+          {
+            product && (
+              <Button
+                onClick={() => setShowPriceForm(true)}
+              >
+                New Price
+              </Button>
+            )
+          }
         </h4>
 
-        <ProgressOrError state={loadingPrice}>
-          <>
-            {paywallPrices.map((price) => (
-              <PriceListItem
-                passport={passport}
-                paywallPrice={price}
-                onUpdated={priceUpdated}
-                onActivated={priceActivated}
-                onArchived={priceArchived}
-                onIntroAttached={setProduct}
-                key={price.id}
+        <Loading loading={loadingPrice}>
+          <Table
+            head={
+              <TableHead
+                cols={['ID', 'Price', 'Active', 'Kind', 'Cycle', 'Start', 'End']}
               />
-            ))}
-          </>
-        </ProgressOrError>
+            }
+          >
+            <TableBody
+              rows={priceList.map(buildPriceRow)}
+            />
+          </Table>
+        </Loading>
+
       </section>
-      {product && (
-        <PriceFormDialog
-          passport={passport}
-          show={showNewPrice}
-          onHide={() => setShowNewPrice(false)}
-          onUpserted={handlePriceCreated}
+
+      {
+        product &&
+        <ProductFormDialog
+          passport={props.passport}
+          live={props.live}
+          show={showProductForm}
+          onHide={() => setShowProductForm(false)}
+          onUpserted={setProduct}
           product={product}
         />
-      )}
+      }
+
+      {
+        product &&
+        <PriceFormDialog
+          passport={props.passport}
+          live={props.live}
+          show={showPriceForm}
+          onHide={() => setShowPriceForm(false)}
+          onUpserted={(p) => {
+            setShowPriceForm(false)
+            onPriceCreated(p)
+          }}
+          product={product}
+        />
+      }
     </>
   );
+}
+
+function buildPriceRow(p: Price): TRow {
+  return {
+    key: p.id,
+    data: [
+      <Link to={sitemap.ftcPriceOf(p.id
+      )}>{p.id}</Link>,
+      concatPriceParts(newFtcPriceParts(p)),
+      p.active ? 'Active' : 'Inactive',
+      p.kind,
+      readableYMD(p.periodCount),
+      p.startUtc || 'NULL',
+      p.endUtc || 'NULL',
+    ]
+  };
 }
