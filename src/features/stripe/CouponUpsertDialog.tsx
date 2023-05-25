@@ -43,9 +43,11 @@ export function CouponUpsertDialog(props: {
       )
       .then((c) => {
         props.onCreated(c);
+        helpers.setSubmitting(false);
       })
       .catch((e: ResponseError) => {
         setErr(e.message);
+        helpers.setSubmitting(false);
       });
   };
 

@@ -2,7 +2,7 @@ import { formatISO } from 'date-fns';
 import { Button, ButtonGroup, Card } from 'react-bootstrap';
 import { Flex } from '../../components/layout/Flex';
 import { TableBody, TRow } from '../../components/list/Table';
-import { CouponStatusBadge, ModeBadge } from '../../components/text/Badge';
+import { DiscountStatusBadge, ModeBadge } from '../../components/text/Badge';
 import { StripeCoupon, formatCouponAmount } from '../../data/stripe-price';
 
 export enum CouponAction {
@@ -102,7 +102,7 @@ function buildCouponRow(coupon: StripeCoupon): TRow[] {
     {
       head: 'Status',
       data: [
-        <CouponStatusBadge
+        <DiscountStatusBadge
           status={coupon.status}
         />
       ],
