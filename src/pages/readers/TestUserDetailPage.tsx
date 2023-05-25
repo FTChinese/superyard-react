@@ -8,7 +8,7 @@ import { Pencil } from '../../components/graphics/icons';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useProgress } from '../../components/hooks/useProgress';
 import { LoadingOrError } from '../../components/progress/LoadingOrError';
-import { Missing, Unauthorized } from '../../components/middleware/Unauthorized';
+import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { TestAccount } from '../../data/reader-account';
 import { sitemap } from '../../data/sitemap';
@@ -18,13 +18,14 @@ import { ResponseError } from '../../http/response-error';
 import { loadSandboxUser } from '../../repository/reader';
 import { ReaderDetailPageScreen } from './ReaderDetailPageScreen';
 import { AccountKind } from '../../data/enum';
+import { ErrorText } from '../../components/text/ErrorText';
 
 export function TestUserDetailPage() {
   const { id } = useParams<'id'>();
   const { passport } = useAuth();
 
   if (!id) {
-    return <Missing message="Missing user id" />;
+    return <ErrorText message="Missing user id" />;
   }
 
   if (!passport) {
