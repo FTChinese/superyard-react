@@ -2,10 +2,9 @@ import { FormikHelpers } from 'formik';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
-import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { createProduct, updateProduct } from '../../repository/paywall';
+import { createFtcProduct, updateFtcProduct } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { OnProductUpserted } from './callbacks';
@@ -22,12 +21,13 @@ import {
  */
 export function ProductFormDialog(props: {
   passport: CMSPassport;
+  live: boolean;
   show: boolean;
   onHide: () => void;
   onUpserted: OnProductUpserted;
   product?: Product;
 }) {
-  const { live } = useLiveMode();
+
   const [err, setErr] = useState('');
 
   const handleSubmit = (
@@ -41,7 +41,7 @@ export function ProductFormDialog(props: {
     if (props.product) {
       const params = buildUpdateProductParams(values);
 
-      updateProduct(props.product.id, params, {
+      updateFtcProduct(props.product.id, params, {
         live: props.product.liveMode,
         token: props.passport.token,
       })
@@ -58,7 +58,10 @@ export function ProductFormDialog(props: {
       // Create
       const params = buildNewProductParams(values, props.passport.userName);
 
-      createProduct(params, { live, token: props.passport.token })
+      createFtcProduct(params, {
+        live: props.live,
+        token: props.passport.token
+      })
         .then((prod) => {
           helpers.setSubmitting(false);
           console.log(prod);
@@ -83,7 +86,7 @@ export function ProductFormDialog(props: {
         <Modal.Title className="me-3">
           {props.product ? 'Update' : 'Create'} Product
         </Modal.Title>
-        <ModeBadge live={live} />
+        <ModeBadge live={props.live} />
       </Modal.Header>
       <Modal.Body>
         <div className="container">

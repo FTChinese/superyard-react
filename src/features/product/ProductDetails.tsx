@@ -1,95 +1,91 @@
-import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { TextList } from '../../components/list/TextList';
-import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { ActiveBadge, ModeBadge } from '../../components/text/Badge';
-import { ProductFormDialog } from './ProductFormDialog';
-import { OnProductUpserted } from './callbacks';
+import { ButtonGroup } from 'react-bootstrap';
 
 export function ProductDetails(
   props: {
-    passport: CMSPassport;
     product: Product;
-    onUpdated: OnProductUpserted;
+    onEdit: () => void;
+    activating: boolean;
+    onActivate: () => void;
   }
 ) {
 
-  const [ show, setShow ] = useState(false);
-
-  const handleUpdate = (prod: Product) => {
-    setShow(false);
-    props.onUpdated(prod);
-  };
-
   return (
-    <>
-      <Card>
-        <Card.Header className="text-end">
+    <Card>
+      <Card.Header className="text-end">
+        <ButtonGroup size="sm">
+          {
+            !props.product.active &&
+            <Button
+              variant="outline-primary"
+              size="sm"
+              disabled={props.activating}
+              onClick={props.onActivate}
+            >
+              {props.activating ? 'Activating' : 'Activate'}
+            </Button>
+          }
           <Button
             variant="primary"
             size="sm"
-            onClick={() => setShow(true)}
+            onClick={props.onEdit}
           >
             Edit
           </Button>
-        </Card.Header>
-        <Card.Body>
-          <Card.Title className="text-center">
-            {props.product.heading}
-          </Card.Title>
+        </ButtonGroup>
 
-          <Card.Subtitle className="mb-2 text-muted">
-            Description
-          </Card.Subtitle>
-          <TextList
-            text={props.product.description}
-          />
+      </Card.Header>
 
-          <Card.Subtitle className="mb-2 text-muted">
-            Small Print
-          </Card.Subtitle>
-          {
-          props.product.smallPrint ?
-            <TextList text={props.product.smallPrint} /> :
-            <p>NULL</p>
-          }
+      <Card.Body>
+        <Card.Title className="text-center">
+          {props.product.heading}
+        </Card.Title>
 
-          <table className="table table-borderless">
-            <tbody>
-              <tr>
-                <th>Tier</th>
-                <td>{props.product.tier}</td>
-              </tr>
-              <tr>
-                <th>Mode</th>
-                <td><ModeBadge live={props.product.liveMode}/></td>
-              </tr>
-              <tr>
-                <th>Active</th>
-                <td><ActiveBadge active={props.product.active} /></td>
-              </tr>
-              <tr>
-                <th>Created</th>
-                <td>At {props.product.createdUtc} by {props.product.createdBy}</td>
-              </tr>
-              <tr>
-                <th>Update at</th>
-                <td>{props.product.updatedUtc}</td>
-              </tr>
-            </tbody>
-          </table>
-        </Card.Body>
-      </Card>
+        <Card.Subtitle className="mb-2 text-muted">
+          Description
+        </Card.Subtitle>
+        <TextList
+          text={props.product.description}
+        />
 
-      <ProductFormDialog
-        passport={props.passport}
-        show={show}
-        onHide={() => setShow(false)}
-        onUpserted={handleUpdate}
-        product={props.product}
-      />
-    </>
+        <Card.Subtitle className="mb-2 text-muted">
+          Small Print
+        </Card.Subtitle>
+        {
+        props.product.smallPrint ?
+          <TextList text={props.product.smallPrint} /> :
+          <p>NULL</p>
+        }
+
+        <table className="table table-borderless">
+          <tbody>
+            <tr>
+              <th>Tier</th>
+              <td>{props.product.tier}</td>
+            </tr>
+            <tr>
+              <th>Mode</th>
+              <td><ModeBadge live={props.product.liveMode}/></td>
+            </tr>
+            <tr>
+              <th>Active</th>
+              <td><ActiveBadge active={props.product.active} /></td>
+            </tr>
+            <tr>
+              <th>Created</th>
+              <td>At {props.product.createdUtc} by {props.product.createdBy}</td>
+            </tr>
+            <tr>
+              <th>Update at</th>
+              <td>{props.product.updatedUtc}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Card.Body>
+    </Card>
   );
 }

@@ -1,17 +1,9 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
-import { activateProduct } from '../../repository/paywall';
-import { ResponseError } from '../../http/response-error';
 import { ActiveBadge } from '../../components/text/Badge';
 
 export function ProductList(props: {
-  passport: CMSPassport;
   products: Product[];
-  onActivated: (p: Product) => void;
 }) {
   return (
     <table className="table">
@@ -21,10 +13,8 @@ export function ProductList(props: {
       <tbody>
         {props.products.map((prod) => (
           <ProductRow
-            passport={props.passport}
             product={prod}
             key={prod.id}
-            onActivated={props.onActivated}
           />
         ))}
       </tbody>
@@ -33,30 +23,8 @@ export function ProductList(props: {
 }
 
 function ProductRow(props: {
-  passport: CMSPassport;
   product: Product;
-  onActivated: (p: Product) => void;
 }) {
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleActivate = () => {
-    console.log(`Activate product ${props.product}`);
-    setSubmitting(true);
-
-    activateProduct(props.product.id, {
-      live: props.product.liveMode,
-      token: props.passport.token,
-    })
-      .then((prod) => {
-        setSubmitting(false);
-        toast.success('Activation succeeded. The product is put on paywall.');
-        props.onActivated(prod);
-      })
-      .catch((err: ResponseError) => {
-        setSubmitting(false);
-        toast.error(err.message);
-      });
-  };
 
   return (
     <tr>
@@ -71,18 +39,7 @@ function ProductRow(props: {
         at {props.product.createdUtc}
       </td>
       <td>
-        {props.product.active ? (
-          <ActiveBadge active={true} />
-        ) : (
-          <Button
-            variant="outline-primary"
-            size="sm"
-            disabled={submitting}
-            onClick={handleActivate}
-          >
-            {submitting ? 'Activating...' : 'Activate'}
-          </Button>
-        )}
+        <ActiveBadge active={props.product.active} />
       </td>
     </tr>
   );
