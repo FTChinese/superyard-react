@@ -57,7 +57,7 @@ export function TableBody(
     <tbody>
       {
         props.rows.map((row, i) =>
-          <TableRow row={row} key={i} />
+          <TableRow row={row} key={row.key || i} />
         )
       }
     </tbody>
@@ -95,7 +95,8 @@ export function TableRow(
   );
 }
 
-export type TRow  = {
+export type TRow = {
+  key?: string;
   head?: string;
   data: Array<string | JSX.Element>
 }
