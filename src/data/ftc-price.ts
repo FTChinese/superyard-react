@@ -3,6 +3,10 @@ import { formatMoney, newMoneyParts, PriceParts } from './localization';
 import { ValidPeriod } from './period';
 import { formatEdition, formatYMD, YearMonthDay } from './ymd';
 
+/**
+ * UpdatePriceParams contains parameters sent to
+ * backend to update an existing price.
+ */
 export type UpdatePriceParams = {
   title?: string;
   nickname?: string;
@@ -10,6 +14,10 @@ export type UpdatePriceParams = {
   stripePriceId: string;
 };
 
+/**
+ * NewPriceParams contains parameters is used to
+ * create a new price.
+ */
 export type NewPriceParams = {
   tier: Tier;
   cycle?: Cycle;
@@ -21,7 +29,7 @@ export type NewPriceParams = {
 } & UpdatePriceParams;
 
 /**
- * @description Price determines how much a product cost.
+ * @description Price is the ftc price.
  */
 export type Price = {
   id: string;
@@ -40,6 +48,11 @@ export function priceSelectOption(p: Price): SelectOption<string> {
   }
 }
 
+/**
+ * newFtcPriceParts decompose an ftc price
+ * into various parts so that ui could style
+ * them differently.
+ */
 export function newFtcPriceParts(price: Price): PriceParts {
   return {
     ...newMoneyParts(
