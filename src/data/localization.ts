@@ -1,6 +1,5 @@
 import { Cycle, PaymentKind, Tier } from './enum';
 import { Edition } from './edition';
-import { cycleOfYMD, YearMonthDay } from './ymd';
 
 const tiers: Record<Tier, string> = {
   standard: '标准会员',
@@ -92,4 +91,8 @@ export function newMoneyParts(currency: string, amount: number): MoneyParts {
       integer: '',
       decimal: '',
     })
+}
+
+export function loacalizeBool(b: boolean): string {
+  return b ? 'Yes' : 'No';
 }
