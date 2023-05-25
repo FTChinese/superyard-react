@@ -24,7 +24,7 @@ export function ActiveBadge(
   return <Badge bg="secondary">Inactive</Badge>;
 }
 
-export function CouponStatusBadge(
+export function DiscountStatusBadge(
   props: {
     status: DiscountStatus
   }
