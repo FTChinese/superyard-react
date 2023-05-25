@@ -51,12 +51,12 @@ function PriceTable(
       data: [<ModeBadge live={props.price.liveMode}/>],
     },
     {
-      head: 'Nickname',
-      data: [props.price.nickname],
+      head: 'Kind',
+      data: [props.price.kind],
     },
     {
-      head: 'Type',
-      data: [props.price.kind],
+      head: 'Nickname',
+      data: [props.price.nickname],
     },
   ];
 
