@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StripePrice, StripePriceList } from '../../data/stripe-price';
 import { ReqConfig } from '../../http/ReqConfig';
-import { loadStripePrice, updateStripePriceMeta } from '../../repository/stripe';
+import { listStripePrices, loadStripePrice, updateStripePriceMeta } from '../../repository/stripe';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { StripePriceFormVal, buildStripePriceParams } from './StripePriceForm';
@@ -17,6 +17,17 @@ export function useStripeList() {
 
   const listPrices = (config: ReqConfig, page: PagingQuery) => {
     setLoadingList(true);
+
+    listStripePrices(config, page)
+      .then((list) => {
+        setLoadingList(false);
+        setPagedPrices(list);
+      })
+      .catch((err: ResponseError) => {
+        console.log(err);
+        setLoadingList(false);
+        toast.error(err.message);
+      });
   }
 
   // Load a price before setting updating its metadata.
