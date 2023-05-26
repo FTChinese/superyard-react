@@ -72,7 +72,6 @@ export function PriceFormDialog(props: {
             helpers.setErrors(err.toFormFields);
             return;
           }
-          setErr(err.message);
         });
     } else if (props.product) {
       const body = buildNewPriceParams(values, {
@@ -99,7 +98,11 @@ export function PriceFormDialog(props: {
   };
 
   return (
-    <Modal show={props.show} fullscreen={true} onHide={props.onHide}>
+    <Modal
+      show={props.show}
+      fullscreen={true}
+      onHide={props.onHide}
+    >
       <Modal.Header closeButton>
         <Modal.Title className="me-3">
           {props.price ? 'Update' : 'Create'} Price for a {tier.toUpperCase()}{' '}
