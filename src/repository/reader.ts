@@ -68,10 +68,7 @@ export function deleteSandboxUser(
   return new Fetch()
     .delete(url)
     .setBearerAuth(token)
-    .end()
-    .then(resp => {
-      return resp.status === 204;
-    })
+    .endNoContent();
 }
 
 export function changeSandboxPassword(
