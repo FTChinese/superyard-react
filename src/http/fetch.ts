@@ -1,3 +1,4 @@
+import { ReqConfig } from './ReqConfig';
 import { PagingQuery } from './paged-list';
 import { ApiErrorPayload, ResponseError } from './response-error';
 
@@ -160,6 +161,14 @@ export class UrlBuilder {
   setPage(p: PagingQuery): UrlBuilder {
     this.query.set('page', p.page.toFixed());
     this.query.set('per_page', p.itemsCount.toFixed());
+    return this;
+  }
+
+  setReqConfig(c: ReqConfig): UrlBuilder {
+    this.setLive(c.live)
+    if (c.refresh) {
+      this.setRefresh(c.refresh)
+    }
     return this;
   }
 
