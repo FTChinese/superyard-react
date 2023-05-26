@@ -32,6 +32,7 @@ import { Loading } from './components/progress/Loading';
 import { NoAuthGuard } from './components/middleware/NoAuthGuard';
 import { FtcPricePage } from './pages/paywall/FtcPricepage';
 import { StripePricePage } from './pages/paywall/StripePricepage';
+import { StripePricesPage } from './pages/paywall/StripePricesPage';
 
 function Skeleton() {
   // When this app is accessed from url, e.g., manual refreshing,
@@ -115,6 +116,10 @@ function App() {
                 path={`${sitePath.ftcPrices}/:priceId`
                 }
                 element={<FtcPricePage />}
+              />
+              <Route
+                path={sitePath.stripePrices}
+                element={<StripePricesPage />}
               />
               <Route
                 path={`${sitePath.stripePrices}/:priceId`}
