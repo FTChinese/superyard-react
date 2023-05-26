@@ -100,3 +100,7 @@ export type TRow = {
   head?: string;
   data: Array<string | JSX.Element>
 }
+
+export const tableHeaders = {
+  price: ['ID', 'Price', 'Active', 'Kind', 'Cycle', 'Start', 'End']
+}
