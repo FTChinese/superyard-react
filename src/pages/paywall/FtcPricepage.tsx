@@ -118,6 +118,7 @@ function PricePageScreen(
 
       <PriceFormDialog
         passport={props.passport}
+        live={props.live}
         show={showPriceForm}
         onHide={() => setShowPriceForm(false)}
         onUpserted={onPriceUpdated}
