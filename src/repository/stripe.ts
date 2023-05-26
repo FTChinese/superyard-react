@@ -1,18 +1,22 @@
-import axios from 'axios';
 import { StripePrice, StripeCoupon, CouponParams, StripePriceParams } from '../data/stripe-price';
 import { Fetch, UrlBuilder } from '../http/fetch';
-import { ReqConfig, buildReqConfig } from '../http/ReqConfig';
-import { ResponseError } from '../http/response-error';
+import { ReqConfig } from '../http/ReqConfig';
 import { endpoint, pathStripeCoupons } from './endpoint';
 
 export function loadStripePrice(
   id: string,
   config: ReqConfig
 ): Promise<StripePrice> {
-  return axios
-    .get(endpoint.stripePriceOf(id), buildReqConfig(config))
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  const url = new UrlBuilder(endpoint.stripePrice)
+    .appendPath(id)
+    .setLive(config.live)
+    .setRefresh(config.refresh)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(config.token)
+    .endJson();
 }
 
 /**
@@ -43,10 +47,16 @@ export function loadStripeCoupons(
   priceId: string,
   config: ReqConfig
 ): Promise<StripeCoupon[]> {
-  return axios
-    .get(`${endpoint.stripePriceOf(priceId)}/coupons`, buildReqConfig(config))
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  const url = new UrlBuilder(endpoint.stripePrice)
+    .appendPath(priceId)
+    .appendPath('coupons')
+    .setLive(config.live)
+    .setRefresh(config.refresh)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .endJson();
 }
 
 export function upsertStripeCoupon(
@@ -54,14 +64,15 @@ export function upsertStripeCoupon(
   body: CouponParams,
   config: ReqConfig
 ): Promise<StripeCoupon> {
-  return axios
-    .post<StripeCoupon>(
-      endpoint.stripeCouponOf(id),
-      body,
-      buildReqConfig(config)
-    )
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  const url = new UrlBuilder(endpoint.stripePrice)
+    .appendPath(id)
+    .setLive(config.live)
+    .toString();
+
+  return new Fetch()
+    .post(url)
+    .sendJson(body)
+    .endJson();
 }
 
 export function activateStripeCoupon(
@@ -71,24 +82,24 @@ export function activateStripeCoupon(
   const url = new UrlBuilder(pathStripeCoupons)
     .appendPath(id)
     .appendPath('activate')
+    .setLive(config.live)
     .toString();
 
-  return axios
-    .patch<StripeCoupon>(
-      url,
-      undefined,
-      buildReqConfig(config)
-    )
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .patch(url)
+    .endJson();
 }
 
 export function deleteStripeCoupon(
   id: string,
   config: ReqConfig
 ): Promise<StripeCoupon> {
-  return axios
-    .delete<StripeCoupon>(endpoint.stripeCouponOf(id), buildReqConfig(config))
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  const url = new UrlBuilder(pathStripeCoupons)
+    .appendPath(id)
+    .setLive(config.live)
+    .toString();
+
+  return new Fetch()
+    .delete(url)
+    .endJson();
 }
