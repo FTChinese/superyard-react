@@ -13,8 +13,8 @@ import { listSandboxUsers } from '../../repository/reader';
 import { useEffect, useState } from 'react';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
-import { LoadingOrError } from '../../components/progress/LoadingOrError';
 import { SandboxAccountDialog } from '../../features/readers/SandboxAccountDialog';
+import { Loading } from '../../components/progress/Loading';
 
 export function TestUserListPage() {
   const { passport } = useAuth();
@@ -61,7 +61,7 @@ function ListPageScreen(
   }, [errMsg]);
 
   if (!userList) {
-    return <LoadingOrError loading={progress} />
+    return <Loading loading={progress} />
   }
 
   return (
