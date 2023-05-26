@@ -22,12 +22,6 @@ export function isLoginExpired(pp: CMSPassport): boolean {
   return (Date.now() / 1000) > pp.expiresAt;
 }
 
-export function authHeader(token: string): { [key: string]: string } {
-  return {
-    'Authorization': `Bearer ${token}`,
-  };
-}
-
 export type UpdatePasswordReq = {
   currentPassword: string;
   newPassword: string;
