@@ -31,6 +31,14 @@ export function newStripePriceParts(
   };
 }
 
+export type StripePriceParams = {
+  introductory: boolean;
+  tier: Tier;
+  periodCount?: YearMonthDay; // Only required for intro price
+  startUtc?: string; // Only for intro price
+  endUtc?: string; // Only for intro price.
+};
+
 export type CouponParams = {
   priceId: string;
   startUtc: string;
