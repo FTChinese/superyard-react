@@ -13,7 +13,6 @@ import {
 import {
   Discount,
   DiscountParams,
-  Price,
   NewPriceParams,
   UpdatePriceParams,
 } from '../data/ftc-price';
