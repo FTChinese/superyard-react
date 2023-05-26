@@ -96,3 +96,7 @@ export function newMoneyParts(currency: string, amount: number): MoneyParts {
 export function loacalizeBool(b: boolean): string {
   return b ? 'Yes' : 'No';
 }
+
+export function localizeActive(active: boolean): string {
+  return active ? 'Active' : 'Inactive';
+}
