@@ -71,6 +71,7 @@ export function upsertStripeCoupon(
 
   return new Fetch()
     .post(url)
+    .setBearerAuth(config.token)
     .sendJson(body)
     .endJson();
 }
@@ -87,6 +88,7 @@ export function activateStripeCoupon(
 
   return new Fetch()
     .patch(url)
+    .setBearerAuth(config.token)
     .endJson();
 }
 
@@ -100,6 +102,7 @@ export function deleteStripeCoupon(
     .toString();
 
   return new Fetch()
+    .setBearerAuth(config.token)
     .delete(url)
     .endJson();
 }
