@@ -103,6 +103,12 @@ export class Fetch {
       return response.json();
     });
   }
+
+  endNoContent(): Promise<boolean> {
+    return this.endOrReject().then((resp) => {
+      return resp.status === 204;
+    });
+  }
 }
 
 export class UrlBuilder {
