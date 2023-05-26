@@ -19,10 +19,8 @@ export const pathMemberBase = '/api/memberships';
 export const endpoint = {
   login: `${authBase}/login`,
   resetPassword: `${pwResetBase}`,
-  requestPasswordReset: `${pwResetBase}/letter`,
-  verifyResetToken: function (token: string): string {
-    return `${pwResetBase}/tokens/${token}`;
-  },
+  passResetLetter: `${pwResetBase}/letter`,
+  passResetToken: `${pwResetBase}/tokens`,
 
   paywall: paywallBase,
   refreshPaywall: `${paywallBase}/build`,
