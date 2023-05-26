@@ -1,7 +1,20 @@
-import { StripePrice, StripeCoupon, CouponParams, StripePriceParams } from '../data/stripe-price';
+import { StripePrice, StripeCoupon, CouponParams, StripePriceParams, StripePriceList } from '../data/stripe-price';
 import { Fetch, UrlBuilder } from '../http/fetch';
+import { PagingQuery } from '../http/paged-list';
 import { ReqConfig } from '../http/ReqConfig';
 import { endpoint, pathStripeCoupons } from './endpoint';
+
+export function listStripePrices(config: ReqConfig, paging: PagingQuery): Promise<StripePriceList> {
+  const url = new UrlBuilder(endpoint.stripePrice)
+    .setLive(config.live)
+    .setPage(paging)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(config.token)
+    .endJson();
+}
 
 export function loadStripePrice(
   id: string,
@@ -56,6 +69,7 @@ export function loadStripeCoupons(
 
   return new Fetch()
     .get(url)
+    .setBearerAuth(config.token)
     .endJson();
 }
 
