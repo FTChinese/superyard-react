@@ -25,7 +25,7 @@ export function Pagination(
               itemsCount: props.itemsPerPage,
           })
         }}
-        disabled={props.currentPage === 1}
+        disabled={props.currentPage <= 1}
       >
         Previous
       </Button>
@@ -34,7 +34,7 @@ export function Pagination(
       </span>
       <Button
         variant="link"
-        disabled={props.currentPage === totalPages}
+        disabled={props.currentPage >= totalPages}
         onClick={() => {
           props.onNavigate({
             page: props.currentPage < totalPages
