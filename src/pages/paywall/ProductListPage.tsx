@@ -3,8 +3,6 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { Product } from '../../data/paywall';
-import { OnProductUpserted } from '../../features/product/callbacks';
 import { ProductFormDialog } from '../../features/product/ProductFormDialog';
 import { ProductList } from '../../features/product/ProductList';
 import { Loading } from '../../components/progress/Loading';
