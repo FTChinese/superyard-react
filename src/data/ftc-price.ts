@@ -11,7 +11,6 @@ export type UpdatePriceParams = {
   title?: string;
   nickname?: string;
   periodCount: YearMonthDay;
-  stripePriceId: string;
 };
 
 /**
