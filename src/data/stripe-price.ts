@@ -1,3 +1,4 @@
+import { PagedList } from '../http/paged-list';
 import { DiscountStatus, isRecurring, PriceKind, Tier } from './enum';
 import { formatMoney, newMoneyParts, PriceParts } from './localization';
 import { formatYMD, YearMonthDay } from './ymd';
@@ -17,6 +18,8 @@ export type StripePrice = {
   endUtc?: string;
   created: number;
 };
+
+export type StripePriceList = PagedList<StripePrice>;
 
 export function newStripePriceParts(
   sp: StripePrice, // Either trial or recurring price.
