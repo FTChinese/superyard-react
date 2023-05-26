@@ -9,7 +9,7 @@ import { StripeCoupon } from '../../data/stripe-price';
 import { CouponUpsertDialog } from '../../features/stripe/CouponUpsertDialog';
 import { CouponAction } from '../../features/stripe/CouponItem';
 import { StripePriceScreen } from '../../features/stripe/StripePriceScreen';
-import { useStripe } from '../../features/stripe/useStripe';
+import { useStripePrice } from '../../features/stripe/useStripePrice';
 import { CancelCouponDialog } from '../../features/stripe/CancelCouponDialog';
 import { isOneTime } from '../../data/enum';
 import { toast } from 'react-toastify';
@@ -58,7 +58,7 @@ function PricePageScreen(
     onCouponCreated,
     onCouponUpdated,
     activateCoupon,
-  } = useStripe();
+  } = useStripePrice();
 
   // Load stripe price
   useEffect(() => {
