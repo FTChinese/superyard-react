@@ -11,7 +11,7 @@ import { Loading } from '../../components/progress/Loading';
 import { TRow, Table, TableBody, TableHead } from '../../components/list/Table';
 import { sitemap } from '../../data/sitemap';
 import { Link } from 'react-router-dom';
-import { concatPriceParts } from '../../data/localization';
+import { concatPriceParts, localizeActive } from '../../data/localization';
 import { readableYMD } from '../../data/ymd';
 import { ErrorText } from '../../components/text/ErrorText';
 import { CMSPassport } from '../../data/cms-account';
@@ -178,7 +178,7 @@ function buildPriceRow(p: Price): TRow {
       <Link to={sitemap.ftcPriceOf(p.id
       )}>{p.id}</Link>,
       concatPriceParts(newFtcPriceParts(p)),
-      p.active ? 'Active' : 'Inactive',
+      localizeActive(p.active),
       p.kind,
       readableYMD(p.periodCount),
       p.startUtc || 'NULL',
