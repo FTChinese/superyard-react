@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { StripePrice, StripeCoupon, CouponParams } from '../data/stripe-price';
-import { UrlBuilder } from '../http/fetch';
+import { StripePrice, StripeCoupon, CouponParams, StripePriceParams } from '../data/stripe-price';
+import { Fetch, UrlBuilder } from '../http/fetch';
 import { ReqConfig, buildReqConfig } from '../http/ReqConfig';
 import { ResponseError } from '../http/response-error';
 import { endpoint, pathStripeCoupons } from './endpoint';
@@ -13,6 +13,30 @@ export function loadStripePrice(
     .get(endpoint.stripePriceOf(id), buildReqConfig(config))
     .then((resp) => resp.data)
     .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+}
+
+/**
+ * Update a Stripe price's metadata.
+ * @param id - price id
+ * @param body - request body
+ * @param config - query and auth parameters.
+ * @returns
+ */
+export function updateStripePriceMeta(
+  id: string,
+  body: StripePriceParams,
+  config: ReqConfig
+): Promise<StripePrice> {
+  const url = new UrlBuilder(endpoint.stripePrice)
+    .appendPath(id)
+    .setLive(config.live)
+    .toString();
+
+  return new Fetch()
+    .post(url)
+    .setBearerAuth(config.token)
+    .sendJson(body)
+    .endJson<StripePrice>();
 }
 
 export function loadStripeCoupons(
