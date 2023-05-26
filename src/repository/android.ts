@@ -1,83 +1,73 @@
-import axios from 'axios';
 import { Release, ReleaseList, ReleaseParams } from '../data/android';
-import { authHeader } from '../data/cms-account';
 import { PagingQuery, serializePagingQuery } from '../http/paged-list';
-import { URLBuilder } from '../http/url_builder';
 import { UpsertArgs } from './args';
 import { endpoint } from './endpoint';
-import { ResponseError } from '../http/response-error';
+import { Fetch, UrlBuilder } from '../http/fetch';
 
 export function listReleases(
   page: PagingQuery,
   token: string
 ): Promise<ReleaseList> {
-  const url = new URLBuilder(endpoint.androidBase)
-    .setSearch(serializePagingQuery(page))
+  const url = new UrlBuilder(endpoint.androidBase)
+    .setSearchParams(serializePagingQuery(page))
     .toString();
 
-  return axios
-    .get<ReleaseList>(url, {
-      headers: authHeader(token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson();
 }
 
 export function createRelease(
   args: UpsertArgs<ReleaseParams>
 ): Promise<Release> {
-  return axios
-    .post<Release>(endpoint.androidBase, args.body, {
-      headers: authHeader(args.token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+
+  return new Fetch()
+    .post(endpoint.androidBase)
+    .setBearerAuth(args.token)
+    .sendJson(args.body)
+    .endJson();
 }
 
 export function loadRelease(
   versionName: string,
   token: string
 ): Promise<Release> {
-  const url = new URLBuilder(endpoint.androidBase)
-    .addPath(versionName)
+  const url = new UrlBuilder(endpoint.androidBase)
+    .appendPath(versionName)
     .toString();
 
-  return axios
-    .get<Release>(url, {
-      headers: authHeader(token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson();
 }
 
 export function updateRelease(
   versionName: string,
   args: UpsertArgs<ReleaseParams>
 ): Promise<Release> {
-  const url = new URLBuilder(endpoint.androidBase)
-    .addPath(versionName)
+  const url = new UrlBuilder(endpoint.androidBase)
+    .appendPath(versionName)
     .toString();
 
-  return axios
-    .patch<Release>(url, args.body, {
-      headers: authHeader(args.token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .patch(url)
+    .setBearerAuth(args.token)
+    .sendJson(args.body)
+    .endJson();
 }
 
 export function deleteRelease(
   versionName: string,
   token: string
 ): Promise<boolean> {
-  const url = new URLBuilder(endpoint.androidBase)
-    .addPath(versionName)
+  const url = new UrlBuilder(endpoint.androidBase)
+    .appendPath(versionName)
     .toString();
 
-  return axios
-    .delete<boolean>(url, {
-      headers: authHeader(token),
-    })
-    .then((resp) => resp.status === 204)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .delete(url)
+    .setBearerAuth(token)
+    .endNoContent();
 }

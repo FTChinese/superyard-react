@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { authHeader } from '../data/cms-account';
 import {
   LegalDoc,
   LegalDocParams,
@@ -7,90 +5,80 @@ import {
   LegalPublishParams,
 } from '../data/legal';
 import { endpoint } from './endpoint';
-import { ResponseError } from '../http/response-error';
-import { URLBuilder } from '../http/url_builder';
 import { PagingQuery, serializePagingQuery } from '../http/paged-list';
 import { UpsertArgs } from './args';
+import { Fetch, UrlBuilder } from '../http/fetch';
 
 export function listLegalDoc(
   page: PagingQuery,
   token: string
 ): Promise<LegalList> {
-  const url = new URLBuilder(endpoint.legalBase)
-    .setSearch(serializePagingQuery(page))
+  const url = new UrlBuilder(endpoint.legalBase)
+    .setSearchParams(serializePagingQuery(page))
     .toString();
 
-  return axios
-    .get<LegalList>(url, {
-      headers: authHeader(token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson();
 }
 
 export function createLegalDoc(
   args: UpsertArgs<LegalDocParams>
 ): Promise<LegalDoc> {
-  return axios
-    .post<LegalDoc>(endpoint.legalBase, args.body, {
-      headers: authHeader(args.token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .post(endpoint.legalBase)
+    .setBearerAuth(args.token)
+    .sendJson(args.body)
+    .endJson();
 }
 
 export function loadLegalDoc(id: string, token: string): Promise<LegalDoc> {
-  const url = new URLBuilder(endpoint.legalBase).addPath(id).toString();
+  const url = new UrlBuilder(endpoint.legalBase).appendPath(id).toString();
 
-  return axios
-    .get<LegalDoc>(url, {
-      headers: authHeader(token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endJson();
 }
 
 export function updateLegalDoc(
   id: string,
   args: UpsertArgs<LegalDocParams>
 ): Promise<LegalDoc> {
-  const url = new URLBuilder(endpoint.legalBase).addPath(id).toString();
+  const url = new UrlBuilder(endpoint.legalBase).appendPath(id).toString();
 
-  return axios
-    .patch<LegalDoc>(url, args.body, {
-      headers: authHeader(args.token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .patch(url)
+    .setBearerAuth(args.token)
+    .sendJson(args.body)
+    .endJson();
 }
 
 export function refreshLegalPage(id: string, token: string): Promise<boolean> {
-  const url = new URLBuilder(endpoint.legalBase)
-    .addPath(id)
-    .addPath('refresh')
+  const url = new UrlBuilder(endpoint.legalBase)
+    .appendPath(id)
+    .appendPath('refresh')
     .toString();
 
-  return axios
-    .get<boolean>(url, {
-      headers: authHeader(token),
-    })
-    .then((resp) => resp.status === 204)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(token)
+    .endNoContent();
 }
 
 export function publishLegalDoc(
   id: string,
   args: UpsertArgs<LegalPublishParams>
 ): Promise<LegalDoc> {
-  const url = new URLBuilder(endpoint.legalBase)
-    .addPath(id)
-    .addPath('publish')
+  const url = new UrlBuilder(endpoint.legalBase)
+    .appendPath(id)
+    .appendPath('publish')
     .toString();
 
-  return axios
-    .post<LegalDoc>(url, args.body, {
-      headers: authHeader(args.token),
-    })
-    .then((resp) => resp.data)
-    .catch((error) => Promise.reject(ResponseError.newInstance(error)));
+  return new Fetch()
+    .post(url)
+    .setBearerAuth(args.token)
+    .sendJson(args.body)
+    .endJson();
 }
