@@ -144,7 +144,10 @@ export class UrlBuilder {
     return this;
   }
 
-  setRefresh(refresh: boolean): UrlBuilder {
+  setRefresh(refresh?: boolean): UrlBuilder {
+    if (!refresh) {
+      return this;
+    }
     this.query.set('refresh', `${refresh}`);
     return this;
   }
