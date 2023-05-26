@@ -19,7 +19,7 @@ export function StripePriceDialog(
 ) {
 
   const {
-    loading,
+    loadingPrice,
     loadPrice,
     price,
     updatePriceMeta
@@ -61,8 +61,8 @@ export function StripePriceDialog(
                 });
               }}
               label="Search Stripe Price"
-              progress={loading}
-              disabled={loading}
+              progress={loadingPrice}
+              disabled={loadingPrice}
               placeholder='Enter Stripe Price ID'
               desc="You need to load a price first by copying price id from Stripe dashboard"
             />
