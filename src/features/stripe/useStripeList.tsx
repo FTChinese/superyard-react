@@ -1,29 +1,37 @@
 import { useState } from 'react';
-import { StripePrice } from '../../data/stripe-price';
+import { StripePrice, StripePriceList } from '../../data/stripe-price';
 import { ReqConfig } from '../../http/ReqConfig';
 import { loadStripePrice, updateStripePriceMeta } from '../../repository/stripe';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { StripePriceFormVal, buildStripePriceParams } from './StripePriceForm';
 import { FormikHelpers } from 'formik';
+import { PagingQuery } from '../../http/paged-list';
 
 export function useStripeList() {
-  const [loading, setLoading] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
+  const [pagedPrices, setPagedPrices] = useState<StripePriceList>();
+
+  const [loadingPrice, setLoadingPrice] = useState(false);
   const [price, setPrice] = useState<StripePrice>();
+
+  const listPrices = (config: ReqConfig, page: PagingQuery) => {
+    setLoadingList(true);
+  }
 
   // Load a price before setting updating its metadata.
   const loadPrice = (priceId: string, config: ReqConfig) => {
-    setLoading(true);
+    setLoadingPrice(true);
     setPrice(undefined);
 
     loadStripePrice(priceId, config)
       .then((sp) => {
-        setLoading(false)
+        setLoadingPrice(false)
         setPrice(sp);
       })
       .catch((err: ResponseError) => {
         console.log(err);
-        setLoading(false);
+        setLoadingPrice(false);
         toast.error(err.message);
       });
   }
@@ -59,7 +67,11 @@ export function useStripeList() {
   };
 
   return {
-    loading,
+    loadingList,
+    pagedPrices,
+    listPrices,
+
+    loadingPrice,
     loadPrice,
     price,
     updatePriceMeta,
