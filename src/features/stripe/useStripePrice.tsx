@@ -7,7 +7,7 @@ import { ReqConfig } from '../../http/ReqConfig';
 import { ResponseError } from '../../http/response-error';
 import { activateStripeCoupon, loadStripeCoupons, loadStripePrice } from '../../repository/stripe';
 
-export function useStripe() {
+export function useStripePrice() {
   const { startProgress, stopProgress } = useProgress();
 
   const [price, setPrice] = useState<StripePrice>();
