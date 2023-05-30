@@ -30,6 +30,10 @@ export function isInvalidSubStatus(s: SubStatus): boolean {
   return false;
 }
 
+export function isActiveDiscount(s: DiscountStatus): boolean {
+  return s === 'active';
+}
+
 export function isRecurring(k: PriceKind): boolean {
   return k === 'recurring';
 }
