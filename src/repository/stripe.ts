@@ -123,6 +123,9 @@ export function upsertStripeCoupon(
     .endJson();
 }
 
+/**
+ * Change a coupon to `active` state.
+ */
 export function activateStripeCoupon(
   id: string,
   config: ReqConfig
@@ -139,6 +142,9 @@ export function activateStripeCoupon(
     .endJson();
 }
 
+/**
+ * Change a coupon to `cancelled` state.
+ */
 export function deleteStripeCoupon(
   id: string,
   config: ReqConfig
