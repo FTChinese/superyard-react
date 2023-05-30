@@ -10,6 +10,7 @@ export type StripePrice = {
   kind: PriceKind;
   liveMode: boolean;
   nickname: string;
+  onPaywall: boolean;
   productId: string;
   periodCount: YearMonthDay;
   tier: Tier;
