@@ -5,15 +5,20 @@ import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { useProgress } from '../../components/hooks/useProgress';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { StripeCoupon } from '../../data/stripe-price';
+import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { CouponUpsertDialog } from '../../features/stripe/CouponUpsertDialog';
 import { CouponAction } from '../../features/stripe/CouponItem';
-import { StripePriceScreen } from '../../features/stripe/StripePriceScreen';
+import { CouponList } from '../../features/stripe/CouponList';
 import { useStripePrice } from '../../features/stripe/useStripePrice';
 import { CancelCouponDialog } from '../../features/stripe/CancelCouponDialog';
 import { isOneTime } from '../../data/enum';
 import { toast } from 'react-toastify';
 import { ErrorText } from '../../components/text/ErrorText';
+import { StripePriceSection } from '../../features/stripe/StripePriceCard';
+import { StripePriceEdit } from '../../features/stripe/StripePriceEdit';
+import { Button, Modal } from 'react-bootstrap';
+import { ModeBadge } from '../../components/text/Badge';
+import { localizedTier } from '../../data/localization';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
@@ -49,18 +54,26 @@ function PricePageScreen(
   const [showForm, setShowForm] = useState(false);
   const [editCoupon, setEditCoupon] = useState<StripeCoupon>();
   const [alertDelete, setAlertDelete] = useState<StripeCoupon>();
+
   const { progress } = useProgress();
+  const [showEdit, setShowEdit] = useState(false);
 
   const {
     price,
     loadPrice,
+
+    activatePrice,
+    showPriceActivate,
+    setShowPriceActivate,
+
     coupons,
     onCouponCreated,
     onCouponUpdated,
     activateCoupon,
   } = useStripePrice();
 
-  // Load stripe price
+  // Load stripe price.
+  // Not passing `refresh: true` upon initial loading.
   useEffect(() => {
     loadPrice(props.priceId, {
       live: props.live,
@@ -97,57 +110,145 @@ function PricePageScreen(
 
   return (
     <>
-      <StripePriceScreen
+      <StripePriceSection
         price={price}
-        coupons={coupons}
-        handlingCoupon={progress}
-        onNewCoupon={() => {
-          if (isOneTime(price.kind)) {
-            toast.error('Introductory price cannot have coupons');
-            return;
-          }
-          setShowForm(true);
+        onRefresh={() => {
+          loadPrice(props.priceId, {
+            live: props.live,
+            token: props.passport.token,
+            refresh: true,
+          });
         }}
-        onModifyCoupon={modifyCoupon}
+        progress={progress}
+        onActivate={() => {
+          setShowPriceActivate(true);
+        }}
+        onEdit={() => {
+          setShowEdit(true);
+        }}
       />
 
-      <CouponUpsertDialog
+      <StripePriceEdit
+        price={price}
         passport={props.passport}
         live={props.live}
-        price={price}
-        coupon={editCoupon}
-        show={showForm}
+        show={showEdit}
         onHide={() => {
-          setEditCoupon(undefined);
-          setShowForm(false);
+          setShowEdit(false);
         }}
-        onCreated={(c) => {
-          if (editCoupon) {
-            onCouponUpdated(c);
-          } else {
-            onCouponCreated(c);
-          }
+      />
 
-          setEditCoupon(undefined);
-          setShowForm(false);
+      <ActivateOrDeactivate
+        price={price}
+        live={props.live}
+        show={showPriceActivate}
+        onHide={() => {
+          setShowPriceActivate(false);
         }}
+        onClick={() => {
+          activatePrice(price, {
+            live: props.live,
+            token: props.passport.token,
+          });
+        }}
+        progress={progress}
       />
 
       {
-        alertDelete &&
-        <CancelCouponDialog
-          passport={props.passport}
-          live={props.live}
-          coupon={alertDelete}
-          show={!!alertDelete}
-          onHide={() => setAlertDelete(undefined)}
-          onCancelled={(c) => {
-            onCouponUpdated(c);
-            setAlertDelete(undefined);
-          }}
-        />
-      }
+        isOneTime(price.kind) ?
+        <div className='text-danger'>
+          Introductory price cannot have any coupons
+        </div> :
+        <>
+          <CouponList
+            coupons={coupons}
+            handlingCoupon={progress}
+            onNewCoupon={() => {
+              if (isOneTime(price.kind)) {
+                toast.error('Introductory price cannot have coupons');
+                return;
+              }
+              setShowForm(true);
+            }}
+            onModifyCoupon={modifyCoupon}
+          />
 
+          <CouponUpsertDialog
+            passport={props.passport}
+            live={props.live}
+            price={price}
+            coupon={editCoupon}
+            show={showForm}
+            onHide={() => {
+              setEditCoupon(undefined);
+              setShowForm(false);
+            }}
+            onCreated={(c) => {
+              if (editCoupon) {
+                onCouponUpdated(c);
+              } else {
+                onCouponCreated(c);
+              }
+
+              setEditCoupon(undefined);
+              setShowForm(false);
+            }}
+          />
+
+          {
+            alertDelete &&
+            <CancelCouponDialog
+              passport={props.passport}
+              live={props.live}
+              coupon={alertDelete}
+              show={!!alertDelete}
+              onHide={() => setAlertDelete(undefined)}
+              onCancelled={(c) => {
+                onCouponUpdated(c);
+                setAlertDelete(undefined);
+              }}
+            />
+          }
+        </>
+      }
     </>
   );
+}
+
+function ActivateOrDeactivate(
+  props: {
+    price: StripePrice;
+    live: boolean;
+    show: boolean;
+    onHide: () => void;
+    onClick: () => void;
+    progress: boolean;
+  }
+) {
+  return (
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title className="me-3">
+          {props.price.onPaywall ? 'Deactivate' : 'Activate'} Stripe Price
+        </Modal.Title>
+        <ModeBadge live={props.live} />
+      </Modal.Header>
+
+      <Modal.Body>
+        Are you sure you want to {props.price.onPaywall ? 'deactivate' : 'activate'} price {props.price.id} {localizedTier(props.price.tier)}
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button
+          onClick={props.onClick}
+          disabled={props.progress}
+        >
+          Yes
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
 }
