@@ -90,7 +90,7 @@ function StripePriceListScreen(
         </ButtonGroup>
       </Stack>
       <ul>
-        <li>Click New to create a new Stripe price</li>
+        <li>Click New to create a new Stripe price (this feature is not finished yet!)</li>
         <li>Click Pull to use an existing Stripe price from its dashboard</li>
       </ul>
       {
