@@ -16,7 +16,8 @@ import { toast } from 'react-toastify';
 import { ErrorText } from '../../components/text/ErrorText';
 import { StripePriceSection } from '../../features/stripe/StripePriceCard';
 import { StripePriceEdit } from '../../features/stripe/StripePriceEdit';
-import { Button, Modal } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import { ModeBadge } from '../../components/text/Badge';
 import { localizedTier } from '../../data/localization';
 
