@@ -5,7 +5,6 @@ import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { useStripeList } from '../../features/stripe/useStripeList';
 import { Loading } from '../../components/progress/Loading';
-import { StripePriceDialog } from '../../features/stripe/StripePriceDialog';
 import Stack from 'react-bootstrap/Stack';
 import { Button } from 'react-bootstrap';
 import { StripePrice, newStripePriceParts } from '../../data/stripe-price';
@@ -19,6 +18,7 @@ import { concatPriceParts, localizeActive } from '../../data/localization';
 import { readableYMD } from '../../data/ymd';
 import { Pagination } from '../../components/Pagination';
 import { getPagingQuery, serializePagingQuery } from '../../http/paged-list';
+import { StripePricePull } from '../../features/stripe/StripePricePull';
 
 export function StripePricesPage() {
   const { live } = useLiveMode();
@@ -70,7 +70,12 @@ function StripePriceListScreen(
     <>
       <Stack direction="horizontal">
         <h2 className="mb-3">Stripe Prices</h2>
-        <Button onClick={() => setShowForm(true)} className="ms-auto">New</Button>
+        <Button
+          onClick={() => setShowForm(true)}
+          className="ms-auto"
+        >
+          New
+        </Button>
       </Stack>
 
       <Loading loading={loadingList}>
@@ -89,7 +94,7 @@ function StripePriceListScreen(
         itemsPerPage={pagedPrices?.limit || 1}
         onNavigate={(paging) => setSearchParams(serializePagingQuery(paging))}
       />
-      <StripePriceDialog
+      <StripePricePull
         passport={props.passport}
         live={props.live}
         show={showForm}
@@ -127,7 +132,7 @@ function buildPriceRow(p: StripePrice): TRow {
     data: [
       <Link to={sitemap.stripePriceOf(p.id)}>{p.id}</Link>,
       concatPriceParts(newStripePriceParts(p)),
-      localizeActive(p.active),
+      localizeActive(p.onPaywall),
       p.kind,
       readableYMD(p.periodCount),
       p.startUtc || 'NULL',
