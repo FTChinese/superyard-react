@@ -2,11 +2,11 @@ import Modal from 'react-bootstrap/Modal';
 import { CMSPassport } from '../../data/cms-account';
 import { useStripeList } from './useStripeList';
 import { ModeBadge } from '../../components/text/Badge';
-import { StripePriceForm } from './StripePriceForm';
 import { SearchBox } from '../../components/forms/SearchBox';
 import { StripePriceCard } from './StripePriceCard';
-import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
+import { Link } from 'react-router-dom';
+import { sitemap } from '../../data/sitemap';
 
 export function StripePricePull(
   props: {
@@ -30,7 +30,7 @@ export function StripePricePull(
     >
       <Modal.Header closeButton>
         <Modal.Title className="me-3">
-          Set Stripe Price Metadata
+          Sync a Stripe Price
         </Modal.Title>
         <ModeBadge live={props.live} />
       </Modal.Header>
@@ -50,13 +50,18 @@ export function StripePricePull(
               progress={loadingPrice}
               disabled={loadingPrice}
               placeholder='Enter Stripe Price ID'
-              desc="You need to load a price first by copying price id from Stripe dashboard"
+              desc="Copying price id from Stripe dashboard and it will be synced to FTC's database"
             />
             {
               price &&
-              <StripePriceCard
-                price={price}
-              />
+              <>
+                <p>You can now edit this price <Link to={sitemap.stripePriceOf(price.id)}>here</Link></p>
+
+                <StripePriceCard
+                  price={price}
+                />
+
+              </>
             }
           </>
         </FullscreenSingleCol>
