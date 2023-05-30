@@ -26,11 +26,9 @@ export function StripePriceSection(
         <h4>Stripe Price Details</h4>
         <ButtonGroup
           className="ms-auto"
-          size="sm"
         >
           <Button
             variant="outline-primary"
-            size="sm"
             disabled={props.progress}
             onClick={props.onRefresh}
           >
@@ -38,15 +36,12 @@ export function StripePriceSection(
           </Button>
           <Button
             variant='danger'
-            size="sm"
             disabled={props.progress}
             onClick={props.onActivate}
           >
             {props.price.onPaywall ? 'Deactivate' : 'Activate'}
           </Button>
           <Button
-            variant="primary"
-            size="sm"
             disabled={props.progress}
             onClick={props.onEdit}
           >
