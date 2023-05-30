@@ -42,7 +42,7 @@ export function StripePriceSection(
             disabled={props.progress}
             onClick={props.onActivate}
           >
-             {props.price.onPaywall ? 'Deactivate' : 'Activate'}
+            {props.price.onPaywall ? 'Deactivate' : 'Activate'}
           </Button>
           <Button
             variant="primary"
@@ -55,16 +55,17 @@ export function StripePriceSection(
         </ButtonGroup>
       </Stack>
 
+      <ul>
+        <li>Use Edit to modify metadata</li>
+        <li>Use Activate to put this price on paywall and it will be availabl to client</li>
+        <li>Use Deactivate to remove this price from paywall</li>
+      </ul>
+
       <StripePriceCard
         price={props.price}
       />
-      <ul>
-        <li>Use Edit to modify metadata</li>
-        <li>Use Activate to put this price on paywall, which will be availabl to client</li>
-        <li>Use Deactivate to remove this price from paywall</li>
-      </ul>
     </section>
-  )
+  );
 }
 
 /**
