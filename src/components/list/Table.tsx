@@ -102,5 +102,5 @@ export type TRow = {
 }
 
 export const tableHeaders = {
-  price: ['ID', 'Price', 'Active', 'Kind', 'Cycle', 'Start', 'End']
+  price: ['ID', 'Price', 'On Paywall', 'Kind', 'Cycle', 'Start', 'End']
 }
