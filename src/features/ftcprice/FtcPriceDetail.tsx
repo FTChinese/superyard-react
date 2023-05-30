@@ -37,7 +37,7 @@ export function FtcPriceDetail(
             </Button>
           }
           {
-            !props.price.active &&
+            !props.price.archived &&
             <Button
               variant="danger"
               size="sm"
