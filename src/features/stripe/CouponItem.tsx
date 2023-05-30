@@ -1,95 +1,70 @@
 import { formatISO } from 'date-fns';
-import { Button, ButtonGroup, Card } from 'react-bootstrap';
-import { Flex } from '../../components/layout/Flex';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Card from 'react-bootstrap/Card';
+import Stack from 'react-bootstrap/Stack';
 import { TableBody, TRow } from '../../components/list/Table';
 import { DiscountStatusBadge, ModeBadge } from '../../components/text/Badge';
 import { StripeCoupon, formatCouponAmount } from '../../data/stripe-price';
-
-export enum CouponAction {
-  Edit,
-  Drop,
-  Activate,
-}
+import { isActiveDiscount } from '../../data/enum';
 
 export function CouponItem(
   props: {
     coupon: StripeCoupon;
-    loading: boolean;
-    onAction: (c: StripeCoupon, action: CouponAction) => void;
+    progress: boolean;
+    onEdit: (c: StripeCoupon) => void; // Show a form
+    onActivateOrDrop: (c: StripeCoupon) => void; // Show a dialog to activate/deactivate
   }
 ) {
   const rows: TRow[] = buildCouponRow(props.coupon);
-
-  let btn: JSX.Element | null = null;
-  switch (props.coupon.status) {
-    case 'active':
-      btn = (
-        <Button
-          variant='danger'
-          size="sm"
-          disabled={props.loading}
-          onClick={() => props.onAction(props.coupon, CouponAction.Drop)}
-        >
-          Drop
-        </Button>
-      );
-      break;
-
-    case 'paused':
-    case 'cancelled':
-      btn = (
-        <Button
-          variant='outline-primary'
-          size="sm"
-          disabled={props.loading}
-          onClick={() => props.onAction(props.coupon, CouponAction.Activate)}
-        >
-          Activiate
-        </Button>
-      )
-  }
+  // Button to drop or actiate a coupon.
+  // Note here we didn't handle `paused` state.
+  // Only `active` and `cancelled` are handled.
+  const isActive = isActiveDiscount(props.coupon.status);
 
   return (
-    <>
-      <Card className='mb-3'>
-        <Card.Header>
-          <Flex
-            start={<span>{props.coupon.name}</span>}
-            end={
-              <ButtonGroup
-                size='sm'
-              >
-                {btn}
+    <Card className='mb-3'>
+      <Card.Header>
+        <Stack>
+          <span>{props.coupon.name}</span>
+          <ButtonGroup
+            size='sm'
+            className="ms-auto"
+          >
+            <Button
+              variant='danger'
+              size="sm"
+              disabled={props.progress}
+              onClick={() => props.onActivateOrDrop(props.coupon)}
+            >
+              { isActive ? 'Drop' : 'Activate'}
+            </Button>
 
-                <Button
-                  variant='primary'
-                  size='sm'
-                  onClick={() => props.onAction(props.coupon, CouponAction.Edit)}
-                >
-                  Edit
-                </Button>
-              </ButtonGroup>
+            <Button
+              variant='primary'
+              size='sm'
+              onClick={() => props.onEdit(props.coupon)}
+            >
+              Edit
+            </Button>
+          </ButtonGroup>
+        </Stack>
+      </Card.Header>
 
-            }
+      <Card.Body>
+        <Card.Title className="text-center">
+          {
+            formatCouponAmount(props.coupon)
+          }
+        </Card.Title>
+
+        <table className="table table-borderless">
+          <TableBody
+            rows={rows}
           />
-
-        </Card.Header>
-        <Card.Body>
-          <Card.Title className="text-center">
-            {
-              formatCouponAmount(props.coupon)
-            }
-          </Card.Title>
-
-          <table className="table table-borderless">
-            <TableBody
-              rows={rows}
-            />
-          </table>
-        </Card.Body>
-      </Card>
-    </>
-
+        </table>
+      </Card.Body>
+    </Card>
   );
 }
 
