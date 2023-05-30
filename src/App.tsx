@@ -30,9 +30,9 @@ import { HomePage } from './pages/HomePage';
 import { useAuth } from './components/hooks/useAuth';
 import { Loading } from './components/progress/Loading';
 import { NoAuthGuard } from './components/middleware/NoAuthGuard';
-import { FtcPricePage } from './pages/paywall/FtcPricepage';
-import { StripePricePage } from './pages/paywall/StripePricepage';
-import { StripePricesPage } from './pages/paywall/StripePricesPage';
+import { FtcPricePage } from './pages/paywall/FtcPricePage';
+import { StripePricePage } from './pages/paywall/StripePricePage';
+import { StripePriceListPage } from './pages/paywall/StripePriceListPage';
 
 function Skeleton() {
   // When this app is accessed from url, e.g., manual refreshing,
@@ -119,7 +119,7 @@ function App() {
               />
               <Route
                 path={sitePath.stripePrices}
-                element={<StripePricesPage />}
+                element={<StripePriceListPage />}
               />
               <Route
                 path={`${sitePath.stripePrices}/:priceId`}
