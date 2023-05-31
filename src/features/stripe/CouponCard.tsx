@@ -8,12 +8,10 @@ import { DiscountStatusBadge, ModeBadge } from '../../components/text/Badge';
 import { StripeCoupon, formatCouponAmount } from '../../data/stripe-price';
 import { isActiveDiscount } from '../../data/enum';
 
-export function CouponItem(
+export function CouponCard(
   props: {
     coupon: StripeCoupon;
-    progress: boolean;
-    onEdit: (c: StripeCoupon) => void; // Show a form
-    onActivateOrDrop: (c: StripeCoupon) => void; // Show a dialog to activate/deactivate
+    menu: JSX.Element | null;
   }
 ) {
   const rows: TRow[] = buildCouponRow(props.coupon);
@@ -27,44 +25,78 @@ export function CouponItem(
       <Card.Header>
         <Stack>
           <span>{props.coupon.name}</span>
-          <ButtonGroup
-            size='sm'
-            className="ms-auto"
-          >
-            <Button
-              variant='danger'
-              size="sm"
-              disabled={props.progress}
-              onClick={() => props.onActivateOrDrop(props.coupon)}
-            >
-              { isActive ? 'Drop' : 'Activate'}
-            </Button>
-
-            <Button
-              variant='primary'
-              size='sm'
-              onClick={() => props.onEdit(props.coupon)}
-            >
-              Edit
-            </Button>
-          </ButtonGroup>
+          {props.menu}
         </Stack>
       </Card.Header>
 
-      <Card.Body>
-        <Card.Title className="text-center">
-          {
-            formatCouponAmount(props.coupon)
-          }
-        </Card.Title>
-
-        <table className="table table-borderless">
-          <TableBody
-            rows={rows}
-          />
-        </table>
-      </Card.Body>
+      <CouponBody
+        coupon={props.coupon}
+      />
     </Card>
+  );
+}
+
+export function CouponMenu(
+  props: {
+    coupon: StripeCoupon;
+    progress: boolean;
+    onEdit: (c: StripeCoupon) => void; // Show a form
+    onActivateOrDrop: (c: StripeCoupon) => void; // Show a dialog to activate/deactivate
+  }
+) {
+
+  // Button to drop or actiate a coupon.
+  // Note here we didn't handle `paused` state.
+  // Only `active` and `cancelled` are handled.
+  const isActive = isActiveDiscount(props.coupon.status);
+
+  return (
+    <ButtonGroup
+      size='sm'
+      className="ms-auto"
+    >
+      <Button
+        variant='danger'
+        size="sm"
+        disabled={props.progress}
+        onClick={() => props.onActivateOrDrop(props.coupon)}
+      >
+        { isActive ? 'Drop' : 'Activate'}
+      </Button>
+
+      <Button
+        variant='primary'
+        size='sm'
+        onClick={() => props.onEdit(props.coupon)}
+      >
+        Edit
+      </Button>
+    </ButtonGroup>
+  );
+}
+
+export function CouponBody(
+  props: {
+    coupon: StripeCoupon;
+  }
+) {
+
+  const rows: TRow[] = buildCouponRow(props.coupon);
+
+  return (
+    <Card.Body>
+      <Card.Title className="text-center">
+        {
+          formatCouponAmount(props.coupon)
+        }
+      </Card.Title>
+
+      <table className="table table-borderless">
+        <TableBody
+          rows={rows}
+        />
+      </table>
+    </Card.Body>
   );
 }
 
