@@ -19,6 +19,9 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ModeBadge } from '../../components/text/Badge';
 import { concatPriceParts } from '../../data/localization';
+import { CouponEditDialog } from '../../features/stripe/CouponEditDialog';
+import { toast } from 'react-toastify';
+import { useCoupon } from '../../features/stripe/useCoupon';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
@@ -55,12 +58,10 @@ function PricePageScreen(
   const [showPriceEdit, setShowPriceEdit] = useState(false);
   const [showPullCoupon, setShowPullCoupon] = useState(false);
 
-  // Current coupon to edit/activate/deactivate
-  // Since coupon is in a list,
-  // we have to save it here so that dialog knows which
-  // one is being edited.
-  // Editing coupon uses the same dialog as creating new coupon.
-  const [editableCoupon, setEditableCoupon] = useState<StripeCoupon>();
+  // Coupon to edit.
+  const [editCoupon, setEditCoupon] = useState<StripeCoupon>();
+  // Coupon to activate/deactivate.
+  const [statusCouon, setStatusCoupon] = useState<StripeCoupon>();
 
 
   const {
@@ -72,13 +73,13 @@ function PricePageScreen(
     setShowPriceActivate,
 
     coupons,
-    activateCoupon,
-    showCouponActivate,
-    setShowCouponActivate,
 
-    onCouponCreated,
     onCouponUpdated,
   } = useStripePrice();
+
+  const {
+    refreshCoupon,
+  } = useCoupon();
 
   // Load stripe price.
   // Not passing `refresh: true` upon initial loading.
@@ -92,42 +93,6 @@ function PricePageScreen(
   if (!price) {
     return <div>Loading stripe price...</div>;
   }
-
-  const onPullCoupon = () => {
-    setEditableCoupon(undefined);
-    setShowPullCoupon(true);
-  };
-
-  // Handle event of clicking coupon edit button
-  const onEditCoupon = (c: StripeCoupon) => {
-    // Save targeting coupon
-    setEditableCoupon(c);
-    // show dialog of coupon form.
-    setShowPullCoupon(true);
-  };
-
-  const onHideCouponForm = () => {
-    setEditableCoupon(undefined);
-    setShowPullCoupon(false);
-  }
-
-  const onCouponUpserted = (c: StripeCoupon) => {
-    if (editableCoupon) {
-      onCouponUpdated(c);
-    } else {
-      onCouponCreated(c);
-    }
-
-    setEditableCoupon(undefined);
-    setShowPullCoupon(false);
-  }
-
-  const onActivateOrDropCoupon = (c: StripeCoupon) => {
-    // Save targeting coupon;
-    setEditableCoupon(c);
-    // Show dialog of cofiguring activate or drop.
-    setShowCouponActivate(true);
-  };
 
   return (
     <>
@@ -182,26 +147,41 @@ function PricePageScreen(
         </div> :
         <>
           <CouponListSection
-              onNewCoupon={onPullCoupon}
-              onPull={onPullCoupon}
+              onNewCoupon={() => {
+                toast.info('Not implemented!')
+              }}
+              onPull={() => {
+                setShowPullCoupon(true)
+              }}
           >
             <>
-            {
-              coupons.map((coupon) => (
-                <CouponCard
-                  key={coupon.id}
-                  coupon={coupon}
-                  menu={
-                    <CouponMenu
-                      coupon={coupon}
-                      progress={progress}
-                      onEdit={onEditCoupon}
-                      onActivateOrDrop={onActivateOrDropCoupon}
-                    />
-                  }
-                />
-              ))
-            }
+              {
+                coupons.map((coupon) => (
+                  <CouponCard
+                    key={coupon.id}
+                    coupon={coupon}
+                    menu={
+                      <CouponMenu
+                        coupon={coupon}
+                        progress={progress}
+                        onEdit={setEditCoupon}
+                        onActivateOrDrop={setStatusCoupon}
+                        onRefresh={(c) => {
+                          refreshCoupon(c.id, {
+                            live: props.live,
+                            token: props.passport.token
+                          })
+                            .then(refreshed => {
+                              if (refreshed) {
+                                onCouponUpdated(refreshed);
+                              }
+                            })
+                        }}
+                      />
+                    }
+                  />
+                ))
+              }
             </>
           </CouponListSection>
 
@@ -209,29 +189,41 @@ function PricePageScreen(
             passport={props.passport}
             live={props.live}
             price={price}
-            coupon={editableCoupon}
             show={showPullCoupon}
-            onHide={onHideCouponForm}
-            onCreated={onCouponUpdated}
+            onHide={() => {
+              setShowPullCoupon(false)
+            }}
+            onSaved={onCouponUpdated}
           />
 
           {
-            editableCoupon &&
-              <CouponStatusDialog
+            editCoupon &&
+              <CouponEditDialog
+                passport={props.passport}
                 live={props.live}
-                coupon={editableCoupon}
-                show={showCouponActivate}
+                show={!!editCoupon}
+                coupon={editCoupon}
                 onHide={() => {
-                  setEditableCoupon(undefined);
-                  setShowCouponActivate(false);
+                  setEditCoupon(undefined);
                 }}
-                onConfirm={(c) => {
-                  activateCoupon(c, {
-                    live: props.live,
-                    token: props.passport.token,
-                  });
+                onSaved={onCouponUpdated}
+              />
+          }
+
+          {
+            statusCouon &&
+              <CouponStatusDialog
+                passport={props.passport}
+                live={props.live}
+                coupon={statusCouon}
+                show={!!statusCouon}
+                onHide={() => {
+                  setStatusCoupon(undefined);
                 }}
-                progress={progress}
+                onSaved={(c) => {
+                  onCouponUpdated(c);
+                  setStatusCoupon(undefined);
+                }}
               />
           }
         </>
