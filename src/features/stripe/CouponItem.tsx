@@ -71,7 +71,7 @@ export function CouponItem(
 function buildCouponRow(coupon: StripeCoupon): TRow[] {
   return [
     {
-      head: 'ID',
+      head: 'Coupon ID',
       data: [coupon.id],
     },
     {
