@@ -90,7 +90,10 @@ export function listFtcProducts(config: ReqConfig): Promise<Product[]> {
 }
 
 export function loadFtcProduct(id: string, config: ReqConfig): Promise<Product> {
-  const url = new UrlBuilder(endpoint.product).appendPath(id).setReqConfig(config).toString();
+  const url = new UrlBuilder(endpoint.product)
+    .appendPath(id)
+    .setReqConfig(config)
+    .toString();
 
   return new Fetch()
     .get(url)
@@ -134,7 +137,7 @@ export function listPriceOfProduct(
     .toString();
 
   return new Fetch()
-    .post(url)
+    .get(url)
     .setBearerAuth(config.token)
     .endJson();
 }
