@@ -5,6 +5,7 @@ import Stack from 'react-bootstrap/Stack';
 export function CouponListSection(
   props: {
     onNewCoupon: () => void;
+    onPull: () => void;
     children: JSX.Element | null; // Render a list of coupons.
   }
 ) {
@@ -17,6 +18,7 @@ export function CouponListSection(
         >
           <Button
             variant="outline-primary"
+            onClick={props.onPull}
           >
             Pull
           </Button>
