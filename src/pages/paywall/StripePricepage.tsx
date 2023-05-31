@@ -6,8 +6,8 @@ import { useProgress } from '../../components/hooks/useProgress';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
 import { StripeCoupon, StripePrice, newStripePriceParts } from '../../data/stripe-price';
-import { CouponUpsertDialog } from '../../features/stripe/CouponUpsertDialog';
-import { CouponItem } from '../../features/stripe/CouponItem';
+import { CouponPullDialog } from '../../features/stripe/CouponPullDialog';
+import { CouponCard, CouponMenu } from '../../features/stripe/CouponCard';
 import { CouponListSection } from '../../features/stripe/CouponList';
 import { useStripePrice } from '../../features/stripe/useStripePrice';
 import { CouponStatusDialog } from '../../features/stripe/CouponStatusDialog';
@@ -53,7 +53,7 @@ function PricePageScreen(
 
   const { progress } = useProgress();
   const [showPriceEdit, setShowPriceEdit] = useState(false);
-  const [showCouponForm, setShowCouponForm] = useState(false);
+  const [showPullCoupon, setShowPullCoupon] = useState(false);
 
   // Current coupon to edit/activate/deactivate
   // Since coupon is in a list,
@@ -93,9 +93,9 @@ function PricePageScreen(
     return <div>Loading stripe price...</div>;
   }
 
-  const onCreateCoupon = () => {
+  const onPullCoupon = () => {
     setEditableCoupon(undefined);
-    setShowCouponForm(true);
+    setShowPullCoupon(true);
   };
 
   // Handle event of clicking coupon edit button
@@ -103,12 +103,12 @@ function PricePageScreen(
     // Save targeting coupon
     setEditableCoupon(c);
     // show dialog of coupon form.
-    setShowCouponForm(true);
+    setShowPullCoupon(true);
   };
 
   const onHideCouponForm = () => {
     setEditableCoupon(undefined);
-    setShowCouponForm(false);
+    setShowPullCoupon(false);
   }
 
   const onCouponUpserted = (c: StripeCoupon) => {
@@ -119,7 +119,7 @@ function PricePageScreen(
     }
 
     setEditableCoupon(undefined);
-    setShowCouponForm(false);
+    setShowPullCoupon(false);
   }
 
   const onActivateOrDropCoupon = (c: StripeCoupon) => {
@@ -182,29 +182,35 @@ function PricePageScreen(
         </div> :
         <>
           <CouponListSection
-              onNewCoupon={onCreateCoupon}
+              onNewCoupon={onPullCoupon}
+              onPull={onPullCoupon}
           >
             <>
             {
               coupons.map((coupon) => (
-                <CouponItem
+                <CouponCard
                   key={coupon.id}
                   coupon={coupon}
-                  progress={progress}
-                  onEdit={onEditCoupon}
-                  onActivateOrDrop={onActivateOrDropCoupon}
+                  menu={
+                    <CouponMenu
+                      coupon={coupon}
+                      progress={progress}
+                      onEdit={onEditCoupon}
+                      onActivateOrDrop={onActivateOrDropCoupon}
+                    />
+                  }
                 />
               ))
             }
             </>
           </CouponListSection>
 
-          <CouponUpsertDialog
+          <CouponPullDialog
             passport={props.passport}
             live={props.live}
             price={price}
             coupon={editableCoupon}
-            show={showCouponForm}
+            show={showPullCoupon}
             onHide={onHideCouponForm}
             onCreated={onCouponUpdated}
           />
