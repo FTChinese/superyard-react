@@ -53,6 +53,7 @@ export const endpoint = {
     return `${pathStripeBase}/prices/${id}`;
   },
 
+  stripeCoupons: `${pathStripeBase}/coupons`,
   stripeCouponOf: function (id: string): string {
     return `${pathStripeBase}/coupons/${id}`;
   },
