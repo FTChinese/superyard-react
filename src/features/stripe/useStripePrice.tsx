@@ -5,7 +5,7 @@ import { isActiveDiscount, isOneTime } from '../../data/enum';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { ReqConfig } from '../../http/ReqConfig';
 import { ResponseError } from '../../http/response-error';
-import { activateStripeCoupon, activateStripePrice, deleteStripeCoupon, loadStripeCoupons, loadStripePrice, updateStripePriceMeta } from '../../repository/stripe';
+import { activateStripeCoupon, activateStripePrice, deleteStripeCoupon, listStripeCoupons, loadStripePrice, updateStripePrice } from '../../repository/stripe';
 import { FormikHelpers } from 'formik';
 import { StripePriceFormVal, buildStripePriceParams } from './StripePriceForm';
 
@@ -61,7 +61,7 @@ export function useStripePrice() {
 
       helpers.setSubmitting(true);
 
-      updateStripePriceMeta(p.id, body, config)
+      updateStripePrice(p.id, body, config)
         .then((newPrice) => {
           helpers.setSubmitting(false);
           toast.success('Saved!');
@@ -96,7 +96,7 @@ export function useStripePrice() {
 
   const listCoupns = (priceId: string, config: ReqConfig) => {
     startProgress()
-    loadStripeCoupons(priceId, config)
+    listStripeCoupons(priceId, config)
       .then((c) => {
         stopProgress();
         setCoupons(c);
