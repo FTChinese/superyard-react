@@ -30,7 +30,7 @@ export function CouponForm(
       values: CouponFormVal,
       formikHelpers: FormikHelpers<CouponFormVal>
     ) => void | Promise<any>;
-    coupon?: StripeCoupon;
+    coupon?: StripeCoupon; // Exists on editing; undefined on creating.
   }
 ) {
 
