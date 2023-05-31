@@ -49,7 +49,7 @@ export function createStripePrice() {
  * @param config - query and auth parameters.
  * @returns
  */
-export function updateStripePriceMeta(
+export function updateStripePrice(
   id: string,
   body: StripePriceParams,
   config: ReqConfig
@@ -89,21 +89,41 @@ export function activateStripePrice(
     .endJson();
 }
 
-export function loadStripeCoupons(
+/**
+ * Fetch a list of coupons attached a price.
+ */
+export function listStripeCoupons(
   priceId: string,
   config: ReqConfig
 ): Promise<StripeCoupon[]> {
   const url = new UrlBuilder(endpoint.stripePrice)
     .appendPath(priceId)
     .appendPath('coupons')
-    .setLive(config.live)
-    .setRefresh(config.refresh)
+    .setReqConfig(config)
     .toString();
 
   return new Fetch()
     .get(url)
     .setBearerAuth(config.token)
     .endJson();
+}
+
+/**
+ * Load of refresh a stripe coupon.
+ */
+export function loadStripeCoupon(
+  id: string,
+  config: ReqConfig, // Pass `refresh: true` to force refresh
+): Promise<StripeCoupon> {
+  const url = new UrlBuilder(endpoint.stripeCoupons)
+    .appendPath(id)
+    .setReqConfig(config)
+    .toString();
+
+  return new Fetch()
+    .get(url)
+    .setBearerAuth(config.token)
+    .endJson()
 }
 
 export function upsertStripeCoupon(
