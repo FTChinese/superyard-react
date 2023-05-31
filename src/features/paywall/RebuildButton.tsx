@@ -8,8 +8,7 @@ import { loadPaywall } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
 import { ModeBadge } from '../../components/text/Badge';
 import { JSONBlock } from '../../components/text/JSONBlock';
-import { LoadButton } from '../../components/buttons/LoadButton';
-import { CircleLoader } from '../../components/progress/CircleLoader';
+import { LoadButton } from '../../components/buttons/Button';
 
 export function RebuildButton() {
   const { live } = useLiveMode();
@@ -47,8 +46,8 @@ export function RebuildButton() {
     <>
       <LoadButton
         text="Rebuild Paywall"
+        progress={submitting}
         disabled={submitting}
-        startIcon={<CircleLoader progress={submitting} />}
         onClick={handleRebuild}
       />
       <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
