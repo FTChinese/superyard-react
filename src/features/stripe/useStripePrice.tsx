@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useProgress } from '../../components/hooks/useProgress';
-import { isActiveDiscount, isOneTime } from '../../data/enum';
+import { isOneTime } from '../../data/enum';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { ReqConfig } from '../../http/ReqConfig';
 import { ResponseError } from '../../http/response-error';
-import { activateStripeCoupon, activateStripePrice, deleteStripeCoupon, listStripeCoupons, loadStripePrice, updateStripePrice } from '../../repository/stripe';
+import { activateStripePrice, listStripeCoupons, loadStripePrice, updateStripePrice } from '../../repository/stripe';
 import { FormikHelpers } from 'formik';
 import { StripePriceFormVal, buildStripePriceParams } from './StripePriceForm';
 
@@ -16,7 +16,6 @@ export function useStripePrice() {
   const [showPriceActivate, setShowPriceActivate] = useState(false);
 
   const [coupons, setCoupons] = useState<StripeCoupon[]>([]);
-  const [showCouponActivate, setShowCouponActivate] = useState(false);
 
   // Load a stripe price, or force refreshing by passing `refresh: true`.
   const loadPrice = (priceId: string, config: ReqConfig) => {
@@ -69,7 +68,7 @@ export function useStripePrice() {
         })
         .catch((err: ResponseError) => {
           helpers.setSubmitting(false);
-          if (err.statusCode === 422) {
+          if (err.invalid) {
             helpers.setErrors(err.toFormFields);
             return;
           }
@@ -107,36 +106,6 @@ export function useStripePrice() {
       });
   }
 
-  // Activate or deactivate a coupon
-  const activateCoupon = (coupon: StripeCoupon, config: ReqConfig) => {
-    const isActive = isActiveDiscount(coupon.status);
-
-    startProgress();
-
-    if (isActive) {
-      deleteStripeCoupon(coupon.id, config)
-        .then(c => {
-          toast.info('Coupon deactivated!');
-          stopProgress();
-          onCouponUpdated(c);
-          setShowCouponActivate(false);
-        })
-    } else {
-      activateStripeCoupon(coupon.id, config)
-        .then(c => {
-          toast.info('Coupon activated!')
-          stopProgress();
-          onCouponUpdated(c);
-          setShowCouponActivate(false);
-        })
-        .catch((err: ResponseError) => {
-          stopProgress();
-          toast.error(err.message);
-        });
-    }
-
-  }
-
   const onCouponCreated = (coupon: StripeCoupon) => {
     setCoupons([
       coupon,
@@ -145,13 +114,10 @@ export function useStripePrice() {
   }
 
   const onCouponUpdated = (coupon: StripeCoupon) => {
-    setCoupons(coupons.map(c => {
-      if (coupon.id === c.id) {
-        return coupon;
-      } else {
-        return c;
-      }
-    }));
+    setCoupons([
+      coupon,
+      ...coupons.filter((v) => v.id !== coupon.id)
+    ]);
   }
 
   return {
@@ -165,9 +131,6 @@ export function useStripePrice() {
     updatePriceMeta,
 
     coupons,
-    activateCoupon,
-    showCouponActivate,
-    setShowCouponActivate,
 
     onCouponCreated,
     onCouponUpdated,
