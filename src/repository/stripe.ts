@@ -126,7 +126,7 @@ export function loadStripeCoupon(
     .endJson()
 }
 
-export function upsertStripeCoupon(
+export function updateStripeCoupon(
   id: string,
   body: CouponParams,
   config: ReqConfig
