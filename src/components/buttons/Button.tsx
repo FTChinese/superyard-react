@@ -2,6 +2,9 @@ import Button from 'react-bootstrap/Button';
 import { ButtonVariant } from 'react-bootstrap/esm/types';
 import Spinner from 'react-bootstrap/Spinner';
 
+/**
+ * Shows an icon in front of text.
+ */
 export function LeadIconText(
   props: {
     icon: JSX.Element;
@@ -16,6 +19,9 @@ export function LeadIconText(
   );
 }
 
+/**
+ * Shows an icon after text.
+ */
 export function TrailIconText(
   props: {
     icon: JSX.Element;
@@ -30,6 +36,9 @@ export function TrailIconText(
   );
 }
 
+/**
+ * Shows either a spinner or text.
+ */
 export function SpinnerOrText(
   props: {
     text: string;
@@ -43,6 +52,9 @@ export function SpinnerOrText(
   }
 }
 
+/**
+ * A primary button by default.
+ */
 export function OButton(props: {
   children: JSX.Element;
   onClick: () => void;
@@ -62,6 +74,10 @@ export function OButton(props: {
   );
 }
 
+/**
+ * A button shows a loading spinner when
+ * in progress, or plain text when not in progress.
+ */
 export function LoadButton(
   props: {
     text: string;
@@ -89,6 +105,9 @@ export function LoadButton(
   );
 }
 
+/**
+ * A block loading status button.
+ */
 export function BlockLoadButton(
   props: {
     text: string;
