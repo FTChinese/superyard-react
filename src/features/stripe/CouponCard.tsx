@@ -2,7 +2,6 @@ import { formatISO } from 'date-fns';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Card from 'react-bootstrap/Card';
-import Stack from 'react-bootstrap/Stack';
 import { TableBody, TRow } from '../../components/list/Table';
 import { DiscountStatusBadge, ModeBadge } from '../../components/text/Badge';
 import { StripeCoupon, formatCouponAmount } from '../../data/stripe-price';
@@ -22,12 +21,7 @@ export function CouponCard(
 
   return (
     <Card className='mb-3'>
-      <Card.Header>
-        <Stack>
-          <span>{props.coupon.name}</span>
-          {props.menu}
-        </Stack>
-      </Card.Header>
+      {props.menu}
 
       <CouponBody
         coupon={props.coupon}
@@ -40,8 +34,9 @@ export function CouponMenu(
   props: {
     coupon: StripeCoupon;
     progress: boolean;
-    onEdit: (c: StripeCoupon) => void; // Show a form
+    onEdit: (c: StripeCoupon) => void; // Show a form to edit an existing coupon.
     onActivateOrDrop: (c: StripeCoupon) => void; // Show a dialog to activate/deactivate
+    onRefresh: (c: StripeCoupon) => void;
   }
 ) {
 
@@ -51,27 +46,37 @@ export function CouponMenu(
   const isActive = isActiveDiscount(props.coupon.status);
 
   return (
-    <ButtonGroup
-      size='sm'
-      className="ms-auto"
-    >
-      <Button
-        variant='danger'
-        size="sm"
-        disabled={props.progress}
-        onClick={() => props.onActivateOrDrop(props.coupon)}
-      >
-        { isActive ? 'Drop' : 'Activate'}
-      </Button>
-
-      <Button
-        variant='primary'
+    <Card.Header className='text-end'>
+      <ButtonGroup
         size='sm'
-        onClick={() => props.onEdit(props.coupon)}
       >
-        Edit
-      </Button>
-    </ButtonGroup>
+        <Button
+          variant='outline-primary'
+          size='sm'
+          disabled={props.progress}
+          onClick={() => props.onRefresh(props.coupon)}
+        >
+          Refresh
+        </Button>
+        <Button
+          variant='danger'
+          size="sm"
+          disabled={props.progress}
+          onClick={() => props.onActivateOrDrop(props.coupon)}
+        >
+          { isActive ? 'Cancel' : 'Activate'}
+        </Button>
+
+        <Button
+          variant='primary'
+          size='sm'
+          disabled={props.progress}
+          onClick={() => props.onEdit(props.coupon)}
+        >
+          Edit
+        </Button>
+      </ButtonGroup>
+    </Card.Header>
   );
 }
 
@@ -102,6 +107,10 @@ export function CouponBody(
 
 function buildCouponRow(coupon: StripeCoupon): TRow[] {
   return [
+    {
+      head: 'Name',
+      data: [coupon.name]
+    },
     {
       head: 'Coupon ID',
       data: [coupon.id],
