@@ -20,6 +20,7 @@ import { Pagination } from '../../components/Pagination';
 import { getPagingQuery, serializePagingQuery } from '../../http/paged-list';
 import { StripePricePull } from '../../features/stripe/StripePricePull';
 import { useProgress } from '../../components/hooks/useProgress';
+import { toast } from 'react-toastify';
 
 export function StripePriceListPage() {
   const { live } = useLiveMode();
@@ -83,7 +84,9 @@ function StripePriceListScreen(
           </Button>
           <Button
             disabled={progress}
-            onClick={() => { }}
+            onClick={() => {
+              toast.warn('Not implemented yet!')
+            }}
           >
             New
           </Button>
