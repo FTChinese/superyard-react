@@ -5,15 +5,12 @@ import { isOneTime } from '../../data/enum';
 import { StripeCoupon, StripePrice } from '../../data/stripe-price';
 import { ReqConfig } from '../../http/ReqConfig';
 import { ResponseError } from '../../http/response-error';
-import { activateStripePrice, listStripeCoupons, loadStripePrice, updateStripePrice } from '../../repository/stripe';
-import { FormikHelpers } from 'formik';
-import { StripePriceFormVal, buildStripePriceParams } from './StripePriceForm';
+import { listStripeCoupons, loadStripePrice } from '../../repository/stripe';
 
 export function useStripePrice() {
   const { startProgress, stopProgress } = useProgress();
 
   const [price, setPrice] = useState<StripePrice>();
-  const [showPriceActivate, setShowPriceActivate] = useState(false);
 
   const [coupons, setCoupons] = useState<StripeCoupon[]>([]);
 
@@ -47,50 +44,8 @@ export function useStripePrice() {
       });
   }
 
-  // updatePriceMeta returns s closure to meet
-  // Formik's submit signature.
-  const updatePriceMeta = (p: StripePrice, config: ReqConfig) => {
-    return (
-      values: StripePriceFormVal,
-      helpers: FormikHelpers<StripePriceFormVal>
-    ) => {
-      console.log(values);
-
-      const body = buildStripePriceParams(values, p);
-
-      helpers.setSubmitting(true);
-
-      updateStripePrice(p.id, body, config)
-        .then((newPrice) => {
-          helpers.setSubmitting(false);
-          toast.success('Saved!');
-          setPrice(newPrice);
-        })
-        .catch((err: ResponseError) => {
-          helpers.setSubmitting(false);
-          if (err.invalid) {
-            helpers.setErrors(err.toFormFields);
-            return;
-          }
-          toast.error(err.message);
-        });
-    };
-  };
-
-  const activatePrice = (p: StripePrice, cofig: ReqConfig) => {
-    startProgress();
-
-    activateStripePrice(p, cofig)
-      .then((newPrice) => {
-        stopProgress();
-        setPrice(newPrice);
-        toast.info(`${p.onPaywall ? 'Deactivate' : 'Activate'} price succeeded!`);
-        setShowPriceActivate(false);
-      })
-      .catch((err: ResponseError) => {
-        stopProgress();
-        toast.error(err.message);
-      });
+  const onPriceUpdated = (p: StripePrice) => {
+    setPrice(p);
   }
 
   const listCoupns = (priceId: string, config: ReqConfig) => {
@@ -122,17 +77,12 @@ export function useStripePrice() {
 
   return {
     loadPrice,
-
     price,
-    activatePrice,
-    showPriceActivate,
-    setShowPriceActivate,
-
-    updatePriceMeta,
 
     coupons,
 
     onCouponCreated,
     onCouponUpdated,
+    onPriceUpdated,
   };
 }
