@@ -19,7 +19,7 @@ import {
  * @description ProductFormDialog is used to prsent ProductForm when
  * creating a new product, or updating an existing one.
  */
-export function ProductFormDialog(props: {
+export function ProductUpsertDialog(props: {
   passport: CMSPassport;
   live: boolean;
   show: boolean;
