@@ -5,14 +5,14 @@ import { isActiveDiscount } from '../../data/enum';
 import { useCoupon } from './useCoupon';
 import { CMSPassport } from '../../data/cms-account';
 import { LoadButton } from '../../components/buttons/Button';
+import { ReqConfig } from '../../http/ReqConfig';
 
 /**
  * Activate or drop a stripe coupon.
  */
 export function CouponStatusDialog(
   props: {
-    passport: CMSPassport
-    live: boolean;
+    config: ReqConfig;
     coupon: StripeCoupon;
     show: boolean;
     onHide: () => void;
@@ -38,7 +38,7 @@ export function CouponStatusDialog(
     >
       <Modal.Header closeButton>
         <Modal.Title className="me-3">{ isActive ? 'Cancel' : 'Activate' } Coupon {formatCouponAmount(props.coupon)}</Modal.Title>
-        <ModeBadge live={props.live} />
+        <ModeBadge live={props.config.live} />
       </Modal.Header>
 
       <Modal.Body>
@@ -50,10 +50,7 @@ export function CouponStatusDialog(
           disabled={changing}
           progress={changing}
           onClick={() => {
-            changeStatus(props.coupon, {
-              live: props.live,
-              token: props.passport.token,
-            }, props.onSaved);
+            changeStatus(props.coupon, props.config, props.onSaved);
           }}
         />
       </Modal.Footer>

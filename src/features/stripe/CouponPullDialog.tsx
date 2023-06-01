@@ -1,7 +1,6 @@
 import Modal from 'react-bootstrap/Modal';
 import { ModeBadge } from '../../components/text/Badge';
 import { PriceHighlight } from '../../components/text/PriceHighlight';
-import { CMSPassport } from '../../data/cms-account';
 import {
   newStripePriceParts,
   StripeCoupon,
@@ -12,10 +11,10 @@ import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { useCoupon } from './useCoupon';
 import { SearchBox } from '../../components/forms/SearchBox';
 import { CouponCard } from './CouponCard';
+import { ReqConfig } from '../../http/ReqConfig';
 
 export function CouponPullDialog(props: {
-  passport: CMSPassport;
-  live: boolean;
+  config: ReqConfig,
   price: StripePrice;
   show: boolean;
   onHide: () => void;
@@ -43,7 +42,7 @@ export function CouponPullDialog(props: {
         <Modal.Title className="me-3">
           Pull a coupon from Stripe and edit it
         </Modal.Title>
-        <ModeBadge live={props.live} />
+        <ModeBadge live={props.config.live} />
       </Modal.Header>
 
       <Modal.Body>
@@ -65,10 +64,7 @@ export function CouponPullDialog(props: {
               onSubmit={
                 attachCoupon(
                   props.price,
-                  {
-                    live: props.live,
-                    token: props.passport.token,
-                  },
+                  props.config,
                   props.onSaved,
                 )
               }
@@ -80,10 +76,7 @@ export function CouponPullDialog(props: {
             <SearchBox
               controlId='s'
               onSubmit={(id) => {
-                getCoupon(id, {
-                  live: props.live,
-                  token: props.passport.token
-                });
+                getCoupon(id, props.config);
               }}
               label='Search Stripe Coupon'
               progress={loading}

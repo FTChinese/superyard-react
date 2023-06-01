@@ -1,25 +1,25 @@
 import { Modal } from 'react-bootstrap';
-import { CMSPassport } from '../../data/cms-account';
 import { ModeBadge } from '../../components/text/Badge';
 import { StripePriceCard } from './StripePriceCard';
 import { StripePriceForm } from './StripePriceForm';
 import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { StripePrice } from '../../data/stripe-price';
-import { useStripePrice } from './useStripePrice';
+import { usePriceUpsert } from './usePriceUpsert';
+import { ReqConfig } from '../../http/ReqConfig';
 
 export function StripePriceEdit(
   props: {
+    config: ReqConfig,
     price: StripePrice;
-    passport: CMSPassport;
-    live: boolean;
     show: boolean;
     onHide: () => void;
+    onSaved: (p: StripePrice) => void;
   }
 ) {
 
   const {
-    updatePriceMeta
-  } = useStripePrice();
+    updatePrice,
+  } = usePriceUpsert();
 
   return (
     <Modal
@@ -31,17 +31,20 @@ export function StripePriceEdit(
         <Modal.Title className="me-3">
           Update Stripe Price Metadata
         </Modal.Title>
-        <ModeBadge live={props.live} />
+        <ModeBadge live={props.config.live} />
       </Modal.Header>
 
       <Modal.Body>
         <FullscreenTwoCols
           right={
             <StripePriceForm
-              onSubmit={updatePriceMeta(props.price, {
-                live: props.live,
-                token: props.passport.token,
-              })}
+              onSubmit={
+                updatePrice(
+                  props.price,
+                  props.config,
+                  props.onSaved
+                )
+              }
               price={props.price}
             />
           }

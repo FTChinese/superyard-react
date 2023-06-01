@@ -6,11 +6,11 @@ import { FullscreenTwoCols } from '../../components/layout/FullscreenTwoCols';
 import { CouponForm } from './CouponForm';
 import { CouponCard } from './CouponCard';
 import { useCoupon } from './useCoupon';
+import { ReqConfig } from '../../http/ReqConfig';
 
 export function CouponEditDialog(
   props: {
-    passport: CMSPassport;
-    live: boolean;
+    config: ReqConfig
     coupon: StripeCoupon;
     show: boolean;
     onHide: () => void;
@@ -36,7 +36,7 @@ export function CouponEditDialog(
         <Modal.Title className="me-3">
           Edit coupon
         </Modal.Title>
-        <ModeBadge live={props.live} />
+        <ModeBadge live={props.config.live} />
       </Modal.Header>
 
       <Modal.Body>
@@ -47,10 +47,7 @@ export function CouponEditDialog(
               onSubmit={
                 updateCoupon(
                   props.coupon,
-                  {
-                    live: props.live,
-                    token: props.passport.token,
-                  },
+                  props.config,
                   props.onSaved,
                 )
               }
