@@ -18,9 +18,9 @@ import { concatPriceParts, localizeActive } from '../../data/localization';
 import { readableYMD } from '../../data/ymd';
 import { Pagination } from '../../components/Pagination';
 import { getPagingQuery, serializePagingQuery } from '../../http/paged-list';
-import { StripePricePull } from '../../features/stripe/StripePricePull';
 import { useProgress } from '../../components/hooks/useProgress';
 import { toast } from 'react-toastify';
+import { StripePricePull } from '../../features/stripe/StripePriceDialog';
 
 export function StripePriceListPage() {
   const { live } = useLiveMode();

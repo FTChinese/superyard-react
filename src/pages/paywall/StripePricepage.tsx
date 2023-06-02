@@ -11,11 +11,10 @@ import { useStripePrice } from '../../features/stripe/useStripePrice';
 import { isOneTime } from '../../data/enum';
 import { ErrorText } from '../../components/text/ErrorText';
 import { StripePriceSection } from '../../features/stripe/StripePriceCard';
-import { StripePriceEdit } from '../../features/stripe/StripePriceDialog';
+import { StripePriceEdit, StripePriceStatusDialog } from '../../features/stripe/StripePriceDialog';
 import { CouponEditDialog, CouponPullDialog, CouponStatusDialog } from '../../features/stripe/CouponDialog';
 import { toast } from 'react-toastify';
 import { useCoupon } from '../../features/stripe/useCoupon';
-import { StripePriceStatusDialog } from '../../features/stripe/StripePriceStatusDialog';
 import { ReqConfig } from '../../http/ReqConfig';
 
 export function StripePricePage() {
