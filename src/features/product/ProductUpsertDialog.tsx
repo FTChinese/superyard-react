@@ -2,7 +2,6 @@ import Modal from 'react-bootstrap/Modal';
 import { CMSPassport } from '../../data/cms-account';
 import { Product } from '../../data/paywall';
 import { ModeBadge } from '../../components/text/Badge';
-import { OnProductUpserted } from './callbacks';
 import {
   ProductForm,
 } from './ProductForm';
@@ -18,7 +17,7 @@ export function ProductUpsertDialog(props: {
   live: boolean;
   show: boolean;
   onHide: () => void;
-  onUpserted: OnProductUpserted;
+  onUpserted: (product: Product) => void;
   product?: Product;
 }) {
 
