@@ -1,65 +1,66 @@
 import { useState } from 'react';
 import { PaywallPrice, Product } from '../../data/paywall';
 import { ReqConfig } from '../../http/ReqConfig';
-import { activateFtcProduct, listPriceOfProduct, loadFtcProduct } from '../../repository/paywall';
+import { listPriceOfProduct, loadFtcProduct } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { Price } from '../../data/ftc-price';
+import { useProgress } from '../../components/hooks/useProgress';
 
 export function useProduct() {
-  const [loadingProduct, setLoadingProduct] = useState(false);
-  const [activating, setActivating] = useState(false);
-  const [loadingPrice, setLoadingPrice] = useState(false);
-
+  const { startProgress, stopProgress } = useProgress();
   const [product, setProduct] = useState<Product>();
   const [priceList, setPriceList] = useState<PaywallPrice[]>([]);
 
   // Loads a product.
-  const loadProduct = (id: string, config: ReqConfig) => {
-    setLoadingProduct(true);
+  const loadProduct = (id: string, config: ReqConfig): Promise<boolean> => {
     setProduct(undefined);
 
-    loadFtcProduct(id, config)
+    return loadFtcProduct(id, config)
       .then((product) => {
-        setLoadingProduct(false);
         setProduct(product);
+        return true;
       })
       .catch((err: ResponseError) => {
-        setLoadingProduct(false);
         toast.error(err.message);
+        return false;
       });
   }
 
-  const activateProduct = (id: string, config: ReqConfig) => {
-    setActivating(true);
+  // List prices for the specified product.
+  const loadPrices = (productId: string, config: ReqConfig): Promise<boolean> => {
+    setPriceList([]);
 
-    activateFtcProduct(id, config)
-      .then((prod) => {
-        setActivating(false);
-        toast.success('Activation succeeded. The product is put on paywall.');
-        setProduct(prod);
+    return listPriceOfProduct(productId, config)
+      .then((prices) => {
+        setPriceList(prices);
+        return true;
       })
       .catch((err: ResponseError) => {
-        setActivating(false);
-        toast.error(err.message);
+        toast.info(err.message);
+        return false;
       });
   };
 
-  // List prices for the specified product.
-  const loadPrices = (productId: string, config: ReqConfig) => {
-    setLoadingPrice(true);
-    setPriceList([]);
+  // Loading product and prices concurrently.
+  // Whichever data is fetched first will be present on UI,
+  // and there's only a single progress indicator
+  // during the whole progress.
+  const initLoading = (productId: string, config: ReqConfig) => {
+    startProgress();
 
-    // TODO: pagination.
-    listPriceOfProduct(productId, config)
-      .then((prices) => {
-        setLoadingPrice(false)
-        setPriceList(prices);
-      })
-      .catch((err: ResponseError) => {
-        setLoadingPrice(false);
-        toast.info(err.message);
+    Promise.all([
+      loadProduct(productId, config),
+      loadPrices(productId, config)
+    ])
+      .then(() => {
+        // Indicator stops only after both finished.
+        stopProgress();
       });
+  }
+
+  const onProductUpdated = (p: Product) => {
+    setProduct(p);
   };
 
   const onPriceCreated = (p: Price) => {
@@ -74,17 +75,10 @@ export function useProduct() {
 
   return {
     product,
-    loadingProduct,
-    loadProduct,
-    setProduct,
-
-    activating,
-    activateProduct,
-
-    loadingPrice,
     priceList,
-    loadPrices,
+    initLoading,
 
+    onProductUpdated,
     onPriceCreated,
   };
 }
