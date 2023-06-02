@@ -3,9 +3,10 @@ import Modal from 'react-bootstrap/Modal';
 export function FullscreenDialog(
   props: {
     show: boolean;
-    title: string;
     onHide: () => void;
+    title: string;
     children: JSX.Element;
+    headerExtra: JSX.Element | null;
   }
 ) {
   return (
@@ -18,6 +19,7 @@ export function FullscreenDialog(
         <Modal.Title className="me-3">
           {props.title}
         </Modal.Title>
+        {props.headerExtra}
       </Modal.Header>
       <Modal.Body>
       { props.children }
