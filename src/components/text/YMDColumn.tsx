@@ -1,5 +1,5 @@
 import { YearMonthDay } from '../../data/ymd';
-import { pluralize } from '../../utils/pluralize';
+import { pluralize } from '../../utils/strings';
 
 export function YMDColumn(
   props: {
