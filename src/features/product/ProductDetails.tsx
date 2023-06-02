@@ -9,7 +9,6 @@ export function ProductDetails(
   props: {
     product: Product;
     onEdit: () => void;
-    activating: boolean;
     onActivate: () => void;
   }
 ) {
@@ -23,10 +22,9 @@ export function ProductDetails(
             <Button
               variant="outline-primary"
               size="sm"
-              disabled={props.activating}
               onClick={props.onActivate}
             >
-              {props.activating ? 'Activating' : 'Activate'}
+              Activate
             </Button>
           }
           <Button
