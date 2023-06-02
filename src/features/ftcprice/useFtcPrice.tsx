@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useProgress } from '../../components/hooks/useProgress';
 import { PaywallPrice } from '../../data/paywall';
 import { ReqConfig } from '../../http/ReqConfig';
-import { activateFtcPrice, archiveFtcPrice, loadFtcPrice, refreshFtcPriceOffers } from '../../repository/paywall';
+import { loadFtcPrice, refreshFtcPriceOffers } from '../../repository/paywall';
 import { ResponseError } from '../../http/response-error';
 import { toast } from 'react-toastify';
 import { Discount } from '../../data/ftc-price';
@@ -30,36 +30,6 @@ export function useFtcPrice() {
 
   const onPriceUpdated = (p: PaywallPrice) => {
     setPrice(p)
-  }
-
-  // Activate price.
-  const activatePrice = (id: string, config: ReqConfig) => {
-    startProgress();
-
-    activateFtcPrice(id, config)
-      .then((price) => {
-        stopProgress
-        toast.success('Price activated');
-        setPrice(price);
-      })
-      .catch((err: ResponseError) => {
-        stopProgress();
-        toast.error(err.message);
-      });
-  };
-
-  const archivePrice = (id: string, config: ReqConfig) => {
-    startProgress();
-
-    archiveFtcPrice(id, config)
-      .then((price) => {
-        stopProgress()
-        setPrice(price);
-      })
-      .catch((err: ResponseError) => {
-        stopProgress();
-        toast.error(err.message);
-      });
   }
 
   const onNewOffer = (offer: Discount) => {
@@ -90,8 +60,6 @@ export function useFtcPrice() {
     price,
     loadPrice,
     onPriceUpdated,
-    activatePrice,
-    archivePrice,
     onNewOffer,
     refreshOffers,
   };
