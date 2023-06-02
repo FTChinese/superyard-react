@@ -12,6 +12,7 @@ import {
   Discount,
   DiscountParams,
   NewPriceParams,
+  Price,
   UpdatePriceParams,
 } from '../data/ftc-price';
 import { endpoint } from './endpoint';
@@ -186,9 +187,10 @@ export function updateFtcPrice(
     .endJson();
 }
 
-export function activateFtcPrice(id: string, config: ReqConfig): Promise<PaywallPrice> {
+export function activateFtcPrice(price: Price, config: ReqConfig): Promise<PaywallPrice> {
   const url = new UrlBuilder(endpoint.price)
-    .appendPath(id)
+    .appendPath(price.id)
+    .appendPath(price.active ? 'deactivate' : 'activate')
     .setReqConfig(config)
     .toString();
 
