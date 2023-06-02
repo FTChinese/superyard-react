@@ -4,8 +4,7 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { useProgress } from '../../components/hooks/useProgress';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
-import { CMSPassport } from '../../data/cms-account';
-import { StripeCoupon, StripePrice, newStripePriceParts } from '../../data/stripe-price';
+import { StripeCoupon } from '../../data/stripe-price';
 import { CouponPullDialog } from '../../features/stripe/CouponPullDialog';
 import { CouponCard, CouponMenu } from '../../features/stripe/CouponCard';
 import { CouponListSection } from '../../features/stripe/CouponList';
@@ -15,13 +14,11 @@ import { isOneTime } from '../../data/enum';
 import { ErrorText } from '../../components/text/ErrorText';
 import { StripePriceSection } from '../../features/stripe/StripePriceCard';
 import { StripePriceEdit } from '../../features/stripe/StripePriceEdit';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { ModeBadge } from '../../components/text/Badge';
-import { concatPriceParts } from '../../data/localization';
 import { CouponEditDialog } from '../../features/stripe/CouponEditDialog';
 import { toast } from 'react-toastify';
 import { useCoupon } from '../../features/stripe/useCoupon';
+import { StripePriceStatusDialog } from '../../features/stripe/StripePriceStatusDialog';
+import { ReqConfig } from '../../http/ReqConfig';
 
 export function StripePricePage() {
   const { priceId } = useParams<'priceId'>();
@@ -40,8 +37,10 @@ export function StripePricePage() {
   return (
     <PricePageScreen
       priceId={priceId}
-      passport={passport}
-      live={live}
+      config={{
+        live,
+        token: passport.token,
+      }}
     />
   );
 }
@@ -49,15 +48,16 @@ export function StripePricePage() {
 function PricePageScreen(
   props: {
     priceId: string;
-    passport: CMSPassport;
-    live: boolean;
+    config: ReqConfig;
   }
 ) {
 
   const { progress } = useProgress();
   const [showPriceEdit, setShowPriceEdit] = useState(false);
-  const [showPullCoupon, setShowPullCoupon] = useState(false);
+  // Show dialog to change price status to activate or deactivate.
+  const [showPriceStatus, setShowPriceStatus] = useState(false);
 
+  const [showPullCoupon, setShowPullCoupon] = useState(false);
   // Coupon to edit.
   const [editCoupon, setEditCoupon] = useState<StripeCoupon>();
   // Coupon to activate/deactivate.
@@ -68,13 +68,11 @@ function PricePageScreen(
     loadPrice,
 
     price,
-    activatePrice,
-    showPriceActivate,
-    setShowPriceActivate,
 
     coupons,
 
     onCouponUpdated,
+    onPriceUpdated,
   } = useStripePrice();
 
   const {
@@ -84,11 +82,8 @@ function PricePageScreen(
   // Load stripe price.
   // Not passing `refresh: true` upon initial loading.
   useEffect(() => {
-    loadPrice(props.priceId, {
-      live: props.live,
-      token: props.passport.token,
-    });
-  }, [props.live]);
+    loadPrice(props.priceId, props.config);
+  }, [props.config.live]);
 
   if (!price) {
     return <div>Loading stripe price...</div>;
@@ -100,14 +95,13 @@ function PricePageScreen(
         price={price}
         onRefresh={() => {
           loadPrice(props.priceId, {
-            live: props.live,
-            token: props.passport.token,
+            ...props.config,
             refresh: true,
           });
         }}
         progress={progress}
         onActivate={() => {
-          setShowPriceActivate(true);
+          setShowPriceStatus(true);
         }}
         onEdit={() => {
           setShowPriceEdit(true);
@@ -115,29 +109,26 @@ function PricePageScreen(
       />
 
       <StripePriceEdit
+        config={props.config}
         price={price}
-        passport={props.passport}
-        live={props.live}
         show={showPriceEdit}
         onHide={() => {
           setShowPriceEdit(false);
         }}
+        onSaved={onPriceUpdated}
       />
 
-      <ActivateOrDeactivatePrice
+      <StripePriceStatusDialog
+        config={props.config}
         price={price}
-        live={props.live}
-        show={showPriceActivate}
+        show={showPriceStatus}
         onHide={() => {
-          setShowPriceActivate(false);
+          setShowPriceStatus(false);
         }}
-        onClick={() => {
-          activatePrice(price, {
-            live: props.live,
-            token: props.passport.token,
-          });
+        onSaved={(p) => {
+          onPriceUpdated(p);
+          setShowPriceStatus(false);
         }}
-        progress={progress}
       />
 
       {
@@ -167,10 +158,7 @@ function PricePageScreen(
                         onEdit={setEditCoupon}
                         onActivateOrDrop={setStatusCoupon}
                         onRefresh={(c) => {
-                          refreshCoupon(c.id, {
-                            live: props.live,
-                            token: props.passport.token
-                          })
+                          refreshCoupon(c.id, props.config)
                             .then(refreshed => {
                               if (refreshed) {
                                 onCouponUpdated(refreshed);
@@ -186,8 +174,7 @@ function PricePageScreen(
           </CouponListSection>
 
           <CouponPullDialog
-            passport={props.passport}
-            live={props.live}
+            config={props.config}
             price={price}
             show={showPullCoupon}
             onHide={() => {
@@ -199,8 +186,7 @@ function PricePageScreen(
           {
             editCoupon &&
               <CouponEditDialog
-                passport={props.passport}
-                live={props.live}
+                config={props.config}
                 show={!!editCoupon}
                 coupon={editCoupon}
                 onHide={() => {
@@ -213,8 +199,7 @@ function PricePageScreen(
           {
             statusCouon &&
               <CouponStatusDialog
-                passport={props.passport}
-                live={props.live}
+                config={props.config}
                 coupon={statusCouon}
                 show={!!statusCouon}
                 onHide={() => {
@@ -232,43 +217,4 @@ function PricePageScreen(
   );
 }
 
-/**
- * Activate or deactivate a stripe price.
- */
-function ActivateOrDeactivatePrice(
-  props: {
-    live: boolean;
-    price: StripePrice;
-    show: boolean;
-    onHide: () => void;
-    onClick: () => void;
-    progress: boolean;
-  }
-) {
-  return (
-    <Modal
-      show={props.show}
-      onHide={props.onHide}
-    >
-      <Modal.Header closeButton>
-        <Modal.Title className="me-3">
-          {props.price.onPaywall ? 'Deactivate' : 'Activate'} { concatPriceParts(newStripePriceParts(props.price))}
-        </Modal.Title>
-        <ModeBadge live={props.live} />
-      </Modal.Header>
 
-      <Modal.Body>
-        Are you sure you want to {props.price.onPaywall ? 'deactivate' : 'activate'} price {props.price.id}
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button
-          onClick={props.onClick}
-          disabled={props.progress}
-        >
-          Yes
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  )
-}
