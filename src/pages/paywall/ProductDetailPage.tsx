@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useParams } from 'react-router';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
-import { PriceFormDialog } from '../../features/ftcprice/PriceFormDialog';
+import { FtcPriceFormDialog } from '../../features/ftcprice/FtcPriceDialog';
 import { ProductDetails } from '../../features/product/ProductDetails';
 import { Price, newFtcPriceParts } from '../../data/ftc-price';
 import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
-import { Loading } from '../../components/progress/Loading';
 import { TRow, Table, TableBody, TableHead } from '../../components/list/Table';
 import { sitemap } from '../../data/sitemap';
 import { Link } from 'react-router-dom';
@@ -16,7 +15,11 @@ import { readableYMD } from '../../data/ymd';
 import { ErrorText } from '../../components/text/ErrorText';
 import { CMSPassport } from '../../data/cms-account';
 import { useProduct } from '../../features/product/useProduct';
-import { ProductFormDialog } from '../../features/product/ProductFormDialog';
+import { ProductUpsertDialog } from '../../features/product/ProductUpsertDialog';
+import { ProductStatusDialog } from '../../features/product/ProductStatusDialog';
+import { ReqConfig } from '../../http/ReqConfig';
+import { PriceForm } from '../../features/ftcprice/FtcPriceForm';
+import { useUpsertFtcPrice } from '../../features/ftcprice/useUpsertFtcPrice';
 
 export function ProductDetailPage() {
   const { productId } = useParams<'productId'>();
@@ -50,65 +53,71 @@ function ProductPageScreen(
   }
 ) {
 
+  const config: ReqConfig = {
+    live: props.live,
+    token: props.passport.token,
+  };
+
   // Show create new price dialog.
-  const [showPriceForm, setShowPriceForm] = useState(false);
-  const [showProductForm, setShowProductForm] = useState(false);
+  const [showNewPrice, setShowNewPrice] = useState(false);
+  // Show product editing dialog.
+  const [showEditProduct, setShowEditProductF] = useState(false);
+  // Show activate/deactivate dialog.
+  const [showProductStatus, setShowProductStatus] = useState(false);
 
   const {
     product,
-    loadingProduct,
-    loadProduct,
-    setProduct,
-
-    activating,
-    activateProduct,
-
-    loadingPrice,
     priceList,
-    loadPrices,
+    initLoading,
 
+    onProductUpdated,
     onPriceCreated,
   } = useProduct();
 
-  useEffect(() => {
-    loadProduct(props.productId, {
-      live: props.live,
-      token: props.passport.token,
-    });
-  }, [props.live]);
+  const {
+    createPrice,
+  } = useUpsertFtcPrice();
 
   useEffect(() => {
-    loadPrices(props.productId, {
-      live: props.live,
-      token: props.passport.token,
-    })
+    initLoading(props.productId, config);
   }, [props.live]);
 
   return (
     <>
       <section className="mb-3">
         <h4>Product Details</h4>
-        <Loading loading={loadingProduct}>
+        {
+          product &&
           <>
-            {
-              product && (
-                <ProductDetails
-                  product={product}
-                  onEdit={() => {
-                    setShowProductForm(true)
-                  }}
-                  onActivate={() => {
-                    activateProduct(product.id, {
-                      live: props.live,
-                      token: props.passport.token,
-                    });
-                  }}
-                  activating={activating}
-                />
-              )
-            }
+            <ProductDetails
+              product={product}
+              onEdit={() => {
+                setShowEditProductF(true)
+              }}
+              onActivate={() => {
+                setShowProductStatus(true);
+              }}
+            />
+
+            <ProductUpsertDialog
+              passport={props.passport}
+              live={props.live}
+              show={showEditProduct}
+              onHide={() => setShowEditProductF(false)}
+              onUpserted={onProductUpdated}
+              product={product}
+            />
+            <ProductStatusDialog
+              config={config}
+              product={product}
+              show={showProductStatus}
+              onHide={() => {
+                setShowProductStatus(false);
+              }}
+              onSaved={onProductUpdated}
+            />
           </>
-        </Loading>
+        }
       </section>
 
       <section>
@@ -117,7 +126,7 @@ function ProductPageScreen(
           {
             product && (
               <Button
-                onClick={() => setShowPriceForm(true)}
+                onClick={() => setShowNewPrice(true)}
               >
                 New Price
               </Button>
@@ -125,46 +134,39 @@ function ProductPageScreen(
           }
         </h4>
 
-        <Loading loading={loadingPrice}>
-          <Table
-            head={
-              <TableHead
-                cols={['ID', 'Price', 'Active', 'Kind', 'Cycle', 'Start', 'End']}
-              />
-            }
-          >
-            <TableBody
-              rows={priceList.map(buildPriceRow)}
+        <Table
+          head={
+            <TableHead
+              cols={['ID', 'Price', 'Active', 'Kind', 'Cycle', 'Start', 'End']}
             />
-          </Table>
-        </Loading>
+          }
+        >
+          <TableBody
+            rows={priceList.map(buildPriceRow)}
+          />
+        </Table>
 
       </section>
 
       {
         product &&
-        <ProductFormDialog
-          passport={props.passport}
+        <FtcPriceFormDialog
+          show={showNewPrice}
+          onHide={() => setShowNewPrice(false)}
           live={props.live}
-          show={showProductForm}
-          onHide={() => setShowProductForm(false)}
-          onUpserted={setProduct}
-          product={product}
-        />
-      }
-
-      {
-        product &&
-        <PriceFormDialog
-          passport={props.passport}
-          live={props.live}
-          show={showPriceForm}
-          onHide={() => setShowPriceForm(false)}
-          onUpserted={(p) => {
-            setShowPriceForm(false)
-            onPriceCreated(p)
-          }}
-          product={product}
+          form={
+            <PriceForm
+              onSubmit={
+                createPrice(
+                  product,
+                  config,
+                  onPriceCreated,
+                )
+              }
+            />
+          }
+          isCreate={true}
+          tier={product.tier}
         />
       }
     </>
