@@ -1,6 +1,6 @@
 import { FormikHelpers } from 'formik';
 import { toast } from 'react-toastify';
-import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
+import { FullscreenDialog } from '../../components/dialog/FullscreenDialog';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
 import { SelectOption } from '../../data/enum';
 import { isZeroMember, MemberFormVal, Membership } from '../../data/membership';

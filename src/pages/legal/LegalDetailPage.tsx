@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../components/hooks/useAuth';
-import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
+import { FullscreenDialog } from '../../components/dialog/FullscreenDialog';
 import {
   loadingErrored,
   loadingStarted,

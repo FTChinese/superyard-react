@@ -5,7 +5,7 @@ import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { getPagingQuery, serializePagingQuery } from '../../http/paged-list';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { FullscreenDialog } from '../../components/layout/FullscreenDialog';
+import { FullscreenDialog } from '../../components/dialog/FullscreenDialog';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
 import { ReleaseForm } from '../../features/android/ReleaseForm';
 import { ReleaseListScreen } from '../../features/android/ReleaseListScreen';
