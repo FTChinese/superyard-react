@@ -4,10 +4,10 @@ import { LoadButton } from '../buttons/Button';
 
 export function ConfirmDialog(
   props: {
-    title: string;
-    body: string;
     show: boolean;
     onHide: () => void;
+    title: string;
+    body: string;
     live: boolean;
     onConfirm: () => void;
     progress: boolean;
