@@ -14,10 +14,10 @@ import Button from 'react-bootstrap/Button';
 export function StripePriceSection(
   props: {
     price: StripePrice;
-    onRefresh: () => void;
     progress: boolean;
     onActivate: () => void;
     onEdit: () => void;
+    onRefresh: () => void;
   }
 ) {
   return (
