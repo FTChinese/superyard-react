@@ -3,7 +3,7 @@ import { useAuth } from '../../components/hooks/useAuth';
 import { useLiveMode } from '../../components/hooks/useLiveMode';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { CMSPassport } from '../../data/cms-account';
-import { ProductFormDialog } from '../../features/product/ProductFormDialog';
+import { ProductUpsertDialog } from '../../features/product/ProductUpsertDialog';
 import { ProductList } from '../../features/product/ProductList';
 import { Loading } from '../../components/progress/Loading';
 import { useProductList } from '../../features/product/useProductList';
@@ -63,7 +63,7 @@ function ProductListScreen(
           products={products}
         />
 
-        <ProductFormDialog
+        <ProductUpsertDialog
           passport={props.passport}
           live={props.live}
           show={showForm}
