@@ -1,6 +1,4 @@
 import { Form, Formik, FormikHelpers } from 'formik';
-import { useState, useEffect } from 'react';
-import Alert from 'react-bootstrap/Alert';
 import { Tier, tierOpts } from '../../data/enum';
 import { NewProductParams, Product, UpdateProductParams } from '../../data/paywall';
 import * as Yup from 'yup';
@@ -41,70 +39,53 @@ export function ProductForm(
       values: ProductFormVal,
       formikHelpers: FormikHelpers<ProductFormVal>
     ) => void | Promise<any>;
-    errMsg: string;
     product?: Product; // Exists when updating.
   }
 ) {
-  const [errMsg, setErrMsg] = useState('');
-
-  useEffect(() => {
-    setErrMsg(props.errMsg);
-  }, [props.errMsg]);
 
   return (
-    <>
-      {
-        errMsg &&
-        <Alert
-          variant="danger"
-          dismissible
-          onClose={() => setErrMsg('')}>
-          {errMsg}
-        </Alert>
-      }
-      <Formik<ProductFormVal>
-        initialValues={{
-          tier: props.product?.tier || ('' as Tier), // This is hack.
-          heading: props.product?.heading || '',
-          description: props.product?.description || '',
-          smallPrint: props.product?.smallPrint || '',
-        }}
-        validationSchema={Yup.object({
-          tier: Yup.string().required(invalidMessages.required),
-          heading: Yup.string().required(invalidMessages.required),
-          description: Yup.string().required(invalidMessages.required),
-        })}
-        onSubmit={props.onSubmit}
-      >
-        <Form>
-          <Dropdown
-            name="tier"
-            label="Tier *"
-            opts={tierOpts}
-            disabled={!!props.product?.tier}
-          />
-          <TextInput
-            label="Heading *"
-            name="heading"
-            type="text"
-          />
-          <Textarea
-            label="Description *"
-            name="description"
-            rows={10}
-            desc="{{}} and content inside it are placeholders. Do not touch them unless you really mean to remove them."
-          />
-          <Textarea
-            label="Small Print"
-            name="smallPrint"
-            rows={5}
-            desc="Optional legal terms and conditions"
-          />
-          <FormikSubmitButton
-            text="Save"
-          />
-        </Form>
-      </Formik>
-    </>
+    <Formik<ProductFormVal>
+      initialValues={{
+        tier: props.product?.tier || ('' as Tier), // This is hack.
+        heading: props.product?.heading || '',
+        description: props.product?.description || '',
+        smallPrint: props.product?.smallPrint || '',
+      }}
+      validationSchema={Yup.object({
+        tier: Yup.string().required(invalidMessages.required),
+        heading: Yup.string().required(invalidMessages.required),
+        description: Yup.string().required(invalidMessages.required),
+      })}
+      onSubmit={props.onSubmit}
+    >
+      <Form>
+        <Dropdown
+          name="tier"
+          label="Tier *"
+          opts={tierOpts}
+          disabled={!!props.product?.tier}
+        />
+        <TextInput
+          label="Heading *"
+          name="heading"
+          type="text"
+        />
+        <Textarea
+          label="Description *"
+          name="description"
+          rows={10}
+          desc="{{}} and content inside it are placeholders. Do not touch them unless you really mean to remove them."
+        />
+        <Textarea
+          label="Small Print"
+          name="smallPrint"
+          rows={5}
+          desc="Optional legal terms and conditions"
+        />
+        <FormikSubmitButton
+          text="Save"
+        />
+      </Form>
+    </Formik>
   );
 }
