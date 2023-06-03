@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
@@ -117,7 +118,10 @@ function PricePageScreen(
               updatePrice(
                 price,
                 config,
-                onPriceUpdated,
+                (p) => {
+                  onPriceUpdated(p);
+                  setShowPriceForm(false);
+                },
               )
             }
             price={price}
@@ -132,7 +136,10 @@ function PricePageScreen(
         onHide={() => setShowPriceActivate(false)}
         config={config}
         price={price}
-        onSaved={onPriceUpdated}
+        onSaved={(p) => {
+          setShowPriceActivate(false);
+          onPriceUpdated(p);
+        }}
       />
 
       <FtcPriceArchiveDialog
@@ -178,7 +185,10 @@ function PricePageScreen(
         onHide={() => {
           setShowOfferForm(false);
         }}
-        onSaved={onNewOffer}
+        onSaved={(o) => {
+          setShowOfferForm(false);
+          onNewOffer(o);
+        }}
       />
 
       {
@@ -188,7 +198,10 @@ function PricePageScreen(
           offer={deleteTargetOffer}
           show={!!deleteTargetOffer}
           onHide={() => setDeleteTargetOffer(undefined)}
-          onDropped={onPriceUpdated}
+          onDropped={(pwp) => {
+            setDeleteTargetOffer(undefined);
+            onPriceUpdated(pwp);
+          }}
         />
       }
     </>
