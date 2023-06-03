@@ -2,7 +2,7 @@ import { StripePrice, StripeCoupon, CouponParams, StripePriceParams, StripePrice
 import { Fetch, UrlBuilder } from '../http/fetch';
 import { PagingQuery } from '../http/paged-list';
 import { ReqConfig } from '../http/ReqConfig';
-import { endpoint, pathStripeCoupons } from './endpoint';
+import { endpoint } from './endpoint';
 
 
 export function listStripePrices(config: ReqConfig, paging: PagingQuery): Promise<StripePriceList> {
@@ -131,7 +131,7 @@ export function updateStripeCoupon(
   body: CouponParams,
   config: ReqConfig
 ): Promise<StripeCoupon> {
-  const url = new UrlBuilder(endpoint.stripePrice)
+  const url = new UrlBuilder(endpoint.stripeCoupons)
     .appendPath(id)
     .setLive(config.live)
     .toString();
@@ -150,7 +150,7 @@ export function activateStripeCoupon(
   id: string,
   config: ReqConfig
 ): Promise<StripeCoupon> {
-  const url = new UrlBuilder(pathStripeCoupons)
+  const url = new UrlBuilder(endpoint.stripeCoupons)
     .appendPath(id)
     .appendPath('activate')
     .setLive(config.live)
@@ -169,7 +169,7 @@ export function deleteStripeCoupon(
   id: string,
   config: ReqConfig
 ): Promise<StripeCoupon> {
-  const url = new UrlBuilder(pathStripeCoupons)
+  const url = new UrlBuilder(endpoint.stripeCoupons)
     .appendPath(id)
     .setLive(config.live)
     .toString();
