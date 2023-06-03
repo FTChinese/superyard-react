@@ -106,7 +106,7 @@ export function activateFtcProduct(
   id: string,
   config: ReqConfig
 ): Promise<Product> {
-  const url = new UrlBuilder(endpoint.product).appendPath(id).setReqConfig(config).toString();
+  const url = new UrlBuilder(endpoint.product).appendPath(id).appendPath('activate').setReqConfig(config).toString();
 
   return new Fetch()
     .post(url)
@@ -122,7 +122,7 @@ export function updateFtcProduct(
   const url = new UrlBuilder(endpoint.product).appendPath(id).setReqConfig(config).toString();
 
   return new Fetch()
-    .post(url)
+    .patch(url)
     .setBearerAuth(config.token)
     .sendJson(body)
     .endJson();
