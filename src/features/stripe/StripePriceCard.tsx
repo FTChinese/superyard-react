@@ -1,5 +1,5 @@
 import Card from 'react-bootstrap/Card';
-import { TableBody, TRow } from '../../components/list/Table';
+import { Table, TableBody, TRow } from '../../components/list/Table';
 import { localizedTier } from '../../data/localization';
 import { newStripePriceParts, StripePrice } from '../../data/stripe-price';
 import { ActiveBadge, ModeBadge } from '../../components/text/Badge';
@@ -83,51 +83,39 @@ export function StripePriceCard(
           />
         </Card.Title>
 
-        <PriceTable
-          price={props.price}
-        />
+        <Table>
+          <TableBody
+            rows={buildRows(props.price)}
+          />
+        </Table>
 
       </Card.Body>
     </Card>
   );
 }
 
-function PriceTable(
-  props: {
-    price: StripePrice,
-  }
-) {
-
-  const rows: TRow[] = [
+function buildRows(price: StripePrice): TRow[] {
+  return [
     {
       head: 'ID',
-      data: [props.price.id],
+      data: [price.id],
     },
     {
       head: 'Active on Paywall',
-      data: [<ActiveBadge active={props.price.active} />]
+      data: [<ActiveBadge active={price.onPaywall} />]
     },
     {
       head: 'Live',
-      data: [<ModeBadge live={props.price.liveMode}/>],
+      data: [<ModeBadge live={price.liveMode}/>],
     },
     {
       head: 'Kind',
-      data: [props.price.kind],
+      data: [price.kind],
     },
     {
       head: 'Nickname',
-      data: [props.price.nickname],
+      data: [price.nickname],
     },
   ];
-
-  return (
-    <table className="table table-borderless">
-      <TableBody
-        rows={rows}
-      />
-    </table>
-  )
 }
-
 
