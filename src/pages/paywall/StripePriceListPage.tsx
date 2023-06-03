@@ -21,6 +21,7 @@ import { getPagingQuery, serializePagingQuery } from '../../http/paged-list';
 import { useProgress } from '../../components/hooks/useProgress';
 import { toast } from 'react-toastify';
 import { StripePricePull } from '../../features/stripe/StripePriceDialog';
+import { ReqConfig } from '../../http/ReqConfig';
 
 export function StripePriceListPage() {
   const { live } = useLiveMode();
@@ -44,12 +45,19 @@ function StripePriceListScreen(
     live: boolean,
   }
 ) {
+
+  const config: ReqConfig = {
+    live: props.live,
+    token: props.passport.token,
+  };
+
   const [showForm, setShowForm] = useState(false);
 
   const { progress } = useProgress();
   const {
     pagedPrices,
     listPrices,
+    onPriceFound,
   } = useStripeList();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -58,10 +66,7 @@ function StripePriceListScreen(
 
   useEffect(() => {
     listPrices(
-      {
-        live: props.live,
-        token: props.passport.token
-      },
+      config,
       paging,
     );
 
@@ -113,12 +118,12 @@ function StripePriceListScreen(
       }
 
       <StripePricePull
-        passport={props.passport}
-        live={props.live}
+        config={config}
         show={showForm}
         onHide={() => {
           setShowForm(false);
         }}
+        onFound={onPriceFound}
       />
     </>
   );
