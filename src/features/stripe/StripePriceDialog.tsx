@@ -9,11 +9,11 @@ import { FullscreenDialog } from '../../components/dialog/FullscreenDialog';
 import { Link } from 'react-router-dom';
 import { SearchBox } from '../../components/forms/SearchBox';
 import { FullscreenSingleCol } from '../../components/layout/FullscreenSingleCol';
-import { CMSPassport } from '../../data/cms-account';
 import { sitemap } from '../../data/sitemap';
 import { useStripeList } from './useStripeList';
 import { ConfirmDialog } from '../../components/dialog/ConfirmDialog';
 import { concatPriceParts } from '../../data/localization';
+import { useEffect } from 'react';
 
 export function StripePriceEdit(
   props: {
@@ -60,10 +60,10 @@ export function StripePriceEdit(
 
 export function StripePricePull(
   props: {
-    passport: CMSPassport;
-    live: boolean;
+    config: ReqConfig;
     show: boolean;
     onHide: () => void;
+    onFound: (p: StripePrice) => void;
   }
 ) {
   const {
@@ -72,22 +72,25 @@ export function StripePricePull(
     price,
   } = useStripeList();
 
+  useEffect(() => {
+    if (price) {
+      props.onFound(price);
+    }
+  }, [price?.id]);
+
   return (
     <FullscreenDialog
       show={props.show}
       onHide={props.onHide}
       title='Sync a Stripe Price'
-      headerExtra={<ModeBadge live={props.live} />}
+      headerExtra={<ModeBadge live={props.config.live} />}
     >
       <FullscreenSingleCol>
         <>
           <SearchBox
             controlId='s'
             onSubmit={(priceId) => {
-              loadPrice(priceId, {
-                live: props.live,
-                token: props.passport.token,
-              });
+              loadPrice(priceId, props.config);
             }}
             label="Search Stripe Price"
             progress={loadingPrice}
