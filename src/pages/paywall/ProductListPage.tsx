@@ -68,7 +68,10 @@ function ProductListScreen(
           live={props.live}
           show={showForm}
           onHide={() => setShowForm(false)}
-          onUpserted={onProductCreated}
+          onUpserted={(p) => {
+            onProductCreated(p);
+            setShowForm(false);
+          }}
         />
       </div>
     </Loading>
