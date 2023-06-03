@@ -134,7 +134,6 @@ export function PriceForm(props: {
         unitAmount: Yup.number()
           .min(0, 'Price cannot be less than 0')
           .required(),
-        stripePriceId: Yup.string().trim().required(invalidMessages.required),
       })}
       onSubmit={props.onSubmit}
     >
