@@ -47,12 +47,13 @@ export function useUpsertFtcPrice() {
           onSaved(p);
         })
         .catch((err: ResponseError) => {
+          console.log(err.message);
+          toast.error(err.message);
+          helpers.setSubmitting(false);
+
           if (err.invalid) {
             helpers.setErrors(err.toFormFields);
-          } else {
-            toast.error(err.message);
           }
-          helpers.setSubmitting(false);
         });
     };
   };
