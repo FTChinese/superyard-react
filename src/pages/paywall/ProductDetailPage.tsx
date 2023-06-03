@@ -117,7 +117,10 @@ function ProductPageScreen(
               onHide={() => {
                 setShowProductStatus(false);
               }}
-              onSaved={onProductUpdated}
+              onSaved={(p) => {
+                onProductUpdated(p);
+                setShowProductStatus(false);
+              }}
             />
           </>
         }
