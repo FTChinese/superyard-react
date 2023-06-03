@@ -25,6 +25,7 @@ export function usePriceUpsert() {
       console.log(values);
 
       const body = buildStripePriceParams(values, p);
+      console.log(body);
 
       helpers.setSubmitting(true);
 
@@ -54,6 +55,7 @@ export function usePriceUpsert() {
 
     return activateStripePrice(p, config)
       .then((newPrice) => {
+        console.log(newPrice);
         toast.info(`${p.onPaywall ? 'Deactivate' : 'Activate'} price succeeded!`);
         setChangingStatus(false);
         onSaved(newPrice);
