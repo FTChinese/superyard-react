@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { atom, useRecoilState } from 'recoil';
-import { Paywall } from '../../data/paywall';
+import { Banner, Paywall, Promo } from '../../data/paywall';
 import { ResponseError } from '../../http/response-error';
 import { loadPaywall } from '../../repository/paywall';
 import { useProgress } from './useProgress';
+import { ReqConfig } from '../../http/ReqConfig';
 
 const paywallState = atom<Paywall | undefined>({
   key: 'paywallRebuilt',
@@ -15,10 +16,10 @@ export function usePaywall() {
   const {progress, setProgress} = useProgress();
   const [paywall, setPaywall] = useRecoilState(paywallState);
 
-  const forceLoadPaywall = (token: string, live: boolean) => {
+  const forceLoadPaywall = (config: ReqConfig) => {
     setProgress(true);
 
-    loadPaywall({ token, live })
+    loadPaywall(config)
       .then(pw => {
         setPaywall(pw);
       })
@@ -30,12 +31,30 @@ export function usePaywall() {
       });
   };
 
-  const loadPaywallIfEmpty = (token: string, live: boolean) => {
-    if (paywall && paywall.liveMode === live) {
+  const loadPaywallIfEmpty = (config: ReqConfig) => {
+    if (paywall && paywall.liveMode === config.live) {
       return;
     }
 
-    forceLoadPaywall(token, live);
+    forceLoadPaywall(config);
+  }
+
+  const onBannerUpdated = (b: Banner) => {
+    if (paywall) {
+      setPaywall({
+        ...paywall,
+        banner: b,
+      })
+    }
+  }
+
+  const onPromoUpdated = (p: Promo) => {
+    if (paywall) {
+      setPaywall({
+        ...paywall,
+        promo: p,
+      })
+    }
   }
 
   return {
@@ -45,6 +64,8 @@ export function usePaywall() {
     loadPaywallIfEmpty,
     paywall,
     setPaywall,
+    onBannerUpdated,
+    onPromoUpdated,
   }
 }
 

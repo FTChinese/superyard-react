@@ -61,6 +61,7 @@ export type PaywallProduct = Product & {
 
 export type Paywall = PaywallDoc & {
   products: PaywallProduct[];
+  ftcPrices: PaywallPrice[];
   stripe: StripePaywallItem[];
 };
 
@@ -81,38 +82,34 @@ export type ProductItem = {
   stripePrices: StripePaywallItem[];
 }
 
-function convertProduct(prod: PaywallProduct, stripeCollection: Map<string, StripePaywallItem>): ProductItem {
-  const ftcPrices: PaywallPrice[] = prod.introductory
-    ? [
-      {
-        ...prod.introductory,
-        offers: []
-      },
-      ...prod.prices
-    ]
-    : prod.prices;
-
-  const stripeItems: StripePaywallItem[] = [];
-
-  ftcPrices.forEach(ftcPrice => {
-    const sp = stripeCollection.get(ftcPrice.stripePriceId);
-    if (sp) {
-      stripeItems.push(sp);
-    }
-  });
-
-  return {
-    product: prod,
-    ftcPrices,
-    stripePrices: stripeItems,
-  }
-}
-
 export function collectProductItems(pw: Paywall): ProductItem[] {
-  const indexedStripePrices = pw.stripe.reduce((prev, curr) => {
-    prev.set(curr.price.id, curr);
-    return prev;
-  }, new Map<string, StripePaywallItem>());
+  const ftcGroup = new Map<string, PaywallPrice[]>()
+  console.log(pw.ftcPrices);
+  for (let price of pw.ftcPrices) {
+    const items = ftcGroup.get(price.tier);
+    if (!items) {
+      ftcGroup.set(price.tier, [price])
+    } else {
+      items.push(price)
+    }
+  }
+  console.log(ftcGroup);
 
-  return pw.products.map<ProductItem>(prod => convertProduct(prod, indexedStripePrices))
+  const stripeGroup = new Map<string, StripePaywallItem[]>();
+  for (let item of pw.stripe) {
+    const items = stripeGroup.get(item.price.tier)
+    if (!items) {
+      stripeGroup.set(item.price.tier, [item]);
+    } else {
+      items.push(item);
+    }
+  }
+
+  return pw.products.map<ProductItem>(prod => {
+    return {
+      product: prod,
+      ftcPrices: ftcGroup.get(prod.tier) || [],
+      stripePrices: stripeGroup.get(prod.tier) || [],
+    };
+  });
 }

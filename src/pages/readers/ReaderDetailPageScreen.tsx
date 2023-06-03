@@ -58,7 +58,7 @@ export function ReaderDetailPageScreen(
       }
     );
 
-    loadPaywallIfEmpty(props.passport.token, true);
+    loadPaywallIfEmpty({token: props.passport.token, live: true});
   }, []);
 
   if (progress || errMsg) {

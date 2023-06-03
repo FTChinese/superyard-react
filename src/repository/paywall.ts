@@ -30,7 +30,7 @@ export function loadPaywall(config: ReqConfig): Promise<Paywall> {
     .endJson();
 }
 
-export function saveBanner(
+export function savePaywallBanner(
   body: BannerParams,
   config: ReqConfig
 ): Promise<PaywallDoc> {
@@ -46,7 +46,7 @@ export function saveBanner(
     .endJson();
 }
 
-export function savePromo(
+export function savePaywallPromo(
   body: PromoParams,
   config: ReqConfig
 ): Promise<PaywallDoc> {
@@ -59,7 +59,7 @@ export function savePromo(
     .endJson();
 }
 
-export function dropPromo(config: ReqConfig): Promise<PaywallDoc> {
+export function dropPaywallPromo(config: ReqConfig): Promise<PaywallDoc> {
   const url = new UrlBuilder(endpoint.promo).setReqConfig(config).toString();
 
   return new Fetch()
