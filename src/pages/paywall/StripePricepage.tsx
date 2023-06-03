@@ -112,7 +112,10 @@ function PricePageScreen(
         onHide={() => {
           setShowPriceEdit(false);
         }}
-        onSaved={onPriceUpdated}
+        onSaved={(p) => {
+          onPriceUpdated(p);
+          setShowPriceEdit(false);
+        }}
       />
 
       <StripePriceStatusDialog
@@ -177,7 +180,10 @@ function PricePageScreen(
             onHide={() => {
               setShowPullCoupon(false)
             }}
-            onSaved={onCouponUpdated}
+            onSaved={(c) => {
+              onCouponUpdated(c);
+              setShowPullCoupon(false);
+            }}
           />
 
           {
@@ -189,7 +195,10 @@ function PricePageScreen(
                 onHide={() => {
                   setEditCoupon(undefined);
                 }}
-                onSaved={onCouponUpdated}
+                onSaved={(c) => {
+                  onCouponUpdated(c);
+                  setEditCoupon(undefined);
+                }}
               />
           }
 
