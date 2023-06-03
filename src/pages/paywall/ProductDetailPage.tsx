@@ -104,7 +104,10 @@ function ProductPageScreen(
               live={props.live}
               show={showEditProduct}
               onHide={() => setShowEditProductF(false)}
-              onUpserted={onProductUpdated}
+              onUpserted={(p) => {
+                setShowEditProductF(false);
+                onProductUpdated(p);
+              }}
               product={product}
             />
             <ProductStatusDialog
@@ -160,7 +163,10 @@ function ProductPageScreen(
                 createPrice(
                   product,
                   config,
-                  onPriceCreated,
+                  (p) => {
+                    onPriceCreated(p);
+                    setShowNewPrice(false);
+                  },
                 )
               }
             />
