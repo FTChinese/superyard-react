@@ -28,10 +28,13 @@ export function useStripeList() {
         stopProgress()
         toast.error(err.message);
       });
-  }
+  };
 
   // Load a price before setting updating its metadata.
-  const loadPrice = (priceId: string, config: ReqConfig) => {
+  const loadPrice = (
+    priceId: string,
+    config: ReqConfig
+  ) => {
     setLoadingPrice(true);
     setPrice(undefined);
 
@@ -45,6 +48,21 @@ export function useStripeList() {
         setLoadingPrice(false);
         toast.error(err.message);
       });
+  };
+
+  const onPriceFound = (sp: StripePrice) => {
+    if (!pagedPrices) {
+      return;
+    }
+    const newList = pagedPrices.data.filter(p => p.id !== sp.id);
+
+    setPagedPrices({
+      ...pagedPrices,
+      data: [
+        sp,
+        ...newList,
+      ],
+    });
   }
 
   return {
@@ -54,6 +72,7 @@ export function useStripeList() {
     loadingPrice,
     loadPrice,
     price,
+    onPriceFound,
   }
 }
 
