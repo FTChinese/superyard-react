@@ -34,5 +34,6 @@ export function verifyPwToken(token: string): Promise<PasswordResetVerified> {
 export function resetPassword(v: PasswordResetReqParams): Promise<boolean> {
   return new Fetch()
     .post(endpoint.resetPassword)
+    .sendJson(v)
     .endNoContent();
 }

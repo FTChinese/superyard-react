@@ -6,7 +6,7 @@ export function FullscreenDialog(
     onHide: () => void;
     title: string;
     children: JSX.Element;
-    headerExtra: JSX.Element | null;
+    headerExtra?: JSX.Element | null;
   }
 ) {
   return (

@@ -33,13 +33,6 @@ export function FtcPriceCard(
         readableYMD(props.price.periodCount),
       ]
     },
-    // TODO: drop this.
-    {
-      head: 'Stripe Price ID',
-      data: [
-        props.price.stripePriceId,
-      ],
-    },
   ]
   return (
     <Card className="mb-3">
