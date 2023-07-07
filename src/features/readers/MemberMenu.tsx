@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { SmallButton } from '../../components/buttons/Button';
 import { BottomBorderBox, PrimaryLine, SecondaryLine } from '../../components/list/TwoLineRow';
 import { BorderHeader } from '../../components/text/BorderHeader';

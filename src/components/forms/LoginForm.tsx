@@ -58,24 +58,22 @@ export function LoginForm(
         })}
         onSubmit={props.onSubmit}
       >
-        {formik => (
-          <Form>
-            <TextInput
-              label="Username"
-              name="userName"
-              type="text"
-            />
-            <TextInput
-              label="Password"
-              name="password"
-              type="password"
-            />
+        <Form>
+          <TextInput
+            label="Username"
+            name="userName"
+            type="text"
+          />
+          <TextInput
+            label="Password"
+            name="password"
+            type="password"
+          />
 
-            <FormikSubmitButton
-              text={props.btnText}
-            />
-          </Form>
-        )}
+          <FormikSubmitButton
+            text={props.btnText}
+          />
+        </Form>
       </Formik>
     </>
   );

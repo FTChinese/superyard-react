@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../components/hooks/useAuth';
-import {
-  loadingErrored,
-  loadingStarted,
-  loadingStopped,
-  ProgressOrError,
-} from '../../components/progress/ProgressOrError';
 import { Unauthorized } from '../../components/middleware/Unauthorized';
 import { LegalList, LegalTeaser } from '../../data/legal';
 import { createLegalDoc, listLegalDoc } from '../../repository/legal-doc';

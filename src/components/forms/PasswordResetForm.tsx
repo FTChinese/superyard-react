@@ -35,38 +35,34 @@ export function PasswordResetForm(
       validationSchema={Yup.object(verifyPasswordSchema)}
       onSubmit={props.onSubmit}
     >
-      { formik => (
-        <>
-          <h4 className="text-center">更改 {props.email} 的密码</h4>
+      <h4 className="text-center">更改 {props.email} 的密码</h4>
 
-          {
-            errMsg &&
-            <Alert
-              variant="danger"
-              dismissible
-              onClose={() => setErrMsg('')}>
-              {errMsg}
-            </Alert>
-          }
+      {
+        errMsg &&
+        <Alert
+          variant="danger"
+          dismissible
+          onClose={() => setErrMsg('')}>
+          {errMsg}
+        </Alert>
+      }
 
-          <Form>
-            <TextInput
-              label="密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认密码"
-              name="confirmPassword"
-              type="password"
-            />
+      <Form>
+        <TextInput
+          label="密码"
+          name="password"
+          type="password"
+        />
+        <TextInput
+          label="确认密码"
+          name="confirmPassword"
+          type="password"
+        />
 
-            <FormikSubmitButton
-              text="重置"
-            />
-          </Form>
-        </>
-      )}
+        <FormikSubmitButton
+          text="重置"
+        />
+      </Form>
     </Formik>
   );
 }

@@ -84,50 +84,48 @@ export function DiscountForm(
       })}
       onSubmit={props.onSubmit}
     >
-      { formik => (
-        <Form>
-          <TextInput
-            label="Title *"
-            name="title"
-            type="text"
-            placeholder="现在购买享xx折优惠"
-          />
-          <Dropdown
-            label="Target *"
-            name="kind"
-            opts={offerKindOpts}
-          />
-          <TextInput
-            label="Amount Off *"
-            name="priceOff"
-            type="number"
-            desc="Minimum 0"
-          />
-          <Switch
-            label="Recurring during the lifetime of this offer"
-            name="recurring"
-          />
-          <YearMonthDayInput
-            title="Purchased period"
-            namePrefix="period"
-            desc="Leave it alone if you don't mean to override the default 1 year/ 1 month subscription period"
-          />
-          <DateTimeInput
-            title="Start Date Time"
-            namePrefix="start"
-            desc="Leave untouched for permanent offer"
-          />
-          <DateTimeInput
-            title="End Date Time"
-            namePrefix="end"
-            desc="Leave untouched for permanent offer"
-          />
+      <Form>
+        <TextInput
+          label="Title *"
+          name="title"
+          type="text"
+          placeholder="现在购买享xx折优惠"
+        />
+        <Dropdown
+          label="Target *"
+          name="kind"
+          opts={offerKindOpts}
+        />
+        <TextInput
+          label="Amount Off *"
+          name="priceOff"
+          type="number"
+          desc="Minimum 0"
+        />
+        <Switch
+          label="Recurring during the lifetime of this offer"
+          name="recurring"
+        />
+        <YearMonthDayInput
+          title="Purchased period"
+          namePrefix="period"
+          desc="Leave it alone if you don't mean to override the default 1 year/ 1 month subscription period"
+        />
+        <DateTimeInput
+          title="Start Date Time"
+          namePrefix="start"
+          desc="Leave untouched for permanent offer"
+        />
+        <DateTimeInput
+          title="End Date Time"
+          namePrefix="end"
+          desc="Leave untouched for permanent offer"
+        />
 
-          <FormikSubmitButton
-            text="Save"
-          />
-        </Form>
-      )}
+        <FormikSubmitButton
+          text="Save"
+        />
+      </Form>
     </Formik>
   );
 }

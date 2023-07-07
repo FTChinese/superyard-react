@@ -15,15 +15,3 @@ import { useLocation } from 'react-router-dom';
   return null;
 }
 
-/**
- * @description If you have a tab interface connected to the router,
- * then you probably don’t want to be scrolling to the top when they switch tabs.
- *
- */
-function ScrollToTopOnMount() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  return null;
-}

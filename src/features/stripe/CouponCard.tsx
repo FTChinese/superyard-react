@@ -13,11 +13,6 @@ export function CouponCard(
     menu: JSX.Element | null;
   }
 ) {
-  const rows: TRow[] = buildCouponRow(props.coupon);
-  // Button to drop or actiate a coupon.
-  // Note here we didn't handle `paused` state.
-  // Only `active` and `cancelled` are handled.
-  const isActive = isActiveDiscount(props.coupon.status);
 
   return (
     <Card className='mb-3'>

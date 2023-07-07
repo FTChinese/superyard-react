@@ -57,21 +57,19 @@ export function EmailForm(
         })}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label={props.hideLabel ? undefined : '邮箱'}
-              name="email"
-              type="email"
-              placeholder="yourname@example.org"
-              desc={props.desc}
-            />
+        <Form>
+          <TextInput
+            label={props.hideLabel ? undefined : '邮箱'}
+            name="email"
+            type="email"
+            placeholder="yourname@example.org"
+            desc={props.desc}
+          />
 
-            <FormikSubmitButton
-              text={props.btnText}
-            />
-          </Form>
-        )}
+          <FormikSubmitButton
+            text={props.btnText}
+          />
+        </Form>
       </Formik>
     </>
   );

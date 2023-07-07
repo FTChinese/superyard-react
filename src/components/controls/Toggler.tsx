@@ -1,5 +1,3 @@
-import { ChangeEvent } from 'react';
-
 export function Toggler(
   props: {
     name: string;

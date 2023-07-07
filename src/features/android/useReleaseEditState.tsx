@@ -6,7 +6,6 @@ import {
   loadingStopped,
 } from '../../components/progress/ProgressOrError';
 import { Release, ReleaseParams } from '../../data/android';
-import { CMSPassport } from '../../data/cms-account';
 import { loadRelease, updateRelease } from '../../repository/android';
 import { UpsertArgs } from '../../repository/args';
 import { ResponseError } from '../../http/response-error';

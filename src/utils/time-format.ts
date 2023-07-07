@@ -9,7 +9,7 @@ export function extractISODate(isoStr: string): string {
   return isoStr;
 }
 
-const timeLayoutDateTimeCn = 'yyyy年M月d日H时m分s秒';
+// const timeLayoutDateTimeCn = 'yyyy年M月d日H时m分s秒';
 const timeLayoutDate = 'yyyy-MM-dd';
 const timeLayoutTime = 'HH:mm:ss';
 const timeLayoutZone = 'xxx'; // ISO8601 timezone without z

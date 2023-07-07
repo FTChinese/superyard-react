@@ -61,40 +61,38 @@ export function StripePriceForm(
         })}
         onSubmit={props.onSubmit}
       >
-        {(formik) => (
-          <Form>
-            <Dropdown
-              label="Tier *"
-              name="tier"
-              opts={tierOpts}
-              desc="A required field so that we could deduce to which group of products it belongs"
-            />
-            {
-              isIntro && (
-                <>
-                  <YearMonthDayInput
-                    title="Period Count"
-                    namePrefix="periodCount"
-                    desc="Duration for introductory price"
-                  />
-                  <DateTimeInput
-                    title="Start Date Time"
-                    namePrefix="start"
-                    desc="Introductory price  campaign start time"
-                  />
-                  <DateTimeInput
-                    title="End Date Time"
-                    namePrefix="end"
-                    desc="Introductory price  campaign start time"
-                  />
-                  <TimezoneGuide />
-                </>
-              )
-            }
+        <Form>
+          <Dropdown
+            label="Tier *"
+            name="tier"
+            opts={tierOpts}
+            desc="A required field so that we could deduce to which group of products it belongs"
+          />
+          {
+            isIntro && (
+              <>
+                <YearMonthDayInput
+                  title="Period Count"
+                  namePrefix="periodCount"
+                  desc="Duration for introductory price"
+                />
+                <DateTimeInput
+                  title="Start Date Time"
+                  namePrefix="start"
+                  desc="Introductory price  campaign start time"
+                />
+                <DateTimeInput
+                  title="End Date Time"
+                  namePrefix="end"
+                  desc="Introductory price  campaign start time"
+                />
+                <TimezoneGuide />
+              </>
+            )
+          }
 
-            <FormikSubmitButton text="Save"/>
-          </Form>
-        )}
+          <FormikSubmitButton text="Save"/>
+        </Form>
       </Formik>
     </>
   );

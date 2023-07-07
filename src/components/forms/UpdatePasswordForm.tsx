@@ -45,29 +45,27 @@ export function UpdatePasswordForm(
         validationSchema={Yup.object(verifyPasswordSchema)}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label="当前密码"
-              name="currentPassword"
-              type="password"
-            />
-            <TextInput
-              label="新密码"
-              name="password"
-              type="password"
-            />
-            <TextInput
-              label="确认新密码"
-              name="confirmPassword"
-              type="password"
-            />
+        <Form>
+          <TextInput
+            label="当前密码"
+            name="currentPassword"
+            type="password"
+          />
+          <TextInput
+            label="新密码"
+            name="password"
+            type="password"
+          />
+          <TextInput
+            label="确认新密码"
+            name="confirmPassword"
+            type="password"
+          />
 
-            <FormikSubmitButton
-              text="重置"
-            />
-          </Form>
-        )}
+          <FormikSubmitButton
+            text="重置"
+          />
+        </Form>
       </Formik>
     </>
   );

@@ -99,46 +99,44 @@ export function BannerForm(
         validationSchema={schema}
         onSubmit={props.onSubmit}
       >
-        { formik => (
-          <Form>
-            <TextInput
-              label="Heading *"
-              name="heading"
-              type="text"
-            />
-            <TextInput
-              label="Secondary Heading"
-              name="subHeading"
-              type="text"
-            />
-            <TextInput
-              label="Cover URL"
-              name="coverUrl"
-              type="url"
-            />
-            <Textarea
-              label="Content"
-              name="content"
-              rows={8}
-              desc={<SupportMarkdown />}
-            />
-            <DateTimeInput
-              title="Start Date Time"
-              namePrefix="start"
-              disabled={!props.hasPeriod}
-            />
-            <DateTimeInput
-              title="End Date Time"
-              namePrefix="end"
-              disabled={!props.hasPeriod}
-            />
-            <TimezoneGuide />
+        <Form>
+          <TextInput
+            label="Heading *"
+            name="heading"
+            type="text"
+          />
+          <TextInput
+            label="Secondary Heading"
+            name="subHeading"
+            type="text"
+          />
+          <TextInput
+            label="Cover URL"
+            name="coverUrl"
+            type="url"
+          />
+          <Textarea
+            label="Content"
+            name="content"
+            rows={8}
+            desc={<SupportMarkdown />}
+          />
+          <DateTimeInput
+            title="Start Date Time"
+            namePrefix="start"
+            disabled={!props.hasPeriod}
+          />
+          <DateTimeInput
+            title="End Date Time"
+            namePrefix="end"
+            disabled={!props.hasPeriod}
+          />
+          <TimezoneGuide />
 
-            <FormikSubmitButton
-              text="Save"
-            />
-          </Form>
-        )}
+          <FormikSubmitButton
+            text="Save"
+          />
+        </Form>
       </Formik>
     </>
   );

@@ -52,13 +52,6 @@ export function useCoupon() {
   }
 
   /**
-   * @todo
-   */
-  const createCoupon = () => {
-
-  };
-
-  /**
    * Attach a coupon to current price.
    */
   const attachCoupon = (

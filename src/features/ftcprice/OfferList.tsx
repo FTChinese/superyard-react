@@ -1,5 +1,4 @@
 import Button from 'react-bootstrap/Button';
-import { Flex } from '../../components/layout/Flex';
 import { Discount } from '../../data/ftc-price';
 import { ButtonGroup, Card, Stack } from 'react-bootstrap';
 import { formatDiscountAmount } from '../../data/ftc-price';
