@@ -8,11 +8,9 @@
     "serve": "vite preview",
     "test": "jest",
     "postversion": "git push && git push --tags",
-    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.ts",
-    "html": "ts-node --project=scripts/tsconfig.json ./scripts/html.prod.ts",
-    "copy-static": "ts-node --project=scripts/tsconfig.json ./scripts/copyStaticAssets.ts",
-    "deploy-dev": "npm run build && npm run html && npm run copy-static",
-    "deploy": "npm run build && npm run html && npm run copy-static --prod"
+    "html-dev": "ts-node --project=scripts/tsconfig.json ./scripts/html.dev.tsx",
+    "deploy": "ts-node --project=scripts/tsconfig.json ./scripts/deploy.prod.ts",
+    "publish": "npm run build && npm run deploy"
   },
   "dependencies": {
     "date-fns": "^2.30.0",
@@ -28,7 +26,6 @@
   "devDependencies": {
     "@types/jest": "^29.5.2",
     "@types/jsdom": "^21.1.1",
-    "@types/nunjucks": "^3.2.3",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@types/shelljs": "^0.8.12",
@@ -41,7 +38,6 @@
     "eslint-plugin-react-refresh": "^0.3.5",
     "jest": "^29.6.1",
     "jsdom": "^22.1.0",
-    "nunjucks": "^3.2.4",
     "shelljs": "^0.8.5",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
